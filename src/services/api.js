@@ -103,6 +103,11 @@ export async function queryBasicProfile() {
   return request('/api/profile/basic');
 }
 
+// 查询用户列表
+export async function queryUserList() {
+  return request('/users/list');
+}
+
 export async function queryAdvancedProfile() {
   return request('/api/profile/advanced');
 }

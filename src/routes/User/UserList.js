@@ -15,10 +15,10 @@ import {
   Modal,
   message,
 } from 'antd';
-import IdcTable from '../../components/IdcTable';
+import UsersTable from '../../components/UsersTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
-import styles from './Idc.less';
+import styles from './UserList.less';
 
 const FormItem = Form.Item;
 const {Option} = Select;
@@ -35,7 +35,7 @@ const CreateForm = Form.create()((props) => {
   };
   return (
     <Modal
-      title="添加设备"
+      title="添加用户"
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
@@ -71,7 +71,7 @@ export default class TableList extends PureComponent {
   componentDidMount() {
     const {dispatch} = this.props;
     dispatch({
-      type: 'rule/idcList',
+      type: 'rule/userList',
     });
   }
 
@@ -96,7 +96,7 @@ export default class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/idcList',
+      type: 'rule/userList',
       payload: params,
     });
   }
@@ -108,7 +108,7 @@ export default class TableList extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/idcList',
+      type: 'rule/userList',
       payload: {},
     });
   }
@@ -128,7 +128,7 @@ export default class TableList extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/idcList',
+          type: 'rule/userList',
           payload: {
             no: selectedRows.map(row => row.no).join(','),
           },
@@ -153,7 +153,7 @@ export default class TableList extends PureComponent {
   handleSearch = (e) => {
     e.preventDefault();
 
-    const {dispatch, form} = this.props;
+    const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -169,7 +169,7 @@ export default class TableList extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/idcList',
+        type: 'rule/userList',
         payload: values,
       });
     });
@@ -181,30 +181,15 @@ export default class TableList extends PureComponent {
     });
   }
 
-  handleAdd = (fields) => {
-    this.props.dispatch({
-      type: 'rule/idcCreate',
-      payload: {
-        description: fields.desc,
-      },
-    });
-
-    message.success('添加成功');
-    this.setState({
-      modalVisible: false,
-    });
-  }
-
-
   renderSimpleForm() {
-    const {getFieldDecorator} = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{md: 8, lg: 24, xl: 48}}>
           <Col md={8} sm={24}>
             <FormItem label="机房名称">
               {getFieldDecorator('idc_name')(
-                <Input placeholder="请输入"/>
+                <Input placeholder="请输入" />
               )}
             </FormItem>
           </Col>
@@ -225,8 +210,8 @@ export default class TableList extends PureComponent {
   }
 
   render() {
-    const {rule: {loading: ruleLoading, data}} = this.props;
-    const {selectedRows, modalVisible, addInputValue} = this.state;
+    const { rule: { loading: ruleLoading, data } } = this.props;
+    const { selectedRows, modalVisible, addInputValue } = this.state;
     const { getFieldDecorator } = this.props.form;
     const { submitting } = this.props;
     const formItemLayout = {
@@ -277,7 +262,7 @@ export default class TableList extends PureComponent {
                 )
               }
             </div>
-            <IdcTable
+            <UsersTable
               selectedRows={selectedRows}
               loading={ruleLoading}
               data={data}

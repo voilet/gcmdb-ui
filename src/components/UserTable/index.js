@@ -1,8 +1,7 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import moment from 'moment';
 import { Table, Alert, Badge, Divider, Icon } from 'antd';
 import styles from './index.less';
-
 
 const statusMap = ['default', 'processing', 'success', 'error', 'warning', "error"];
 class StandardTable extends PureComponent {
@@ -47,43 +46,78 @@ class StandardTable extends PureComponent {
 
     const columns = [
       {
-        title: '机房名称',
-        dataIndex: 'idc_name',
+        title: '主机名',
+        dataIndex: 'fqdn',
       },
       {
-        title: '带宽',
-        dataIndex: 'band_width',
+        title: '网卡1',
+        dataIndex: 'eth1',
       },
       {
-        title: '地址范围',
-        dataIndex: 'ip_range',
+        title: 'idc',
+        dataIndex: 'idc.idc_name',
 
       },
       {
-        title: '联系电话',
-        dataIndex: 'phone',
+        title: '机柜',
+        dataIndex: 'cabinet',
 
       },
       {
         title: '位置',
-        dataIndex: 'addresses',
+        dataIndex: 'server_cabinet_id',
 
       },
       {
-        title: '别名',
-        dataIndex: 'alias',
+        title: 'sn',
+        dataIndex: 'serialnumber',
 
       },
 
+      {
+        title: '状态',
+        dataIndex: 'status',
+        filters: [
+          {
+            text: status[0],
+            value: 0,
+          },
+          {
+            text: status[1],
+            value: 1,
+          },
+          {
+            text: status[2],
+            value: 2,
+          },
+          {
+            text: status[3],
+            value: 3,
+          },
+          {
+            text: status[4],
+            value: 4,
+          },
+        ],
+        render(val) {
+          return <Badge status={statusMap[val]} text={status[val]} />;
+        },
+      },
+
+      {
+        title: '更新时间',
+        dataIndex: 'updatedAt',
+        sorter: true,
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      },
       {
         title: '操作',
         dataIndex: 'ID',
 
         render: (val) => (
           <div>
-            <a href= {"/#/assets/host/modify/" + val} > <Icon type="edit" /></a>
-            <Divider type="vertical" />
-            <a href= {"/#/assets/host/delete/" + val} ><Icon type="delete" /></a>
+            <a href={"/#/assets/host/details/" + val} > <Icon type="desktop" /></a><Divider type="vertical" />
+            <a href={"/#/assets/host/modify/" + val} ><Icon type="edit" /></a>
           </div>
         ),
       },
@@ -109,7 +143,8 @@ class StandardTable extends PureComponent {
           <Alert
             message={(
               <div>
-                已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 台&nbsp;
+                已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 项&nbsp;&nbsp;
+
                 <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>清空</a>
               </div>
             )}

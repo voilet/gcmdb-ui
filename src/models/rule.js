@@ -1,4 +1,4 @@
-import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc } from '../services/api';
+import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc, addIdc, queryUserList } from '../services/api';
 
 export default {
   namespace: 'rule',
@@ -57,6 +57,21 @@ export default {
         payload: false,
       });
     },
+    *idcCreate({ payload }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const response = yield call(addIdc, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
+    },
 
     *add({ payload, callback }, { call, put }) {
       const response = yield call(addRule, payload);
@@ -73,6 +88,14 @@ export default {
         payload: response,
       });
       if (callback) callback();
+    },
+    // 查询用户列表
+    *userList({ payload }, { call, put }) {
+      const response = yield call(queryUserList, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
     },
   },
 

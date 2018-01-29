@@ -2,9 +2,9 @@ import React, { PureComponent, Fragment } from 'react';
 import moment from 'moment';
 import { Table, Alert, Badge, Divider, Icon } from 'antd';
 import styles from './index.less';
-
-
 const statusMap = ['default', 'processing', 'success', 'error', 'warning', "error"];
+
+
 class StandardTable extends PureComponent {
   state = {
     selectedRowKeys: [],
@@ -44,48 +44,53 @@ class StandardTable extends PureComponent {
   render() {
     const { selectedRowKeys, totalCallNo } = this.state;
     const { data: { data, pagination }, loading } = this.props;
-
+    const status = ['禁用', '启用'];
     const columns = [
       {
-        title: '机房名称',
-        dataIndex: 'idc_name',
+        title: '姓名',
+        dataIndex: 'nick_name',
       },
       {
-        title: '带宽',
-        dataIndex: 'band_width',
-      },
-      {
-        title: '地址范围',
-        dataIndex: 'ip_range',
-
-      },
-      {
-        title: '联系电话',
-        dataIndex: 'phone',
-
-      },
-      {
-        title: '位置',
-        dataIndex: 'addresses',
-
-      },
-      {
-        title: '别名',
-        dataIndex: 'alias',
-
-      },
-
-      {
-        title: '操作',
-        dataIndex: 'ID',
-
-        render: (val) => (
-          <div>
-            <a href= {"/#/assets/host/modify/" + val} > <Icon type="edit" /></a>
-            <Divider type="vertical" />
-            <a href= {"/#/assets/host/delete/" + val} ><Icon type="delete" /></a>
-          </div>
+        title: '用户组',
+        key: 'user_group',
+        render: (json, record) => (
+          <span>
+            {record.title}
+          </span>
         ),
+      },
+      {
+        title: '权限组',
+        dataIndex: 'user_auth_group',
+
+      },
+      {
+        title: '状态',
+        dataIndex: 'enable',
+        filters: [
+          {
+            text: '启用',
+            value: true,
+          },
+          {
+            text: '禁用',
+            value: false,
+          },
+        ],
+        render(val) {
+          // alert(val);
+          return <Badge status={statusMap[val]} text={status[val]} />;
+        },
+      },
+      {
+        title: '邮箱',
+        dataIndex: 'email',
+
+      },
+      {
+        title: '头像',
+        dataIndex: 'avatar',
+
       },
     ];
 

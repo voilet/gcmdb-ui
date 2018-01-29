@@ -50,7 +50,7 @@ const menuData = [{
           path: 'add',
           icon: "plus-circle-o",
         },
-      ]
+      ],
     },
     {
       name: '硬件类型',
@@ -189,6 +189,19 @@ const menuData = [{
   }, {
     name: '连接主机',
     path: '403',
+  }],
+}, {
+  name: '用户管理',
+  icon: 'user',
+  path: 'users',
+  children: [{
+    name: '用户列表',
+    path: 'list',
+    ico: 'idcard',
+  }, {
+    name: '添加用户',
+    path: 'add',
+    ico: 'user-add',
   }],
 }, {
   name: '使用文档',
