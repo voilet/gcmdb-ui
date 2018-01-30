@@ -108,27 +108,16 @@ export const getRouterData = (app) => {
     '/idc/add': {
       component: dynamicWrapper(app, ['rule'], () => import('../routes/Idc/CreateIdc')),
     },
-    '/assets/step-form': {
-      component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/StepForm')),
-    },
-    '/assets/step-form/info': {
-      component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/StepForm/Step1')),
-    },
-    '/assets/step-form/confirm': {
-      component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/StepForm/Step2')),
-    },
-    '/assets/step-form/result': {
-      component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/StepForm/Step3')),
-    },
     // 添加主机
     '/assets/host/add': {
       component: dynamicWrapper(app, ['form'], () => import('../routes/Assets/AssetsAdd')),
     },
-    '/list/table-list': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/List/TableList')),
+    // 工单系统
+    '/case/list': {
+      component: dynamicWrapper(app, ['rule'], () => import('../routes/WorkCase/ListCase')),
     },
-    '/list/basic-list': {
-      component: dynamicWrapper(app, ['list'], () => import('../routes/List/BasicList')),
+    '/case/create': {
+      component: dynamicWrapper(app, ['list'], () => import('../routes/WorkCase/CreateCase')),
     },
     '/list/card-list': {
       component: dynamicWrapper(app, ['list'], () => import('../routes/List/CardList')),

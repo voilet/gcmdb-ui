@@ -2,9 +2,9 @@ import React, { PureComponent, Fragment } from 'react';
 import moment from 'moment';
 import { Table, Alert, Badge, Divider, Icon } from 'antd';
 import styles from './index.less';
+
+
 const statusMap = ['default', 'processing', 'success', 'error', 'warning', "error"];
-
-
 class StandardTable extends PureComponent {
   state = {
     selectedRowKeys: [],
@@ -44,53 +44,39 @@ class StandardTable extends PureComponent {
   render() {
     const { selectedRowKeys, totalCallNo } = this.state;
     const { data: { data, pagination }, loading } = this.props;
-    const status = ['禁用', '启用'];
+
     const columns = [
       {
-        title: '姓名',
-        dataIndex: 'nick_name',
+        title: '工单号',
+        dataIndex: 'case_id',
       },
       {
-        title: '用户组',
-        key: 'user_group',
-        render: (text, record) => (
-          <span>
-            {record.nick_name}为啥不出来
-          </span>
+        title: '工单名称',
+        dataIndex: 'title',
+      },
+      {
+        title: '期望处理时间',
+        dataIndex: 'expect_time',
+        sorter: true,
+        render: val => <span>{moment(val).format('YYYY-MM-DD')}</span>,
+      },
+      {
+        title: '审批组',
+        dataIndex: 'approve_user_group',
+
+      },
+
+      {
+        title: '操作',
+        dataIndex: 'ID',
+
+        render: (val) => (
+          <div>
+            <a href= {"/#/assets/host/modify/" + val} > <Icon type="edit" /></a>
+            <Divider type="vertical" />
+            <a href= {"/#/assets/host/delete/" + val} ><Icon type="delete" /></a>
+          </div>
         ),
-      },
-      {
-        title: '权限组',
-        dataIndex: 'user_auth_group',
-
-      },
-      {
-        title: '状态',
-        dataIndex: 'enable',
-        filters: [
-          {
-            text: '启用',
-            value: true,
-          },
-          {
-            text: '禁用',
-            value: false,
-          },
-        ],
-        render(val) {
-          // alert(val);
-          return <Badge status={statusMap[val]} text={status[val]} />;
-        },
-      },
-      {
-        title: '邮箱',
-        dataIndex: 'email',
-
-      },
-      {
-        title: '头像',
-        dataIndex: 'avatar',
-
       },
     ];
 

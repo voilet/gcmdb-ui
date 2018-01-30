@@ -1,4 +1,4 @@
-import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc, addIdc, queryUserList } from '../services/api';
+import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc, addIdc, queryUserList, querCaseList } from '../services/api';
 
 export default {
   namespace: 'rule',
@@ -18,6 +18,7 @@ export default {
         payload: response,
       });
     },
+    // 查询
     *search({ payload }, { call, put }) {
       const response = yield call(querySearch, payload);
       yield put({
@@ -25,6 +26,7 @@ export default {
         payload: response,
       });
     },
+    // 资产列表
     *assetsList({ payload }, { call, put }) {
       yield put({
         type: 'changeLoading',
@@ -41,7 +43,7 @@ export default {
         payload: false,
       });
     },
-
+    // 机房列表
     *idcList({ payload }, { call, put }) {
       yield put({
         type: 'changeLoading',
@@ -57,12 +59,29 @@ export default {
         payload: false,
       });
     },
+    // 添加机房
     *idcCreate({ payload }, { call, put }) {
       yield put({
         type: 'changeLoading',
         payload: true,
       });
       const response = yield call(addIdc, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
+    },
+    // 添加机房
+    *caseList({ payload }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const response = yield call(querCaseList, payload);
       yield put({
         type: 'save',
         payload: response,

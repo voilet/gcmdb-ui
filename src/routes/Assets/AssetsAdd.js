@@ -57,7 +57,7 @@ class AdvancedForm extends PureComponent {
   render() {
     const { form, dispatch, submitting } = this.props;
     const { getFieldDecorator, validateFieldsAndScroll, getFieldsError } = this.props.form;
-    const { rule: { idc ,project, env, os, equipment, hardware } } = this.props;
+    const { rule: { idc, project, env, os, equipment, hardware } } = this.props;
     const validate = () => {
       validateFieldsAndScroll((error, values) => {
         if (!error) {

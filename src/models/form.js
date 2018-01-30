@@ -1,6 +1,9 @@
 import { routerRedux } from 'dva/router';
 import { message } from 'antd';
-import { fakeSubmitForm, querIdc, queryProject, queryEnv, queryOs, queryEquipment, queryHardware, addIdc } from '../services/api';
+import {
+  fakeSubmitForm, querIdc, queryProject, queryEnv, queryOs, queryEquipment, queryHardware, addIdc,
+  querUserGroup, createCase,
+} from '../services/api';
 
 export default {
   namespace: 'form',
@@ -30,6 +33,9 @@ export default {
     hardware: {
       data: [],
     },
+    usergroup: {
+      data: [],
+    },
 
   },
 
@@ -53,6 +59,23 @@ export default {
     *submitAddIdc({ payload }, { call }) {
       yield call(addIdc, payload);
       message.success('提交成功');
+    },
+
+    // 用户组列表
+    *userGroupList({ payload }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const response = yield call(querUserGroup, payload);
+      yield put({
+        type: 'userGroupSave',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
     },
 
     *getIdcQuery({ payload }, { call, put }) {
@@ -156,13 +179,12 @@ export default {
         payload: false,
       });
     },
-
-    *submitStepForm({ payload }, { call, put }) {
+    *submitCreateCase({ payload }, { call, put }) {
       yield put({
         type: 'changeStepFormSubmitting',
         payload: true,
       });
-      yield call(fakeSubmitForm, payload);
+      yield call(createCase, payload);
       yield put({
         type: 'saveStepFormData',
         payload,
@@ -171,19 +193,7 @@ export default {
         type: 'changeStepFormSubmitting',
         payload: false,
       });
-      yield put(routerRedux.push('/form/step-form/result'));
-    },
-    *submitAdvancedForm({ payload }, { call, put }) {
-      yield put({
-        type: 'changeAdvancedFormSubmitting',
-        payload: true,
-      });
-      yield call(fakeSubmitForm, payload);
-      yield put({
-        type: 'changeAdvancedFormSubmitting',
-        payload: false,
-      });
-      message.success('提交成功');
+      yield put(routerRedux.push('/case/list'));
     },
   },
 
@@ -221,6 +231,12 @@ export default {
       return {
         ...state,
         os: action.payload,
+      };
+    },
+    userGroupSave(state, action) {
+      return {
+        ...state,
+        usergroup: action.payload,
       };
     },
 

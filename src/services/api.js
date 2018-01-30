@@ -28,6 +28,15 @@ export async function querIdc(params) {
   return request(`/api/assets/idc/query?${stringify(params)}`);
 }
 
+// 查询用户组
+export async function querUserGroup() {
+  return request('/users/group/list');
+}
+
+// 查询用户组
+export async function querCaseList() {
+  return request('/case/list');
+}
 
 export async function queryProject() {
   return request('/api/assets/project/query');
@@ -62,6 +71,15 @@ export async function removeRule(params) {
 
 export async function addRule(params) {
   return request('/api/rule', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+export async function createCase(params) {
+  return request('/case/create', {
     method: 'POST',
     body: {
       ...params,

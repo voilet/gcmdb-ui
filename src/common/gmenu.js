@@ -149,11 +149,13 @@ const menuData = [{
   icon: 'rocket',
   path: 'case',
   children: [{
-    name: '成功',
-    path: 'success',
+    name: '工单列表',
+    path: 'list',
+    ico: 'idcard',
   }, {
-    name: '失败',
-    path: 'fail',
+    name: '创建工单',
+    path: 'create',
+    ico: 'user-add',
   }],
 }, {
   name: '故障管理',
