@@ -14,62 +14,6 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
 
-const x = 3;
-const y = 2;
-const z = 1;
-const gData = [];
-
-const generateData = (_level, _preKey, _tns) => {
-  const preKey = _preKey || '0';
-  const tns = _tns || gData;
-
-  const children = [];
-  for (let i = 0; i < x; i++) {
-    const key = `${preKey}-${i}`;
-    tns.push({ title: key, key });
-    if (i < y) {
-      children.push(key);
-    }
-  }
-  if (_level < 0) {
-    return tns;
-  }
-  const level = _level - 1;
-  children.forEach((key, index) => {
-    tns[index].children = [];
-    return generateData(level, key, tns[index].children);
-  });
-};
-generateData(z);
-
-const dataList = [];
-const generateList = (data) => {
-  for (let i = 0; i < data.length; i++) {
-    const node = data[i];
-    const key = node.key;
-    dataList.push({ key, title: key });
-    if (node.children) {
-      generateList(node.children, node.key);
-    }
-  }
-};
-generateList(gData);
-
-const getParentKey = (key, tree) => {
-  let parentKey;
-  for (let i = 0; i < tree.length; i++) {
-    const node = tree[i];
-    if (node.children) {
-      if (node.children.some(item => item.key === key)) {
-        parentKey = node.key;
-      } else if (getParentKey(key, node.children)) {
-        parentKey = getParentKey(key, node.children);
-      }
-    }
-  }
-  return parentKey;
-};
-
 @connect(({ project, activities, chart, rule, loading }) => ({
   project,
   activities,
@@ -82,12 +26,8 @@ const getParentKey = (key, tree) => {
 
 export default class Workplace extends PureComponent {
   state = {
-    expandedKeys: [],
-    searchValue: '',
-    autoExpandParent: true,
     formValues: {},
-  }
-
+  };
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -102,9 +42,6 @@ export default class Workplace extends PureComponent {
     dispatch({
       type: 'rule/assetsList',
     });
-    dispatch({
-      type: 'rule/antdTree',
-    });
   }
 
   componentWillUnmount() {
@@ -113,12 +50,6 @@ export default class Workplace extends PureComponent {
       type: 'chart/clear',
     });
   }
-  onExpand = (expandedKeys) => {
-    this.setState({
-      expandedKeys,
-      autoExpandParent: false,
-    });
-  };
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -146,48 +77,7 @@ export default class Workplace extends PureComponent {
     });
   }
 
-  onChange = (e) => {
-    const value = e.target.value;
-    const expandedKeys = dataList.map((item) => {
-      if (item.key.indexOf(value) > -1) {
-        return getParentKey(item.key, gData);
-      }
-      return null;
-    }).filter((item, i, self) => item && self.indexOf(item) === i);
-    this.setState({
-      expandedKeys,
-      searchValue: value,
-      autoExpandParent: true,
-    });
-  }
-
   render() {
-    const { searchValue, expandedKeys, autoExpandParent } = this.state;
-    const { rule: { tree } } = this.props;
-    // console.warn(tree.data.tree);
-    // console.warn(gData);
-    // const loop = data => tree.data.tree.map((item) => {
-    const loop = data => data.map((item) => {
-      const index = item.key.indexOf(searchValue);
-      const beforeStr = item.key.substr(0, index);
-      const afterStr = item.key.substr(index + searchValue.length);
-      const title = index > -1 ? (
-        <span>
-          {beforeStr}
-          <span style={{ color: '#f50' }}>{searchValue}</span>
-          {afterStr}
-        </span>
-      ) : <span>{item.key}</span>;
-      if (item.children) {
-        return (
-          <TreeNode key={item.key} title={title}>
-            {loop(item.children)}
-          </TreeNode>
-        );
-      }
-      return <TreeNode key={item.key} title={title} />;
-    });
-
     const { rule: { loading: ruleLoading, data } } = this.props;
     const pageHeaderContent = (
       <div className={styles.pageHeaderContent}>
@@ -232,17 +122,26 @@ export default class Workplace extends PureComponent {
               bordered={false}
               bodyStyle={{ padding: 0 }}
             >
-              <div style={{ margin: 10 }}>
-                <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange} />
-                <Tree
-                  style={{ margin: 10 }}
-                  onExpand={this.onExpand}
-                  expandedKeys={expandedKeys}
-                  autoExpandParent={autoExpandParent}
-                >
-                  {loop(gData)}
-                </Tree>
-              </div>
+              <Tree
+                showLine
+                defaultExpandedKeys={['0-0-0']}
+                onSelect={this.onSelect}
+              >
+                <TreeNode title="parent 1" key="0-0">
+                  <TreeNode title="parent 1-0" key="0-0-0">
+                    <TreeNode title="leaf" key="0-0-0-0" />
+                    <TreeNode title="leaf" key="0-0-0-1" />
+                    <TreeNode title="leaf" key="0-0-0-2" />
+                  </TreeNode>
+                  <TreeNode title="parent 1-1" key="0-0-1">
+                    <TreeNode title="leaf" key="0-0-1-0" />
+                  </TreeNode>
+                  <TreeNode title="parent 1-2" key="0-0-2">
+                    <TreeNode title="leaf" key="0-0-2-0" />
+                    <TreeNode title="leaf" key="0-0-2-1" />
+                  </TreeNode>
+                </TreeNode>
+              </Tree>
             </Card>
           </Col>
           <Col xl={18} lg={24} md={24} sm={24} xs={24}>

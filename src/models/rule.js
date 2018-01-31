@@ -1,4 +1,4 @@
-import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc, addIdc, queryUserList, querCaseList } from '../services/api';
+import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc, addIdc, queryUserList, querCaseList, querTree } from '../services/api';
 
 export default {
   namespace: 'rule',
@@ -7,6 +7,11 @@ export default {
     data: {
       list: [],
       pagination: {},
+    },
+    tree: {
+      data: {
+        tree: [],
+      },
     },
   },
 
@@ -91,6 +96,22 @@ export default {
         payload: false,
       });
     },
+    // 查询树
+    *antdTree({ payload }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const response = yield call(querTree, payload);
+      yield put({
+        type: 'saveTree',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
+    },
 
     *add({ payload, callback }, { call, put }) {
       const response = yield call(addRule, payload);
@@ -123,6 +144,12 @@ export default {
       return {
         ...state,
         data: action.payload,
+      };
+    },
+    saveTree(state, action) {
+      return {
+        ...state,
+        tree: action.payload,
       };
     },
   },

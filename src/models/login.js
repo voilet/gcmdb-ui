@@ -7,9 +7,7 @@ export default {
   namespace: 'login',
 
   state: {
-    code: undefined,
-    msg: undefined,
-    type: undefined,
+    status: undefined,
   },
 
   effects: {
@@ -20,8 +18,7 @@ export default {
         payload: response,
       });
       // Login successfully
-      // console.warn(response.code);
-      if (response.code === '200') {
+      if (response.status === 'ok') {
         reloadAuthorized();
         yield put(routerRedux.push('/'));
       }
@@ -53,8 +50,7 @@ export default {
       setAuthority(payload.currentAuthority);
       return {
         ...state,
-        code: payload.code,
-        msg: payload.msg,
+        status: payload.status,
         type: payload.type,
       };
     },

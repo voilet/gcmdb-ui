@@ -38,6 +38,11 @@ export async function querCaseList() {
   return request('/case/list');
 }
 
+// 查询用树
+export async function querTree() {
+  return request('/api/assets/tree');
+}
+
 export async function queryProject() {
   return request('/api/assets/project/query');
 }
@@ -136,8 +141,8 @@ export async function queryFakeList(params) {
 }
 
 export async function fakeAccountLogin(params) {
-  return request('/login', {
-  // return request('/api/login/account', {
+  // return request('/login', {
+  return request('/api/login/account', {
     method: 'POST',
     body: params,
   });
