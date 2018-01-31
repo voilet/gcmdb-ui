@@ -55,6 +55,11 @@ class StandardTable extends PureComponent {
         dataIndex: 'title',
       },
       {
+        title: '描述',
+        dataIndex: 'remarks',
+
+      },
+      {
         title: '期望处理时间',
         dataIndex: 'expect_time',
         sorter: true,

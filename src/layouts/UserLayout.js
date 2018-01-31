@@ -29,7 +29,7 @@ class UserLayout extends React.PureComponent {
     const { pathname } = location;
     let title = 'gcmdb';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - Ant Design Pro`;
+      title = `${routerData[pathname].name} - CMDB 运维自动化`;
     }
     return title;
   }
@@ -43,7 +43,7 @@ class UserLayout extends React.PureComponent {
               <div className={styles.header}>
                 <Link to="/">
                   <img alt="logo" className={styles.logo} src={logo} />
-                  <span className={styles.title}>Ant Design</span>
+                  <span className={styles.title}>CMDB 运维自动化</span>
                 </Link>
               </div>
               <div className={styles.desc}>做最有影响力的cmdb项目</div>
@@ -59,7 +59,7 @@ class UserLayout extends React.PureComponent {
                   />
                 )
               )}
-              <Redirect exact from="/user" to="/user/login" />
+              <Redirect exact from="/login" to="/login" />
             </Switch>
           </div>
           <GlobalFooter links={links} copyright={copyright} />
