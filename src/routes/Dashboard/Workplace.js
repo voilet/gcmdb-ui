@@ -1,63 +1,31 @@
 import React, { PureComponent } from 'react';
-import moment from 'moment';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
-import { Row, Col, Card, List, Avatar, Tree, Input  } from 'antd';
+import { Row, Col, Card, Avatar, Tree, Input } from 'antd';
 
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import EditableLinkGroup from '../../components/EditableLinkGroup';
-import { Radar } from '../../components/Charts';
 import WorkplaceTable from '../../components/WorkplaceTable';
 
 import styles from './Workplace.less';
+
+const { TreeNode } = Tree;
+const { Search } = Input;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
-const TreeNode = Tree.TreeNode;
-const Search = Input.Search;
-
-const x = 3;
-const y = 2;
-const z = 1;
-const gData = [];
-
-const generateData = (_level, _preKey, _tns) => {
-  const preKey = _preKey || '0';
-  const tns = _tns || gData;
-
-  const children = [];
-  for (let i = 0; i < x; i++) {
-    const key = `${preKey}-${i}`;
-    tns.push({ title: key, key });
-    if (i < y) {
-      children.push(key);
-    }
-  }
-  if (_level < 0) {
-    return tns;
-  }
-  const level = _level - 1;
-  children.forEach((key, index) => {
-    tns[index].children = [];
-    return generateData(level, key, tns[index].children);
-  });
-};
-generateData(z);
 
 const dataList = [];
 const generateList = (data) => {
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data.length; i += 1) {
     const node = data[i];
-    const key = node.key;
-    dataList.push({ key, title: key });
+    const { key } = node;
+    dataList.push({ key, title: node.title });
     if (node.children) {
       generateList(node.children, node.key);
     }
   }
 };
-generateList(gData);
 
 const getParentKey = (key, tree) => {
   let parentKey;
-  for (let i = 0; i < tree.length; i++) {
+  for (let i = 0; i < tree.length; i += 1) {
     const node = tree[i];
     if (node.children) {
       if (node.children.some(item => item.key === key)) {
@@ -120,6 +88,24 @@ export default class Workplace extends PureComponent {
     });
   };
 
+  onChange = (e) => {
+    const { rule: { tree } } = this.props;
+    const { target: { value } } = e;
+    generateList(tree.data);
+    console.log(dataList);
+    const expandedKeys = dataList.map((item) => {
+      if (item.title.indexOf(value) > -1) {
+        return getParentKey(item.key, tree.data);
+      }
+      return null;
+    }).filter((item, i, self) => item && self.indexOf(item) === i);
+    this.setState({
+      expandedKeys,
+      searchValue: value,
+      autoExpandParent: true,
+    });
+  }
+
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
     const { formValues } = this.state;
@@ -146,37 +132,22 @@ export default class Workplace extends PureComponent {
     });
   }
 
-  onChange = (e) => {
-    const value = e.target.value;
-    const expandedKeys = dataList.map((item) => {
-      if (item.key.indexOf(value) > -1) {
-        return getParentKey(item.key, gData);
-      }
-      return null;
-    }).filter((item, i, self) => item && self.indexOf(item) === i);
-    this.setState({
-      expandedKeys,
-      searchValue: value,
-      autoExpandParent: true,
-    });
-  }
-
   render() {
     const { searchValue, expandedKeys, autoExpandParent } = this.state;
     const { rule: { tree } } = this.props;
+    console.log(tree);
 
-    // const loop = data => tree.data.tree.map((item) => {
     const loop = data => data.map((item) => {
-      const index = item.key.indexOf(searchValue);
-      const beforeStr = item.key.substr(0, index);
-      const afterStr = item.key.substr(index + searchValue.length);
+      const index = item.title.indexOf(searchValue);
+      const beforeStr = item.title.substr(0, index);
+      const afterStr = item.title.substr(index + searchValue.length);
       const title = index > -1 ? (
         <span>
           {beforeStr}
           <span style={{ color: '#f50' }}>{searchValue}</span>
           {afterStr}
         </span>
-      ) : <span>{item.key}</span>;
+      ) : <span>{item.title}</span>;
       if (item.children) {
         return (
           <TreeNode key={item.key} title={title}>
@@ -239,7 +210,7 @@ export default class Workplace extends PureComponent {
                   expandedKeys={expandedKeys}
                   autoExpandParent={autoExpandParent}
                 >
-                  {loop(gData)}
+                  {loop(tree.data)}
                 </Tree>
               </div>
             </Card>
