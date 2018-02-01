@@ -164,8 +164,7 @@ export default class Workplace extends PureComponent {
   render() {
     const { searchValue, expandedKeys, autoExpandParent } = this.state;
     const { rule: { tree } } = this.props;
-    // console.warn(tree.data.tree);
-    // console.warn(gData);
+
     // const loop = data => tree.data.tree.map((item) => {
     const loop = data => data.map((item) => {
       const index = item.key.indexOf(searchValue);
@@ -196,7 +195,7 @@ export default class Workplace extends PureComponent {
         </div>
         <div className={styles.content}>
           <div className={styles.contentTitle}>友情提示：谨慎操作，规避风险</div>
-          <div>如有任何系统问题，请随时联系运维人员 | 运维邮箱op@fun.tv </div>
+          <div>如有任何系统问题，请随时联系devops </div>
         </div>
       </div>
     );

@@ -9,9 +9,7 @@ export default {
       pagination: {},
     },
     tree: {
-      data: {
-        tree: [],
-      },
+      data: [],
     },
   },
 
