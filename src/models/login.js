@@ -17,8 +17,6 @@ export default {
         type: 'changeLoginStatus',
         payload: response,
       });
-      // Login successfully
-      console.log(response);
       if (response.code === '200') {
         reloadAuthorized();
         yield put(routerRedux.push('/'));
@@ -53,6 +51,7 @@ export default {
         ...state,
         status: payload.code,
         type: payload.type,
+        msg: payload.msg
       };
     },
   },

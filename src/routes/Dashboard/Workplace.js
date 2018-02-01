@@ -92,7 +92,6 @@ export default class Workplace extends PureComponent {
     const { rule: { tree } } = this.props;
     const { target: { value } } = e;
     generateList(tree.data);
-    console.log(dataList);
     const expandedKeys = dataList.map((item) => {
       if (item.title.indexOf(value) > -1) {
         return getParentKey(item.key, tree.data);
@@ -135,7 +134,6 @@ export default class Workplace extends PureComponent {
   render() {
     const { searchValue, expandedKeys, autoExpandParent } = this.state;
     const { rule: { tree } } = this.props;
-    console.log(tree);
 
     const loop = data => data.map((item) => {
       const index = item.title.indexOf(searchValue);

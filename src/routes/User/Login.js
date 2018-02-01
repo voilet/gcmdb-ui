@@ -61,7 +61,7 @@ export default class LoginPage extends Component {
               login.status === '10003' &&
               login.type === 'account' &&
               !login.submitting &&
-              this.renderMessage('账户或密码错误（admin/123456）')
+              this.renderMessage(login.msg)
             }
             <UserName name="user_name" placeholder="admin/songxs" />
             <Password name="password" placeholder="123456" />
