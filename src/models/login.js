@@ -2,7 +2,7 @@ import { routerRedux } from 'dva/router';
 import { fakeAccountLogin } from '../services/api';
 import { setAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
-
+import { logoutActive } from '../services/user';
 export default {
   namespace: 'login',
 
@@ -22,6 +22,7 @@ export default {
         yield put(routerRedux.push('/'));
       }
     },
+
     *logout(_, { put, select }) {
       try {
         // get location pathname
