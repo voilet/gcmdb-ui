@@ -18,7 +18,8 @@ export default {
         payload: response,
       });
       // Login successfully
-      if (response.status === '200') {
+      console.log(response);
+      if (response.code === '200') {
         reloadAuthorized();
         yield put(routerRedux.push('/'));
       }
@@ -47,7 +48,8 @@ export default {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
+      // setAuthority(payload.currentAuthority);
+      setAuthority('admin');
       return {
         ...state,
         status: payload.status,
