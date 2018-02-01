@@ -51,7 +51,7 @@ export default {
       setAuthority(payload.currentAuthority);
       return {
         ...state,
-        status: payload.status,
+        status: payload.code,
         type: payload.type,
       };
     },
