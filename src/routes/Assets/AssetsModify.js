@@ -283,13 +283,13 @@ class AdvancedForm extends PureComponent {
 
 
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 8 }} md={{ span: 12 }} sm={24}>
-                <Form.Item label="所属业务">
+                <Form.Item label="所属项目">
                   {getFieldDecorator('project', {
                     rules: [{ required: true, message: '必选' }],
                   })(
                     <Select
                       showSearch
-                      placeholder="选择业务"
+                      placeholder="选择项目"
                       optionFilterProp="children"
                       mode="multiple"
                       filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}

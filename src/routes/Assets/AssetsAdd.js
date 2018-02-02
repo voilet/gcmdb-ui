@@ -256,23 +256,24 @@ class AdvancedForm extends PureComponent {
                 </Form.Item>
               </Col>
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 8 }} md={{ span: 12 }} sm={24}>
-                <Form.Item label="所属业务">
-                  {getFieldDecorator('project', {
-                    rules: [{ required: true, message: '必选' }],
-                  })(
-                    <Select
-                      showSearch
-                      placeholder="选择业务"
-                      optionFilterProp="children"
-                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                    >
-                      {project.data.map(post =>
-                        <Option key={post.ID}>{post.title}</Option>
-                      )}
+              <Form.Item label="所属项目">
+                {getFieldDecorator('project', {
+                  rules: [{ required: true, message: '必选' }],
+                })(
+                  <Select
+                    showSearch
+                    placeholder="选择项目"
+                    optionFilterProp="children"
+                    mode="multiple"
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >
+                    {project.data.map(post =>
+                      <Option key={post.ID}>{post.title}</Option>
+                    )}
 
-                    </Select>
-                  )}
-                </Form.Item>
+                  </Select>
+                )}
+              </Form.Item>
               </Col>
               <Col xl={{ span: 8, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
                 <Form.Item label="所属环境">
