@@ -3,6 +3,7 @@ import { fakeAccountLogin } from '../services/api';
 import { setAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
 import { logoutActive } from '../services/user';
+
 export default {
   namespace: 'login',
 
@@ -23,8 +24,9 @@ export default {
       }
     },
 
-    *logout(_, { put, select }) {
+    *logout(_, { call, put, select }) {
       try {
+        yield call(logoutActive);
         // get location pathname
         const urlParams = new URL(window.location.href);
         const pathname = yield select(state => state.routing.location.pathname);
@@ -52,7 +54,7 @@ export default {
         ...state,
         status: payload.code,
         type: payload.type,
-        msg: payload.msg
+        msg: payload.msg,
       };
     },
   },
