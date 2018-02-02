@@ -23,6 +23,35 @@ const generateList = (data) => {
   }
 };
 
+const tabList = [{
+  key: 'tab1',
+  tab: '主机',
+}, {
+  key: 'tab6',
+  tab: '自动部署',
+},{
+  key: 'tab2',
+  tab: '代码发布',
+}, {
+  key: 'tab3',
+  tab: '监控',
+}, {
+  key: 'tab4',
+  tab: '执行命令',
+}, {
+  key: 'tab5',
+  tab: '项目文档',
+}];
+
+const contentList = {
+  tab1: <p>主机列表</p>,
+  tab2: <p>代码发布版本列表</p>,
+  tab3: <p>调用小米监控接口</p>,
+  tab4: <p>向api发送系统命令</p>,
+  tab5: <p>项目文档列表</p>,
+  tab6: <p>调用saltstack自动部署</p>,
+};
+
 const getParentKey = (key, tree) => {
   let parentKey;
   for (let i = 0; i < tree.length; i += 1) {
@@ -54,8 +83,12 @@ export default class Workplace extends PureComponent {
     searchValue: '',
     autoExpandParent: true,
     formValues: {},
+    key: 'tab1'
   }
-
+  onTabChange = (key, type) => {
+    console.log(key, type);
+    this.setState({ [type]: key });
+  }
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -214,20 +247,19 @@ export default class Workplace extends PureComponent {
             </Card>
           </Col>
           <Col xl={18} lg={24} md={24} sm={24} xs={24}>
-            <Card
-              style={{ marginBottom: 24 }}
-              title="服务器列表"
-              bordered={false}
-              bodyStyle={{ padding: 0 }}
+              <Card
+              style={{ width: '100%' }}
+              tabList={tabList}
+              onTabChange={(key) => { this.onTabChange(key, 'key'); }}
             >
-              <WorkplaceTable
-                style={{ margin: 10 }}
-                loading={ruleLoading}
-                data={data}
-                onSelectRow={this.handleSelectRows}
-                onChange={this.handleStandardTableChange}
-              />
+            <WorkplaceTable
+              loading={ruleLoading}
+              data={data}
+              onSelectRow={this.handleSelectRows}
+              onChange={this.handleStandardTableChange}
+            />
             </Card>
+
           </Col>
         </Row>
       </PageHeaderLayout>

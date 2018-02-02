@@ -74,8 +74,8 @@ class StandardTable extends PureComponent {
       },
 
       {
-        title: '更新时间',
-        dataIndex: 'updatedAt',
+        title: '创建时间',
+        dataIndex: 'created_at',
         sorter: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
