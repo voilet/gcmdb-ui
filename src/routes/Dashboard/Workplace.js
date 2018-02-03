@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Avatar, Tree, Input } from 'antd';
+import { Row, Col, Card, Avatar, Tree, Input, Menu, Icon } from 'antd';
 
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import WorkplaceTable from '../../components/WorkplaceTable';
@@ -10,6 +10,9 @@ import styles from './Workplace.less';
 const { TreeNode } = Tree;
 const { Search } = Input;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+
+const SubMenu = Menu.SubMenu;
+const MenuItemGroup = Menu.ItemGroup;
 
 const dataList = [];
 const generateList = (data) => {
@@ -21,35 +24,6 @@ const generateList = (data) => {
       generateList(node.children, node.key);
     }
   }
-};
-
-const tabList = [{
-  key: 'tab1',
-  tab: '主机',
-}, {
-  key: 'tab6',
-  tab: '自动部署',
-},{
-  key: 'tab2',
-  tab: '代码发布',
-}, {
-  key: 'tab3',
-  tab: '监控',
-}, {
-  key: 'tab4',
-  tab: '执行命令',
-}, {
-  key: 'tab5',
-  tab: '项目文档',
-}];
-
-const contentList = {
-  tab1: <p>主机列表</p>,
-  tab2: <p>代码发布版本列表</p>,
-  tab3: <p>调用小米监控接口</p>,
-  tab4: <p>向api发送系统命令</p>,
-  tab5: <p>项目文档列表</p>,
-  tab6: <p>调用saltstack自动部署</p>,
 };
 
 const getParentKey = (key, tree) => {
@@ -83,11 +57,13 @@ export default class Workplace extends PureComponent {
     searchValue: '',
     autoExpandParent: true,
     formValues: {},
-    key: 'tab1'
+    current: 'mail',
   }
-  onTabChange = (key, type) => {
-    console.log(key, type);
-    this.setState({ [type]: key });
+  handleClick = (e) => {
+    console.log('click ', e);
+    this.setState({
+      current: e.key,
+    });
   }
   componentDidMount() {
     const { dispatch } = this.props;
@@ -247,17 +223,34 @@ export default class Workplace extends PureComponent {
             </Card>
           </Col>
           <Col xl={18} lg={24} md={24} sm={24} xs={24}>
-              <Card
-              style={{ width: '100%' }}
-              tabList={tabList}
-              onTabChange={(key) => { this.onTabChange(key, 'key'); }}
-            >
-            <WorkplaceTable
-              loading={ruleLoading}
-              data={data}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-            />
+            <Card>
+              <Menu
+                  onClick={this.handleClick}
+                  selectedKeys={[this.state.current]}
+                  mode="horizontal"
+                >
+                  <Menu.Item key="mail"><Icon type="mail" />主机</Menu.Item>
+                  <Menu.Item key="app" disabled><Icon type="appstore" />自动部署</Menu.Item>
+                  <Menu.Item key="monitor" disabled><Icon type="appstore" />监控</Menu.Item>
+                  <SubMenu title={<span><Icon type="setting" />代码发布</span>}>
+                    <MenuItemGroup title="网站">
+                      <Menu.Item key="setting:1">web</Menu.Item>
+                      <Menu.Item key="setting:2">api</Menu.Item>
+                    </MenuItemGroup>
+                    <MenuItemGroup title="Item 2">
+                      <Menu.Item key="setting:3">Option 3</Menu.Item>
+                      <Menu.Item key="setting:4">Option 4</Menu.Item>
+                    </MenuItemGroup>
+                  </SubMenu>
+                  <Menu.Item key="alipay"><a href="https://ant.design" target="_blank" rel="noopener noreferrer">执行命令</a>  </Menu.Item>
+                  <Menu.Item key="doc" disabled><Icon type="appstore" />项目文档</Menu.Item>
+                </Menu>
+                <WorkplaceTable
+                  loading={ruleLoading}
+                  data={data}
+                  onSelectRow={this.handleSelectRows}
+                  onChange={this.handleStandardTableChange}
+                />
             </Card>
 
           </Col>
