@@ -1,4 +1,4 @@
-import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc, addIdc, queryUserList, querCaseList, querTree } from '../services/api';
+import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc, addIdc, queryUserList, querCaseList, querTree, queryProjectList } from '../services/api';
 
 export default {
   namespace: 'rule',
@@ -21,14 +21,31 @@ export default {
         payload: response,
       });
     },
-    // 查询
+    // 查询项目列表
+    *getProjectList({ payload }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const response = yield call(queryProjectList, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
+    },
+    // 查询项目列表
     *search({ payload }, { call, put }) {
-      const response = yield call(querySearch, payload);
+      const response = yield call(queryProjectList, payload);
       yield put({
         type: 'save',
         payload: response,
       });
     },
+
     // 资产列表
     *assetsList({ payload }, { call, put }) {
       yield put({

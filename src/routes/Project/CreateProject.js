@@ -4,7 +4,7 @@ import {
   Form, Input, DatePicker, Select, Button, Card, InputNumber, Radio, Icon, Tooltip,
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import styles from './style.less';
+import styles from './project.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;

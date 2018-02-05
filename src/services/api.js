@@ -79,6 +79,10 @@ export async function queryHardware() {
   return request('/api/assets/hardware/query');
 }
 
+// 查询项目列表
+export async function queryProjectList(params) {
+  return request(`/assets/project/list?${stringify(params)}`);
+}
 
 export async function removeRule(params) {
   return request('/api/rule', {
@@ -92,6 +96,16 @@ export async function removeRule(params) {
 
 export async function addRule(params) {
   return request('/api/rule', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+// 添加项目
+export async function addProject(params) {
+  return request('/assets/project/add', {
     method: 'POST',
     body: {
       ...params,

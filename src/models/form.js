@@ -2,7 +2,7 @@ import { routerRedux } from 'dva/router';
 import { message } from 'antd';
 import {
   fakeSubmitForm, querIdc, queryProject, queryEnv, queryOs, queryEquipment, queryHardware, addIdc,
-  querUserGroup, createCase, querOpsUser, querDevUser, querProjectGroup
+  querUserGroup, createCase, querOpsUser, querDevUser, querProjectGroup, addProject
 } from '../services/api';
 
 export default {
@@ -52,6 +52,10 @@ export default {
   effects: {
     *submitRegularForm({ payload }, { call }) {
       yield call(fakeSubmitForm, payload);
+      message.success('提交成功');
+    },
+    *submitAddProject({ payload }, { call }) {
+      yield call(addProject, payload);
       message.success('提交成功');
     },
     *submitStepForm({ payload }, { call, put }) {

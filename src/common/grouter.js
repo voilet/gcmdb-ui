@@ -122,7 +122,11 @@ export const getRouterData = (app) => {
     },
     // 添加项目
     '/project/pro/add': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/Forms/AddProject')),
+      component: dynamicWrapper(app, ['form'], () => import('../routes/Project/CreateProject')),
+    },
+    // 项目列表
+    '/project/pro/list': {
+      component: dynamicWrapper(app, ['form'], () => import('../routes/Project/ListProject')),
     },
 
     // 工单系统
