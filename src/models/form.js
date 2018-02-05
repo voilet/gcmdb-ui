@@ -2,7 +2,7 @@ import { routerRedux } from 'dva/router';
 import { message } from 'antd';
 import {
   fakeSubmitForm, querIdc, queryProject, queryEnv, queryOs, queryEquipment, queryHardware, addIdc,
-  querUserGroup, createCase,
+  querUserGroup, createCase, querOpsUser, querDevUser, querProjectGroup
 } from '../services/api';
 
 export default {
@@ -15,6 +15,7 @@ export default {
       receiverName: 'Alex',
       amount: '500',
     },
+    data: [],
     idc: {
       data: [],
     },
@@ -34,6 +35,15 @@ export default {
       data: [],
     },
     usergroup: {
+      data: [],
+    },
+    ops: {
+      data: [],
+    },
+    dev: {
+      data: [],
+    },
+    project_group: {
       data: [],
     },
 
@@ -146,6 +156,55 @@ export default {
       });
     },
 
+    *getOps({ payload }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const response = yield call(querOpsUser, payload);
+      // const response = yield call(queryRule, payload);
+      yield put({
+        type: 'saveOps',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
+    },
+    *getDev({ payload }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const response = yield call(querDevUser, payload);
+      // const response = yield call(queryRule, payload);
+      yield put({
+        type: 'saveDev',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
+    },
+    *getProjectGroup({ payload }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const response = yield call(querProjectGroup, payload);
+      // const response = yield call(queryRule, payload);
+      yield put({
+        type: 'saveProjectGroup',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
+    },
+
     *getEquipment({ payload }, { call, put }) {
       yield put({
         type: 'changeLoading',
@@ -198,6 +257,24 @@ export default {
   },
 
   reducers: {
+    saveOps(state, action) {
+      return {
+        ...state,
+        ops: action.payload,
+      };
+    },
+    saveProjectGroup(state, action) {
+      return {
+        ...state,
+        project_group: action.payload,
+      };
+    },
+    saveDev(state, action) {
+      return {
+        ...state,
+        dev: action.payload,
+      };
+    },
     saveStepFormData(state, { payload }) {
       return {
         ...state,

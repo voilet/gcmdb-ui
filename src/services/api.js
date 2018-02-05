@@ -38,6 +38,22 @@ export async function querCaseList() {
   return request('/case/list');
 }
 
+// 查询运维用户组
+export async function querOpsUser() {
+  return request('/api/user/ops');
+}
+
+// 查询运维用户组
+export async function querProjectGroup() {
+  return request('/api/assets/project/group');
+}
+
+
+// 查询运维用户组
+export async function querDevUser() {
+  return request('/api/user/dev');
+}
+
 // 查询用树
 export async function querTree() {
   return request('/api/assets/tree');

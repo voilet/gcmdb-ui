@@ -112,6 +112,19 @@ export const getRouterData = (app) => {
     '/assets/host/add': {
       component: dynamicWrapper(app, ['form'], () => import('../routes/Assets/AssetsAdd')),
     },
+    // 产品管理
+    '/project/group': {
+      component: dynamicWrapper(app, ['rule'], () => import('../routes/Idc/ListIdc')),
+    },
+    // 产品管理
+    '/project/group/list': {
+      component: dynamicWrapper(app, ['rule'], () => import('../routes/Idc/ListIdc')),
+    },
+    // 添加项目
+    '/project/pro/add': {
+      component: dynamicWrapper(app, ['rule'], () => import('../routes/Forms/AddProject')),
+    },
+
     // 工单系统
     '/case/list': {
       component: dynamicWrapper(app, ['rule'], () => import('../routes/WorkCase/ListCase')),

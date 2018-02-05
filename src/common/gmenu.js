@@ -113,16 +113,31 @@ const menuData = [{
     path: 'add',
   }],
 }, {
-  name: '项目管理',
+  name: '产品管理',
   icon: 'profile',
-  path: 'profile',
+  path: 'project',
   children: [{
-    name: '项目列表',
-    path: 'basic',
+    name: '项目组管理',
+    path: 'group',
+    children:[
+    {
+      name: '项目组列表',
+      path: 'list',
+    }, {
+      name: '添加项目组',
+      path: 'advanced',
+    }],
   }, {
-    name: '添加项目',
-    path: 'advanced',
-    authority: 'admin',
+    name: '项目管理',
+    path: 'pro',
+    children:[
+    {
+      name: '项目列表',
+      path: 'list',
+    }, {
+      name: '添加项目',
+      path: 'add',
+    }],
   }],
 }, {
   name: '发布日志',
