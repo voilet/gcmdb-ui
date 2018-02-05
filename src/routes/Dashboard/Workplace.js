@@ -237,9 +237,9 @@ export default class Workplace extends PureComponent {
                       <Menu.Item key="setting:1">web</Menu.Item>
                       <Menu.Item key="setting:2">api</Menu.Item>
                     </MenuItemGroup>
-                    <MenuItemGroup title="Item 2">
-                      <Menu.Item key="setting:3">Option 3</Menu.Item>
-                      <Menu.Item key="setting:4">Option 4</Menu.Item>
+                    <MenuItemGroup title="数据中心">
+                      <Menu.Item key="setting:3">date_node</Menu.Item>
+                      <Menu.Item key="setting:4">storm</Menu.Item>
                     </MenuItemGroup>
                   </SubMenu>
                   <Menu.Item key="alipay"><a href="https://ant.design" target="_blank" rel="noopener noreferrer">执行命令</a>  </Menu.Item>
