@@ -2,6 +2,7 @@ import { stringify } from 'qs';
 import request from '../utils/request';
 
 export async function queryProjectNotice() {
+  // return request('/api/case/notices');
   return request('/api/project/notice');
 }
 
@@ -34,8 +35,8 @@ export async function querUserGroup() {
 }
 
 // 查询用户组
-export async function querCaseList() {
-  return request('/case/list');
+export async function querCaseList(params) {
+  return request(`/case/list?${stringify(params)}`);
 }
 
 // 查询运维用户组
@@ -186,5 +187,6 @@ export async function fakeRegister(params) {
 }
 
 export async function queryNotices() {
-  return request('/api/notices');
+  return request('/api/case/notices');
+  // return request('/api/notices');
 }

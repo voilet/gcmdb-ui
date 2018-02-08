@@ -5,7 +5,10 @@ export default {
 
   state: {
     collapsed: false,
-    notices: [],
+    notices: {
+      data: [],
+    },
+    // notices: [],
   },
 
   effects: {

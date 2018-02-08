@@ -156,6 +156,7 @@ const menuData = [{
   name: '配置中心',
   icon: 'key',
   path: 'conf',
+  hideInMenu: true,
   children: [{
     name: '配置列表',
     path: 'success',

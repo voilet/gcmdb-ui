@@ -147,7 +147,7 @@ class BasicLayout extends React.PureComponent {
   render() {
     const {
       currentUser, collapsed, fetchingNotices, notices, routerData, match, location,
-    } = this.props;;
+    } = this.props;
     const bashRedirect = this.getBashRedirect();
     const layout = (
       <Layout>

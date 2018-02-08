@@ -19,7 +19,7 @@ export default class GlobalHeader extends PureComponent {
     if (notices.length === 0) {
       return {};
     }
-    const newNotices = notices.map((notice) => {
+    const newNotices = notices.data.map((notice) => {
       const newNotice = { ...notice };
       if (newNotice.datetime) {
         newNotice.datetime = moment(notice.datetime).fromNow();
