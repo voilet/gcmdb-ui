@@ -21,7 +21,7 @@ export default {
         payload: response,
       });
     },
-    // 查询项目列表
+    // 获取项目列表
     *getProjectList({ payload }, { call, put }) {
       yield put({
         type: 'changeLoading',
@@ -95,7 +95,7 @@ export default {
         payload: false,
       });
     },
-    // 添加机房
+    // 添加工单
     *caseList({ payload }, { call, put }) {
       yield put({
         type: 'changeLoading',

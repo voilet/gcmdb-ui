@@ -94,23 +94,29 @@ export default class BasicForms extends PureComponent {
               {...formItemLayout}
               label="期望处理时间"
             >
-              {getFieldDecorator('expect_time')(
-                <DatePicker style={{ width: '100%' }} placeholder={'期望处理时间'}  />
+              {getFieldDecorator('expect_time',{
+                rules: [{ required: true, message: '必选' }],
+              })(
+                <DatePicker style={{ width: '100%' }} placeholder={'期望处理时间'} />
               )}
             </FormItem>
             <FormItem
               {...formItemLayout}
               label="审批部门"
-            >
+            >{getFieldDecorator('group_id',{
+              rules: [{ required: true, message: '必选' }],
+            })(
               <Select
                 showSearch
                 placeholder="审批部门"
                 optionFilterProp="children"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                 {usergroup.data.map(post =>
-                  <Option key={post.ID}>{post.title}</Option>
+                  <Option key={post.ID}>{post.group_name}</Option>
                 )}
               </Select>
+            )}
+
             </FormItem>
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
               <Button type="primary" htmlType="submit" loading={submitting}>

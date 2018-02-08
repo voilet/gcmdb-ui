@@ -10,4 +10,3 @@ export async function queryCurrent() {
 export async function logoutActive() {
   return request('/logout');
 }
-

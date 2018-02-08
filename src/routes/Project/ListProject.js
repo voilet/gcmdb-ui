@@ -295,86 +295,62 @@ export default class TableList extends PureComponent {
         >
           <FormItem
             {...formItemLayout}
-            label="项目列表"
+            label="项目名称"
           >
-            {getFieldDecorator('idc_name', {
+            {getFieldDecorator('title', {
               rules: [{
-                required: true, message: '请输入项目列表',
+                required: true, message: '请输入项目名',
               }],
             })(
-              <Input placeholder="请输入项目列表" />
+              <Input placeholder="请输入项目名" />
             )}
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="机房别名"
+            label="项目别名"
           >
             {getFieldDecorator('alias', {
               rules: [{
-                required: true, message: '请输入机房别名',
               }],
             })(
-              <Input placeholder="请输入机房别名，主机名使用" />
+              <Input placeholder="请输入项目别名，使用saltstack时需使用，请使用英文" />
             )}
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="带宽"
+            label="代码仓库"
           >
-            {getFieldDecorator('band_width', {
+            {getFieldDecorator('code_url', {
               rules: [{
-                required: true, message: '请输入机房带宽',
+
               }],
             })(
-              <Input placeholder="请输入机房带宽" />
+              <Input placeholder="请输入git或svn地址" />
             )}
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="联系电话"
-          >
-            {getFieldDecorator('phone', {
-              rules: [{
-                required: true, message: '请输入机房联系电话',
-              }],
-            })(
-              <Input placeholder="请输入机房联系电话" />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="地址"
-          >
-            {getFieldDecorator('addresses', {
-              rules: [{
-                required: true, message: '请输入机房地址',
-              }],
-            })(
-              <Input placeholder="请输入机房地址" />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="ip地址段"
-          >
-            {getFieldDecorator('ip_range', {
-              rules: [{
-                required: true, message: '描述',
-              }],
-            })(
-              <TextArea style={{ minHeight: 32 }} placeholder="ip地址段 10.1.0.0/16" rows={4} />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="描述"
+            label="项目描述"
           >
             {getFieldDecorator('remarks', {
               rules: [{
-                required: true, message: '描述',
+                required: true, message: '请输入项目描述',
               }],
             })(
-              <TextArea style={{ minHeight: 32 }} placeholder="机房描述" rows={4} />
+              <TextArea style={{ minHeight: 32 }} placeholder="" rows={4} />
+            )}
+          </FormItem>
+
+          <FormItem
+            {...formItemLayout}
+            label="排序"
+          >
+            {getFieldDecorator('order', {
+              rules: [{
+
+              }],
+            })(
+              <Input placeholder="-99排序为最高，生成tree时使用" />
             )}
           </FormItem>
         </Modal>

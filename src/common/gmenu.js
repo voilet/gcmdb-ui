@@ -137,6 +137,10 @@ const menuData = [{
     }, {
       name: '添加项目',
       path: 'add',
+    }, {
+      name: '发布信息',
+      path: 'carving',
+      hideInMenu: true,
     }],
   }],
 }, {
