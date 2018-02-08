@@ -47,13 +47,10 @@ class StandardTable extends PureComponent {
 
     const columns = [
       {
-        title: '工单号',
-        dataIndex: 'case_id',
-      },
-      {
         title: '工单名称',
         dataIndex: 'title',
       },
+
       {
         title: '描述',
         dataIndex: 'remarks',
@@ -70,7 +67,10 @@ class StandardTable extends PureComponent {
         dataIndex: 'approve_user_group',
 
       },
-
+      {
+        title: '申请人',
+        dataIndex: 'first_name',
+      },
       {
         title: '操作',
         dataIndex: 'ID',
