@@ -1,4 +1,4 @@
-import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc, addIdc, queryUserList, querCaseList, querTree, queryProjectList } from '../services/api';
+import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc, addIdc, queryUserList, querCaseList, querTree, queryProjectList, queryProjectGetId } from '../services/api';
 
 export default {
   namespace: 'rule',
@@ -63,6 +63,24 @@ export default {
         payload: false,
       });
     },
+
+    // 根据项目id查资产列表
+    *projectGetIdQuery({ payload }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const response = yield call(queryProjectGetId, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
+    },
+
     // 机房列表
     *idcList({ payload }, { call, put }) {
       yield put({

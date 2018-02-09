@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import {
-  Form, Input, DatePicker, Select, Button, Card
+  Form, Input, DatePicker, Select, Button, Card,
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const { TextArea } = Input;
-const dateFormat = 'YYYY-MM-DD 00:00:00';
+
 @connect(state => ({
   submitting: state.form.submitCreateCase,
   rule: state.form,
@@ -35,7 +35,9 @@ export default class BasicForms extends PureComponent {
     });
     window.addEventListener('resize', this.resizeFooterToolbar);
   }
+
   render() {
+
     const { submitting } = this.props;
     const { getFieldDecorator } = this.props.form;
     const { rule: { usergroup } } = this.props;
@@ -57,6 +59,7 @@ export default class BasicForms extends PureComponent {
         sm: { span: 10, offset: 7 },
       },
     };
+
 
     return (
       <PageHeaderLayout title="添加工单" content="工单系统使流程更加顺畅">
@@ -97,7 +100,7 @@ export default class BasicForms extends PureComponent {
               {getFieldDecorator('expect_time',{
                 rules: [{ required: true, message: '必选' }],
               })(
-                <DatePicker style={{ width: '100%' }} placeholder={'期望处理时间'} />
+                <DatePicker format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} placeholder={'期望处理时间'}/>
               )}
             </FormItem>
             <FormItem

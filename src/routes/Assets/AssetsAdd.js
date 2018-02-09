@@ -7,7 +7,7 @@ import styles from './style.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;
-const { RangePicker } = DatePicker;
+
 
 @connect(state => ({
   submitting: state.form.regularFormSubmitting,
@@ -186,7 +186,7 @@ class AdvancedForm extends PureComponent {
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 8 }} md={{ span: 12 }} sm={24}>
                 <Form.Item label="购买时间">
                   {getFieldDecorator('start_guaratee')(
-                    <DatePicker style={{ width: '100%' }} placeholder={'购买时间'} />
+                    <DatePicker format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} placeholder={'购买时间'} />
                   )}
                 </Form.Item>
               </Col>
@@ -194,7 +194,7 @@ class AdvancedForm extends PureComponent {
               <Col xl={{ span: 8, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
                 <Form.Item label="保修时间">
                   {getFieldDecorator('stop_guaratee')(
-                    <DatePicker style={{ width: '100%' }} placeholder={'保修结止日期'} />
+                    <DatePicker format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} placeholder={'保修结止日期'} />
                   )}
                 </Form.Item>
               </Col>

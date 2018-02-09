@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Avatar, Tree, Input, Menu, Icon } from 'antd';
+import { Row, Col, Card, Avatar, Tree, Input, Menu, Icon, Form } from 'antd';
 
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import WorkplaceTable from '../../components/WorkplaceTable';
@@ -13,7 +13,6 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
-
 const dataList = [];
 const generateList = (data) => {
   for (let i = 0; i < data.length; i += 1) {
@@ -26,7 +25,7 @@ const generateList = (data) => {
   }
 };
 
-const getParentKey = (key, tree) => {
+const getParentKey = (key, tree, id) => {
   let parentKey;
   for (let i = 0; i < tree.length; i += 1) {
     const node = tree[i];
@@ -50,7 +49,7 @@ const getParentKey = (key, tree) => {
   activitiesLoading: loading.effects['activities/fetchList'],
 }))
 
-
+@Form.create()
 export default class Workplace extends PureComponent {
   state = {
     expandedKeys: [],
@@ -58,6 +57,7 @@ export default class Workplace extends PureComponent {
     autoExpandParent: true,
     formValues: {},
     current: 'mail',
+    pro_id: "",
   }
   handleClick = (e) => {
     console.log('click ', e);
@@ -97,6 +97,22 @@ export default class Workplace extends PureComponent {
     });
   };
 
+  onSelect = (selectedKeys, info) => {
+     const { dispatch } = this.props;
+     const treeLen = ((info.node.props.pos).split("-"));
+     if (treeLen.length === 4){
+       console.log("is ok");
+       console.log(info.node.props.id);
+       const pro_id = info.node.props.id
+       this.state.pro_id = pro_id;
+       dispatch({
+         type: 'rule/projectGetIdQuery',
+         payload: {id:pro_id},
+       });
+     }
+   }
+
+
   onChange = (e) => {
     const { rule: { tree } } = this.props;
     const { target: { value } } = e;
@@ -127,15 +143,17 @@ export default class Workplace extends PureComponent {
     const params = {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
+      id:this.state.pro_id,
       ...formValues,
       ...filters,
     };
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
-
+    console.log(this.props);
+    console.log(this.state);
     dispatch({
-      type: 'rule/assetsList',
+      type: 'rule/projectGetIdQuery',
       payload: params,
     });
   }
@@ -162,7 +180,7 @@ export default class Workplace extends PureComponent {
           </TreeNode>
         );
       }
-      return <TreeNode key={item.key} title={title} />;
+      return <TreeNode key={item.key} title={title} id={item.id} data-key={item.id} />;
     });
 
     const { rule: { loading: ruleLoading, data } } = this.props;
@@ -214,6 +232,7 @@ export default class Workplace extends PureComponent {
                 <Tree
                   style={{ margin: 10 }}
                   onExpand={this.onExpand}
+                  onSelect={this.onSelect}
                   expandedKeys={expandedKeys}
                   autoExpandParent={autoExpandParent}
                 >

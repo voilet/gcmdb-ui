@@ -85,6 +85,11 @@ export async function queryProjectList(params) {
   return request(`/assets/project/list?${stringify(params)}`);
 }
 
+// 查询项目列表
+export async function queryProjectGetId(params) {
+  return request(`/api/assets/project/${params.id}/host?${stringify(params)}`);
+}
+
 export async function removeRule(params) {
   return request('/api/rule', {
     method: 'POST',
@@ -115,6 +120,7 @@ export async function addProject(params) {
   });
 }
 export async function createCase(params) {
+  params.expect_time = params.expect_time.format('YYYY-MM-DD HH:mm:ss');
   return request('/case/create', {
     method: 'POST',
     body: {
@@ -134,7 +140,9 @@ export async function addIdc(params) {
 }
 
 export async function fakeSubmitForm(params) {
-  return request('/api/forms', {
+  params.start_guaratee = params.start_guaratee.format('YYYY-MM-DD HH:mm:ss');
+  params.stop_guaratee = params.stop_guaratee.format('YYYY-MM-DD HH:mm:ss');
+  return request('/assets/host/add', {
     method: 'POST',
     body: params,
   });

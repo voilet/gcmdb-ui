@@ -8,6 +8,7 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DescriptionList from '../../components/DescriptionList';
 import styles from './AdvancedProfile.less';
 
+import QRCode from 'qrcode.react';
 
 const { Step } = Steps;
 const { Description } = DescriptionList;
@@ -60,7 +61,9 @@ export default class AdvancedProfile extends Component {
         <Description term="机器位置">{data.cabinet} - {data.server_cabinet_id}</Description>
         <Description term="交换机端口">{data.switch_port}</Description>
         <Description term="状态"><Badge status={statusMap[data.status]} text={status[data.status]} /></Description>
+        <Description ><QRCode value="http://blog.kukafei520.net/" /></Description>
       </DescriptionList>
+
     );
 
     return (
