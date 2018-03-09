@@ -1,4 +1,4 @@
-import { queryBasicProfile, queryAdvancedProfile, queryHostDetails } from '../services/api';
+import { queryBasicProfile, queryAdvancedProfile, queryHostDetails, queryUserInfo } from '../services/api';
 
 export default {
   namespace: 'profile',
@@ -16,7 +16,6 @@ export default {
       hardware_vendor:{title:""},
     },
   },
-
 
   effects: {
     *fetchBasic(_, { call, put }) {
@@ -41,6 +40,22 @@ export default {
         payload: true,
       });
       const response = yield call(queryHostDetails, payload);
+      yield put({
+        type: 'show',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
+    },
+
+    *fetchDetailsInfo({ payload }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const response = yield call(queryUserInfo, payload);
       yield put({
         type: 'show',
         payload: response,

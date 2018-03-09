@@ -14,6 +14,7 @@ import {
   DatePicker,
   Modal,
   message,
+  Switch,
 } from 'antd';
 import UsersTable from '../../components/UsersTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
@@ -67,6 +68,20 @@ export default class TableList extends PureComponent {
     selectedRows: [],
     formValues: {},
   };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        this.props.dispatch({
+          type: 'rule/userCreateAdd',
+          payload: values,
+        });
+      }
+      message.success('添加成功');
+
+    });
+  }
 
   componentDidMount() {
     const {dispatch} = this.props;
@@ -181,14 +196,15 @@ export default class TableList extends PureComponent {
     });
   }
 
+
   renderSimpleForm() {
     const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{md: 8, lg: 24, xl: 48}}>
           <Col md={8} sm={24}>
-            <FormItem label="机房名称">
-              {getFieldDecorator('idc_name')(
+            <FormItem label="用户名">
+              {getFieldDecorator('user_name')(
                 <Input placeholder="请输入" />
               )}
             </FormItem>
@@ -274,22 +290,69 @@ export default class TableList extends PureComponent {
         <Modal
           title="添加用户"
           visible={modalVisible}
-          onOk={this.handleAdd}
+          onOk={this.handleSubmit}
           width={600}
           onCancel={() => this.handleModalVisible()}
         >
-          <FormItem
-            {...formItemLayout}
-            label="用户名"
-          >
-            {getFieldDecorator('nick_name', {
-              rules: [{
-                required: true, message: '请输入用户名',
-              }],
-            })(
-              <Input placeholder="请输入用户名" />
-            )}
-          </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label="用户名"
+        >
+          {getFieldDecorator('user_name', {
+            rules: [{
+              required: true, message: '请输入用户名',
+            }],
+          })(
+            <Input placeholder="请输入用户名" />
+          )}
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label="姓名"
+        >
+          {getFieldDecorator('first_name', {
+            rules: [{
+              required: true, message: '请输入用户姓名',
+            }],
+          })(
+            <Input placeholder="请输入用户姓名" />
+          )}
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label="Email"
+        >
+          {getFieldDecorator('email', {
+            rules: [{
+              required: true, message: '邮箱必填',
+            }],
+          })(
+            <Input placeholder="请输入邮箱" />
+          )}
+        </FormItem>
+
+
+        <FormItem
+          {...formItemLayout}
+          label="团队管理"
+        >
+          {getFieldDecorator('leader', {
+
+          })(
+            <Switch  checkedChildren="是" unCheckedChildren="否" />
+          )}
+        </FormItem>
+
+        <FormItem
+          {...formItemLayout}
+          label="是否启用"
+        >
+          {getFieldDecorator('enable', {
+          })(
+            <Switch checkedChildren="是" unCheckedChildren="否" checked  />
+          )}
+        </FormItem>
+
         </Modal>
       </PageHeaderLayout>
     );

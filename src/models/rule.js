@@ -1,4 +1,5 @@
-import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc, addIdc, queryUserList, querCaseList, querTree, queryProjectList, queryProjectGetId } from '../services/api';
+import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc,
+  addIdc, queryUserList, querCaseList, querTree, queryProjectList, queryProjectGetId, createUser } from '../services/api';
 
 export default {
   namespace: 'rule',
@@ -170,9 +171,32 @@ export default {
         payload: response,
       });
     },
+    // 添加用户
+
+    *userCreateAdd({ payload }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const response = yield call(createUser, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
+    },
   },
 
   reducers: {
+    save(state, action) {
+      return {
+        ...state,
+        data: action.payload,
+      };
+    },
     save(state, action) {
       return {
         ...state,

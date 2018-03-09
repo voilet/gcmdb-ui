@@ -145,7 +145,7 @@ const menuData = [{
   }],
 }, {
   name: '发布日志',
-  icon: 'code',
+  icon: 'rocket',
   path: 'push',
   children: [{
     name: '日志列表',
@@ -166,7 +166,7 @@ const menuData = [{
   }],
 }, {
   name: '工单系统',
-  icon: 'rocket',
+  icon: 'medicine-box',
   path: 'case',
   children: [{
     name: '工单列表',
@@ -214,7 +214,7 @@ const menuData = [{
   }],
 }, {
   name: '用户管理',
-  icon: 'user',
+  icon: 'layout',
   path: 'users',
   children: [{
     name: '用户列表',
@@ -224,6 +224,15 @@ const menuData = [{
     name: '添加用户',
     path: 'add',
     ico: 'user-add',
+  }],
+},{
+  name: '用户中心',
+  icon: 'user',
+  path: 'user',
+  children: [{
+    name: '个人信息',
+    path: 'info',
+    ico: 'idcard',
   }],
 }, {
   name: '使用文档',

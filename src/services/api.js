@@ -99,6 +99,15 @@ export async function removeRule(params) {
     },
   });
 }
+export async function createUser(params) {
+  return request('/users/user/create', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
 
 export async function addRule(params) {
   return request('/api/rule', {
@@ -158,6 +167,10 @@ export async function queryTags() {
 
 export async function queryHostDetails(params) {
   return request(`/assets/host/page/${params}`);
+}
+
+export async function queryUserInfo(params) {
+  return request(`/users/user/info`);
 }
 
 

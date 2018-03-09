@@ -176,6 +176,10 @@ export const getRouterData = (app) => {
     '/users/list': {
       component: dynamicWrapper(app, ['rule'], () => import('../routes/User/UserList')),
     },
+    '/users/add': {
+      component: dynamicWrapper(app, ['rule'], () => import('../routes/User/AddUser')),
+    },
+    // 用户相关
     '/user': {
       component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
     },
@@ -188,9 +192,11 @@ export const getRouterData = (app) => {
     '/user/register-result': {
       component: dynamicWrapper(app, [], () => import('../routes/User/RegisterResult')),
     },
-    // '/user/:id': {
-    //   component: dynamicWrapper(app, [], () => import('../routes/User/SomeComponent')),
-    // },
+    // 用户详情
+    '/user/info': {
+      component: dynamicWrapper(app, ['profile'], () => import('../routes/User/Info')),
+      name: '用户详情',
+    },
   };
   // Get name from ./menu.js or just set it in the router data.
   const menuData = getFlatMenuData(getMenuData());

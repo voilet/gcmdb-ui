@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import {
-  Form, Input, DatePicker, Select, Button, Card, InputNumber, Radio, Icon, Tooltip,
+  Form, Input, DatePicker, Select, Button, Card, InputNumber, Radio, Icon, Tooltip, Switch
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './style.less';
@@ -150,11 +150,7 @@ export default class BasicForms extends PureComponent {
                 {getFieldDecorator('public', {
                   initialValue: '1',
                 })(
-                  <Radio.Group>
-                    <Radio value="1">公开</Radio>
-                    <Radio value="2">部分公开</Radio>
-                    <Radio value="3">不公开</Radio>
-                  </Radio.Group>
+                  <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked />
                 )}
                 <FormItem style={{ marginBottom: 0 }}>
                   {getFieldDecorator('publicUsers')(
