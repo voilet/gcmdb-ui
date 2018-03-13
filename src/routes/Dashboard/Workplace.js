@@ -40,13 +40,8 @@ const getParentKey = (key, tree, id) => {
   return parentKey;
 };
 
-@connect(({ project, activities, chart, rule, loading }) => ({
-  project,
-  activities,
-  chart,
+@connect(({  rule }) => ({
   rule,
-  projectLoading: loading.effects['project/fetchNotice'],
-  activitiesLoading: loading.effects['activities/fetchList'],
 }))
 
 @Form.create()
@@ -60,22 +55,13 @@ export default class Workplace extends PureComponent {
     pro_id: "",
   }
   handleClick = (e) => {
-    console.log('click ', e);
     this.setState({
       current: e.key,
     });
   }
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'project/fetchNotice',
-    });
-    dispatch({
-      type: 'activities/fetchList',
-    });
-    dispatch({
-      type: 'chart/fetch',
-    });
+
     dispatch({
       type: 'rule/assetsList',
     });
@@ -101,8 +87,6 @@ export default class Workplace extends PureComponent {
      const { dispatch } = this.props;
      const treeLen = ((info.node.props.pos).split("-"));
      if (treeLen.length === 4){
-       console.log("is ok");
-       console.log(info.node.props.id);
        const pro_id = info.node.props.id
        this.state.pro_id = pro_id;
        dispatch({

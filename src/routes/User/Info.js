@@ -36,19 +36,20 @@ export default class AdvancedProfile extends Component {
   render() {
     const { stepDirection } = this.state;
     const { profile: { data } } = this.props;
-    console.log(this.props)
     const action = (
       <div>
         <ButtonGroup>
-          <a href="/#/assets/host/list/"><Button>资产列表</Button></a>
+          <a href={"/#/cuser/modify/" + data.ID}><Button>修改信息</Button></a>
         </ButtonGroup>
       </div>
     );
 
     const description = (
-      <DescriptionList className={styles.headerList} size="small" col="3">
+      <DescriptionList className={styles.headerList} size="small" col="4">
+        <Description term="用户名">{data.username}</Description>
+        <Description term="姓 名">{data.first_name}</Description>
         <Description term="邮箱">{data.email}</Description>
-
+        <Description term="leader">{data.leader}</Description>
         <Description ><QRCode value="http://blog.kukafei520.net/" /></Description>
       </DescriptionList>
 

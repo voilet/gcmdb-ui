@@ -4,13 +4,15 @@ const menuData = [{
   name: '仪表盘',
   icon: 'dashboard',
   path: 'dashboard',
-  children: [{
-    name: '分析页',
-    path: 'analysis',
-  }, {
-    name: '监控页',
-    path: 'monitor',
-  }, {
+  children: [
+  //   {
+  //   name: '分析页',
+  //   path: 'analysis',
+  // }, {
+  //   name: '监控页',
+  //   path: 'monitor',
+  // }, 
+  {
     name: '工作台',
     path: 'workplace',
     // hideInMenu: true,
@@ -228,7 +230,7 @@ const menuData = [{
 },{
   name: '用户中心',
   icon: 'user',
-  path: 'user',
+  path: 'cuser',
   children: [{
     name: '个人信息',
     path: 'info',
@@ -237,7 +239,7 @@ const menuData = [{
 }, {
   name: '使用文档',
   icon: 'book',
-  path: 'http://pro.ant.design/docs/getting-started',
+  path: 'http://blog.kukafei520.net',
   target: '_blank',
 }];
 
