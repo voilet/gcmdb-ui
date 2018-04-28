@@ -1,18 +1,28 @@
-import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc,
-  addIdc, queryUserList, querCaseList, querTree, queryProjectList, queryProjectGetId, createUser } from '../services/api';
+// import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc,
+//   addIdc, queryUserList, querCaseList, querTree, queryProjectList, queryProjectGetId, createUser,addProject } from '../services/api';
+
+import {queryProjectList,querProjectGroup,queryRule} from '../services/api'
 
 export default {
   namespace: 'rule',
 
   state: {
+    //数据
     data: {
       list: [],
       pagination: {},
     },
-    tree: {
-      data: [],
+    //树节点数据
+    treedata: {
+      data: []
     },
+    //查询产品线
+    prolinedata: [],
+    
+    //查询项目组
+    progroupdata: []
   },
+
 
   effects: {
     *fetch({ payload }, { call, put }) {
@@ -22,130 +32,10 @@ export default {
         payload: response,
       });
     },
-    // 获取项目列表
-    *getProjectList({ payload }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      const response = yield call(queryProjectList, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-    },
-    // 查询项目列表
-    *search({ payload }, { call, put }) {
-      const response = yield call(queryProjectList, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
 
-    // 资产列表
-    *assetsList({ payload }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      const response = yield call(querHostList, payload);
-      // const response = yield call(queryRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-    },
+    
 
-    // 根据项目id查资产列表
-    *projectGetIdQuery({ payload }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      const response = yield call(queryProjectGetId, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-    },
 
-    // 机房列表
-    *idcList({ payload }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      const response = yield call(querIdc, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-    },
-    // 添加机房
-    *idcCreate({ payload }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      const response = yield call(addIdc, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-    },
-    // 添加工单
-    *caseList({ payload }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      const response = yield call(querCaseList, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-    },
-    // 查询树
-    *antdTree({ payload }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      const response = yield call(querTree, payload);
-      yield put({
-        type: 'saveTree',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-    },
 
     *add({ payload, callback }, { call, put }) {
       const response = yield call(addRule, payload);
@@ -155,6 +45,7 @@ export default {
       });
       if (callback) callback();
     },
+
     *remove({ payload, callback }, { call, put }) {
       const response = yield call(removeRule, payload);
       yield put({
@@ -163,50 +54,36 @@ export default {
       });
       if (callback) callback();
     },
-    // 查询用户列表
-    *userList({ payload }, { call, put }) {
-      const response = yield call(queryUserList, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
-    // 添加用户
-
-    *userCreateAdd({ payload }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      const response = yield call(createUser, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-    },
   },
 
   reducers: {
-    save(state, action) {
+    projectSave(state, action) {
       return {
         ...state,
         data: action.payload,
       };
     },
-    save(state, action) {
+
+    progroupSave(state, action) {
       return {
         ...state,
         data: action.payload,
+        progroupdata: action.payload
       };
     },
+    
+    projectlineSave(state, action) {
+      return {
+        ...state,
+        data: action.payload,
+        prolinedata: action.payload
+      };
+    },
+
     saveTree(state, action) {
       return {
         ...state,
-        tree: action.payload,
+        project: action.payload,
       };
     },
   },

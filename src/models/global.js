@@ -5,10 +5,7 @@ export default {
 
   state: {
     collapsed: false,
-    notices: {
-      data: [],
-    },
-    // notices: [],
+    notices: [],
   },
 
   effects: {

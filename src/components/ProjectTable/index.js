@@ -38,40 +38,68 @@ class StandardTable extends PureComponent {
     this.handleRowSelectChange([], []);
   }
 
+
+
+
   render() {
+    
+
     const { selectedRowKeys, totalCallNo } = this.state;
-    const { data: { data, pagination }, loading } = this.props;
+    const { prodata, loading } = this.props;
+
+    //debugger
+
     const columns = [
       {
-        title: '项目名',
-        dataIndex: 'title',
+        title: '项目',
+        dataIndex: 'pro_title',
+        key:'pro_title'
       },
       {
-        title: '别名',
-        dataIndex: 'alias',
+        title: '项目别名',
+        dataIndex: 'pro_alias',
+        key:'pro_alias'
       },
       {
-        title: '项目说明',
-        dataIndex: 'remarks',
+        title: '项目组',
+        dataIndex: 'group_title',
+        key:'group_title'
+      },
+      {
+        title: '产品线',
+        dataIndex: 'line_title',
+        key:'line_title'
+      },
+      {
+        title: '业务说明',
+        dataIndex: 'pro_remarks',
+        key:'pro_remarks'
+      },
+      {
+        title: '仓库路径',
+        dataIndex: 'pro_code_url',
+        key:'pro_code_url'
       },
       {
         title: '排序',
-        dataIndex: 'order',
+        dataIndex: 'pro_order',
+        key:'pro_order'
       },
       {
         title: '状态',
-        dataIndex: 'enable',
+        dataIndex: 'pro_enable',
+        key: 'pro_enable',
       },
 
       {
         title: '操作',
         dataIndex: 'ID',
-
+        key: 'ID',
         render: (val) => (
           <div>
-            <a href= {"/#/assets/host/modify/" + val} > <Icon type="edit" /></a>
+            <a href= {"/#/assets/host/modify/" + val} > 编辑 <Icon type="edit" /></a>
             <Divider type="vertical" />
-            <a href= {"/#/assets/host/delete/" + val} ><Icon type="delete" /></a>
+            <a href= {"/#/assets/host/delete/" + val} > 删除 <Icon type="delete" /></a>
           </div>
         ),
       },
@@ -80,7 +108,7 @@ class StandardTable extends PureComponent {
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
-      ...pagination,
+      ...prodata.pagination,
     };
 
     const rowSelection = {
@@ -90,7 +118,7 @@ class StandardTable extends PureComponent {
         disabled: record.disabled,
       }),
     };
-
+   // console.log('loading', loading)
     return (
       <div className={styles.standardTable}>
         <div className={styles.tableAlert}>
@@ -109,7 +137,7 @@ class StandardTable extends PureComponent {
           loading={loading}
           rowKey={record => record.ID}
           rowSelection={rowSelection}
-          dataSource={data}
+          dataSource={prodata.data}
           columns={columns}
           pagination={paginationProps}
           onChange={this.handleTableChange}

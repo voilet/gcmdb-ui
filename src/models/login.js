@@ -4,6 +4,7 @@ import { setAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
 import { logoutActive } from '../services/user';
 
+
 export default {
   namespace: 'login',
 
@@ -13,21 +14,24 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
+
       const response = yield call(fakeAccountLogin, payload);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       });
+      console.log()
+      // Login successfully
       if (response.code === '200') {
         reloadAuthorized();
         yield put(routerRedux.push('/'));
       }
     },
 
-    *logout(_, { call, put, select }) {
+    *logout(_, { call,put, select }) {
       try {
-        yield call(logoutActive);
         // get location pathname
+        yield call(logoutActive);
         const urlParams = new URL(window.location.href);
         const pathname = yield select(state => state.routing.location.pathname);
         // add the parameters in the url

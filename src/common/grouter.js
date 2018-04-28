@@ -73,119 +73,115 @@ export const getRouterData = (app) => {
     '/': {
       component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
     },
+  
+    // // 项目列表
+    //   '/project/listpro': {
+    //   component: dynamicWrapper(app, ['rule'], () => import('../routes/gProject/ListProject')),
+    // },
+
+    //机房列表
+    '/resource/idc/idclist': {
+      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/idc/Listidc')),
+    },
+
+    //运营商列表
+    '/resource/idc/provider': {
+      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/provider/ProviderList')),
+    },
+
+    //ip资源列表
+     '/resource/idc/ipresource': {
+      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/ipresource/ipResourceList')),
+    },
+
+
+    //  //机柜列表
+    //  '/resource/idc/cabinet': {
+    //   component: dynamicWrapper(app, ['gidc'], () => import('../routes/gresource/gIdc/cabinet/CabinetList')),
+    // },
+
+    // 产品线列表
+    // '/project/listline': {
+    //   component: dynamicWrapper(app, ['gproline'], () => import('../routes/gProject/ListProjectline')),
+    // },
     // '/dashboard/analysis': {
     //   component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
     // },
     // '/dashboard/monitor': {
     //   component: dynamicWrapper(app, ['monitor'], () => import('../routes/Dashboard/Monitor')),
     // },
-    '/dashboard/workplace': {
-      component: dynamicWrapper(app, ['project'], () => import('../routes/Dashboard/Workplace')),
+    //'/dashboard/workplace': {
+  //    component: dynamicWrapper(app, ['project', 'activities', 'chart'], () => import('../routes/Dashboard/Workplace')),
       // hideInBreadcrumb: true,
       // name: '工作台',
       // authority: 'admin',
-    },
-    '/assets/host/list': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/Assets/AssetsList')),
-    },
-    // 资产详情页
-    '/assets/host/details/:id': {
-      component: dynamicWrapper(app, ['profile'], () => import('../routes/Assets/AssetsDetails')),
-      name: '资产详情',
-      // path: ":id",
-    },
-    '/assets/host/modify/:id': {
-      component: dynamicWrapper(app, ['profile'], () => import('../routes/Assets/AssetsModify')),
-      name: '修改资产',
-      // path: ":id",
-    },
-
-    // 机房列表
-    '/idc/list': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/Idc/ListIdc')),
-    },
-    // 添加机房
-    '/idc/add': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/Idc/CreateIdc')),
-    },
-    // 添加主机
-    '/assets/host/add': {
-      component: dynamicWrapper(app, ['form'], () => import('../routes/Assets/AssetsAdd')),
-    },
-    // 产品管理
-    '/project/group': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/Idc/ListIdc')),
-    },
-    // 产品管理
-    '/project/group/list': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/Idc/ListIdc')),
-    },
-    // 添加项目
-    '/project/pro/add': {
-      component: dynamicWrapper(app, ['form'], () => import('../routes/Project/CreateProject')),
-    },
-    // 项目列表
-    '/project/pro/list': {
-      component: dynamicWrapper(app, ['form'], () => import('../routes/Project/ListProject')),
-    },
-
-    // 工单系统
-    '/case/list': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/WorkCase/ListCase')),
-    },
-    '/case/create': {
-      component: dynamicWrapper(app, ['list'], () => import('../routes/WorkCase/CreateCase')),
-    },
-    '/list/card-list': {
-      component: dynamicWrapper(app, ['list'], () => import('../routes/List/CardList')),
-    },
-    '/list/search': {
-      component: dynamicWrapper(app, ['list'], () => import('../routes/List/List')),
-    },
-    '/list/search/projects': {
-      component: dynamicWrapper(app, ['list'], () => import('../routes/List/Projects')),
-    },
-    '/list/search/applications': {
-      component: dynamicWrapper(app, ['list'], () => import('../routes/List/Applications')),
-    },
-    '/list/search/articles': {
-      component: dynamicWrapper(app, ['list'], () => import('../routes/List/Articles')),
-    },
-    '/profile/basic': {
-      component: dynamicWrapper(app, ['profile'], () => import('../routes/Profile/BasicProfile')),
-    },
-
-    '/result/success': {
-      component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
-    },
-    '/result/fail': {
-      component: dynamicWrapper(app, [], () => import('../routes/Result/Error')),
-    },
-    '/exception/403': {
-      component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
-    },
-    '/exception/404': {
-      component: dynamicWrapper(app, [], () => import('../routes/Exception/404')),
-    },
-    '/exception/500': {
-      component: dynamicWrapper(app, [], () => import('../routes/Exception/500')),
-    },
-    '/exception/trigger': {
-      component: dynamicWrapper(app, ['error'], () => import('../routes/Exception/triggerException')),
-    },
-    '/users/list': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/User/UserList')),
-    },
-    '/users/add': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/User/AddUser')),
-    },
-
-    // 用户详情
-    '/cuser/info': {
-      component: dynamicWrapper(app, ['profile'], () => import('../routes/User/Info')),
-    },
-
-    // 用户相关
+  //  },
+    // '/form/basic-form': {
+    //   component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/BasicForm')),
+    // },
+    // '/form/step-form': {
+    //   component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/StepForm')),
+    // },
+    // '/form/step-form/info': {
+    //   name: '分步表单（填写转账信息）',
+    //   component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/StepForm/Step1')),
+    // },
+    // '/form/step-form/confirm': {
+    //   name: '分步表单（确认转账信息）',
+    //   component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/StepForm/Step2')),
+    // },
+    // '/form/step-form/result': {
+    //   name: '分步表单（完成）',
+    //   component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/StepForm/Step3')),
+    // },
+    // '/form/advanced-form': {
+    //   component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/AdvancedForm')),
+    // },
+    // '/list/table-list': {
+    //   component: dynamicWrapper(app, ['rule'], () => import('../routes/List/TableList')),
+    // },
+    // '/list/basic-list': {
+    //   component: dynamicWrapper(app, ['list'], () => import('../routes/List/BasicList')),
+    // },
+    // '/list/card-list': {
+    //   component: dynamicWrapper(app, ['list'], () => import('../routes/List/CardList')),
+    // },
+    // '/list/search': {
+    //   component: dynamicWrapper(app, ['list'], () => import('../routes/List/List')),
+    // },
+    // '/list/search/projects': {
+    //   component: dynamicWrapper(app, ['list'], () => import('../routes/List/Projects')),
+    // },
+    // '/list/search/applications': {
+    //   component: dynamicWrapper(app, ['list'], () => import('../routes/List/Applications')),
+    // },
+    // '/list/search/articles': {
+    //   component: dynamicWrapper(app, ['list'], () => import('../routes/List/Articles')),
+    // },
+    // '/profile/basic': {
+    //   component: dynamicWrapper(app, ['profile'], () => import('../routes/Profile/BasicProfile')),
+    // },
+    // '/profile/advanced': {
+    //   component: dynamicWrapper(app, ['profile'], () => import('../routes/Profile/AdvancedProfile')),
+    // },
+    // '/result/success': {
+    //   component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
+    // },
+    // '/result/fail': {
+    //   component: dynamicWrapper(app, [], () => import('../routes/Result/Error')),
+    // },
+    // '/exception/403': {
+    //   component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
+    // },
+    // '/exception/404': {
+    //   component: dynamicWrapper(app, [], () => import('../routes/Exception/404')),
+    // },
+    // '/exception/500': {
+    //   component: dynamicWrapper(app, [], () => import('../routes/Exception/500')),
+    // },
+    // '/exception/trigger': {
+    //   component: dynamicWrapper(app, ['error'], () => import('../routes/Exception/triggerException')),
+    // },
     '/user': {
       component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
     },
@@ -198,7 +194,9 @@ export const getRouterData = (app) => {
     '/user/register-result': {
       component: dynamicWrapper(app, [], () => import('../routes/User/RegisterResult')),
     },
-
+    // '/user/:id': {
+    //   component: dynamicWrapper(app, [], () => import('../routes/User/SomeComponent')),
+    // },
   };
   // Get name from ./menu.js or just set it in the router data.
   const menuData = getFlatMenuData(getMenuData());
@@ -211,7 +209,7 @@ export const getRouterData = (app) => {
     // Regular match item name
     // eg.  router /user/:id === /user/chen
     const pathRegexp = pathToRegexp(path);
-    const menuKey = Object.keys(menuData).find(key => pathRegexp.test(`/${key}`));
+    const menuKey = Object.keys(menuData).find(key => pathRegexp.test(`${key}`));
     let menuItem = {};
     // If menuKey is not empty
     if (menuKey) {
@@ -225,6 +223,7 @@ export const getRouterData = (app) => {
       ...router,
       name: router.name || menuItem.name,
       authority: router.authority || menuItem.authority,
+      hideInBreadcrumb: router.hideInBreadcrumb || menuItem.hideInBreadcrumb,
     };
     routerData[path] = router;
   });

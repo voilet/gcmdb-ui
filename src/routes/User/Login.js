@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import { Checkbox, Alert, Icon } from 'antd';
-import Login from '../../components/Login';
+import Login from 'components/Login';
 import styles from './Login.less';
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
@@ -63,6 +63,7 @@ export default class LoginPage extends Component {
               !login.submitting &&
               this.renderMessage(login.msg)
             }
+            
             <UserName name="user_name" placeholder="admin/songxs" />
             <Password name="password" placeholder="123456" />
           </Tab>

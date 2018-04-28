@@ -1,72 +1,93 @@
 import React, { PureComponent } from 'react';
+import moment from 'moment';
 import { connect } from 'dva';
-import { Row, Col, Card, Avatar, Tree, Input, Menu, Icon, Form } from 'antd';
+import { Link } from 'dva/router';
+import { Row, Col, Card, List, Avatar } from 'antd';
 
+import { Radar } from 'components/Charts';
+import EditableLinkGroup from 'components/EditableLinkGroup';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import WorkplaceTable from '../../components/WorkplaceTable';
 
 import styles from './Workplace.less';
 
-const { TreeNode } = Tree;
-const { Search } = Input;
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+const links = [
+  {
+    title: '操作一',
+    href: '',
+  },
+  {
+    title: '操作二',
+    href: '',
+  },
+  {
+    title: '操作三',
+    href: '',
+  },
+  {
+    title: '操作四',
+    href: '',
+  },
+  {
+    title: '操作五',
+    href: '',
+  },
+  {
+    title: '操作六',
+    href: '',
+  },
+];
 
-const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
-const dataList = [];
-const generateList = (data) => {
-  for (let i = 0; i < data.length; i += 1) {
-    const node = data[i];
-    const { key } = node;
-    dataList.push({ key, title: node.title });
-    if (node.children) {
-      generateList(node.children, node.key);
-    }
-  }
-};
+const members = [
+  {
+    id: 'members-1',
+    title: '科学搬砖组',
+    logo: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
+    link: '',
+  },
+  {
+    id: 'members-2',
+    title: '程序员日常',
+    logo: 'https://gw.alipayobjects.com/zos/rmsportal/cnrhVkzwxjPwAaCfPbdc.png',
+    link: '',
+  },
+  {
+    id: 'members-3',
+    title: '设计天团',
+    logo: 'https://gw.alipayobjects.com/zos/rmsportal/gaOngJwsRYRaVAuXXcmB.png',
+    link: '',
+  },
+  {
+    id: 'members-4',
+    title: '中二少女团',
+    logo: 'https://gw.alipayobjects.com/zos/rmsportal/ubnKSIfAJTxIgXOKlciN.png',
+    link: '',
+  },
+  {
+    id: 'members-5',
+    title: '骗你学计算机',
+    logo: 'https://gw.alipayobjects.com/zos/rmsportal/WhxKECPNujWoWEFNdnJE.png',
+    link: '',
+  },
+];
 
-const getParentKey = (key, tree, id) => {
-  let parentKey;
-  for (let i = 0; i < tree.length; i += 1) {
-    const node = tree[i];
-    if (node.children) {
-      if (node.children.some(item => item.key === key)) {
-        parentKey = node.key;
-      } else if (getParentKey(key, node.children)) {
-        parentKey = getParentKey(key, node.children);
-      }
-    }
-  }
-  return parentKey;
-};
-
-@connect(({  rule }) => ({
-  rule,
+@connect(({ project, activities, chart, loading }) => ({
+  project,
+  activities,
+  chart,
+  projectLoading: loading.effects['project/fetchNotice'],
+  activitiesLoading: loading.effects['activities/fetchList'],
 }))
-
-@Form.create()
 export default class Workplace extends PureComponent {
-  state = {
-    expandedKeys: [],
-    searchValue: '',
-    autoExpandParent: true,
-    formValues: {},
-    current: 'mail',
-    pro_id: "",
-  }
-  handleClick = (e) => {
-    this.setState({
-      current: e.key,
-    });
-  }
   componentDidMount() {
     const { dispatch } = this.props;
-
     dispatch({
-      type: 'rule/assetsList',
+      type: 'project/fetchNotice',
     });
     dispatch({
-      type: 'rule/antdTree',
+      type: 'activities/fetchList',
+    });
+    dispatch({
+      type: 'chart/fetch',
     });
   }
 
@@ -76,106 +97,56 @@ export default class Workplace extends PureComponent {
       type: 'chart/clear',
     });
   }
-  onExpand = (expandedKeys) => {
-    this.setState({
-      expandedKeys,
-      autoExpandParent: false,
-    });
-  };
 
-  onSelect = (selectedKeys, info) => {
-     const { dispatch } = this.props;
-     const treeLen = ((info.node.props.pos).split("-"));
-     if (treeLen.length === 4){
-       const pro_id = info.node.props.id
-       this.state.pro_id = pro_id;
-       dispatch({
-         type: 'rule/projectGetIdQuery',
-         payload: {id:pro_id},
-       });
-     }
-   }
-
-
-  onChange = (e) => {
-    const { rule: { tree } } = this.props;
-    const { target: { value } } = e;
-    generateList(tree.data);
-    const expandedKeys = dataList.map((item) => {
-      if (item.title.indexOf(value) > -1) {
-        return getParentKey(item.key, tree.data);
-      }
-      return null;
-    }).filter((item, i, self) => item && self.indexOf(item) === i);
-    this.setState({
-      expandedKeys,
-      searchValue: value,
-      autoExpandParent: true,
-    });
-  }
-
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
-      id:this.state.pro_id,
-      ...formValues,
-      ...filters,
-    };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
-    console.log(this.props);
-    console.log(this.state);
-    dispatch({
-      type: 'rule/projectGetIdQuery',
-      payload: params,
+  renderActivities() {
+    const {
+      activities: { list },
+    } = this.props;
+    return list.map((item) => {
+      const events = item.template.split(/@\{([^{}]*)\}/gi).map((key) => {
+        if (item[key]) {
+          return <a href={item[key].link} key={item[key].name}>{item[key].name}</a>;
+        }
+        return key;
+      });
+      return (
+        <List.Item key={item.id}>
+          <List.Item.Meta
+            avatar={<Avatar src={item.user.avatar} />}
+            title={
+              <span>
+                <a className={styles.username}>{item.user.name}</a>
+                &nbsp;
+                <span className={styles.event}>{events}</span>
+              </span>
+            }
+            description={
+              <span className={styles.datetime} title={item.updatedAt}>
+                {moment(item.updatedAt).fromNow()}
+              </span>
+            }
+          />
+        </List.Item>
+      );
     });
   }
 
   render() {
-    const { searchValue, expandedKeys, autoExpandParent } = this.state;
-    const { rule: { tree } } = this.props;
+    const {
+      project: { notice },
+      projectLoading,
+      activitiesLoading,
+      chart: { radarData },
+    } = this.props;
 
-    const loop = data => data.map((item) => {
-      const index = item.title.indexOf(searchValue);
-      const beforeStr = item.title.substr(0, index);
-      const afterStr = item.title.substr(index + searchValue.length);
-      const title = index > -1 ? (
-        <span>
-          {beforeStr}
-          <span style={{ color: '#f50' }}>{searchValue}</span>
-          {afterStr}
-        </span>
-      ) : <span>{item.title}</span>;
-      if (item.children) {
-        return (
-          <TreeNode key={item.key} title={title}>
-            {loop(item.children)}
-          </TreeNode>
-        );
-      }
-      return <TreeNode key={item.key} title={title} id={item.id} data-key={item.id} />;
-    });
-
-    const { rule: { loading: ruleLoading, data } } = this.props;
     const pageHeaderContent = (
       <div className={styles.pageHeaderContent}>
         <div className={styles.avatar}>
           <Avatar size="large" src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png" />
         </div>
         <div className={styles.content}>
-          <div className={styles.contentTitle}>友情提示：谨慎操作，规避风险</div>
-          <div>如有任何系统问题，请随时联系devops </div>
+          <div className={styles.contentTitle}>早安，曲丽丽，祝你开心每一天！</div>
+          <div>交互专家 | 蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED</div>
         </div>
       </div>
     );
@@ -203,59 +174,99 @@ export default class Workplace extends PureComponent {
         extraContent={extraContent}
       >
         <Row gutter={24}>
-          <Col xl={6} lg={24} md={24} sm={24} xs={24}>
+          <Col xl={16} lg={24} md={24} sm={24} xs={24}>
             <Card
               className={styles.projectList}
               style={{ marginBottom: 24 }}
-              title="产品线"
+              title="进行中的项目"
+              bordered={false}
+              extra={<Link to="/">全部项目</Link>}
+              loading={projectLoading}
+              bodyStyle={{ padding: 0 }}
+            >
+              {
+                notice.map(item => (
+                  <Card.Grid className={styles.projectGrid} key={item.id}>
+                    <Card bodyStyle={{ padding: 0 }} bordered={false}>
+                      <Card.Meta
+                        title={(
+                          <div className={styles.cardTitle}>
+                            <Avatar size="small" src={item.logo} />
+                            <Link to={item.href}>{item.title}</Link>
+                          </div>
+                        )}
+                        description={item.description}
+                      />
+                      <div className={styles.projectItemContent}>
+                        <Link to={item.memberLink}>{item.member || ''}</Link>
+                        {item.updatedAt && (
+                          <span className={styles.datetime} title={item.updatedAt}>
+                            {moment(item.updatedAt).fromNow()}
+                          </span>
+                        )}
+                      </div>
+                    </Card>
+                  </Card.Grid>
+                ))
+              }
+            </Card>
+            <Card
+              bodyStyle={{ padding: 0 }}
+              bordered={false}
+              className={styles.activeCard}
+              title="动态"
+              loading={activitiesLoading}
+            >
+              <List loading={activitiesLoading} size="large">
+                <div className={styles.activitiesList}>
+                  {this.renderActivities()}
+                </div>
+              </List>
+            </Card>
+          </Col>
+          <Col xl={8} lg={24} md={24} sm={24} xs={24}>
+            <Card
+              style={{ marginBottom: 24 }}
+              title="快速开始 / 便捷导航"
               bordered={false}
               bodyStyle={{ padding: 0 }}
             >
-              <div style={{ margin: 10 }}>
-                <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange} />
-                <Tree
-                  style={{ margin: 10 }}
-                  onExpand={this.onExpand}
-                  onSelect={this.onSelect}
-                  expandedKeys={expandedKeys}
-                  autoExpandParent={autoExpandParent}
-                >
-                  {loop(tree.data)}
-                </Tree>
+              <EditableLinkGroup
+                onAdd={() => {}}
+                links={links}
+                linkElement={Link}
+              />
+            </Card>
+            <Card
+              style={{ marginBottom: 24 }}
+              bordered={false}
+              title="XX 指数"
+              loading={radarData.length === 0}
+            >
+              <div className={styles.chart}>
+                <Radar hasLegend height={343} data={radarData} />
               </div>
             </Card>
-          </Col>
-          <Col xl={18} lg={24} md={24} sm={24} xs={24}>
-            <Card>
-              <Menu
-                  onClick={this.handleClick}
-                  selectedKeys={[this.state.current]}
-                  mode="horizontal"
-                >
-                  <Menu.Item key="mail"><Icon type="mail" />主机</Menu.Item>
-                  <Menu.Item key="app" disabled><Icon type="appstore" />自动部署</Menu.Item>
-                  <Menu.Item key="monitor" disabled><Icon type="appstore" />监控</Menu.Item>
-                  <SubMenu title={<span><Icon type="setting" />代码发布</span>}>
-                    <MenuItemGroup title="网站">
-                      <Menu.Item key="setting:1">web</Menu.Item>
-                      <Menu.Item key="setting:2">api</Menu.Item>
-                    </MenuItemGroup>
-                    <MenuItemGroup title="数据中心">
-                      <Menu.Item key="setting:3">date_node</Menu.Item>
-                      <Menu.Item key="setting:4">storm</Menu.Item>
-                    </MenuItemGroup>
-                  </SubMenu>
-                  <Menu.Item key="alipay"><a href="https://ant.design" target="_blank" rel="noopener noreferrer">执行命令</a>  </Menu.Item>
-                  <Menu.Item key="doc" disabled><Icon type="appstore" />项目文档</Menu.Item>
-                </Menu>
-                <WorkplaceTable
-                  loading={ruleLoading}
-                  data={data}
-                  onSelectRow={this.handleSelectRows}
-                  onChange={this.handleStandardTableChange}
-                />
+            <Card
+              bodyStyle={{ paddingTop: 12, paddingBottom: 12 }}
+              bordered={false}
+              title="团队"
+            >
+              <div className={styles.members}>
+                <Row gutter={48}>
+                  {
+                    members.map(item => (
+                      <Col span={12} key={`members-item-${item.id}`}>
+                        <Link to={item.link}>
+                          <Avatar src={item.logo} size="small" />
+                          <span className={styles.member}>{item.title}</span>
+                        </Link>
+                      </Col>
+                    ))
+                  }
+                </Row>
+              </div>
             </Card>
-
           </Col>
         </Row>
       </PageHeaderLayout>

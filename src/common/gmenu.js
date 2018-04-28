@@ -1,151 +1,68 @@
 import { isUrl } from '../utils/utils';
 
 const menuData = [{
-  name: '仪表盘',
+  name: 'dashboard',
   icon: 'dashboard',
   path: 'dashboard',
-  children: [
-  //   {
-  //   name: '分析页',
-  //   path: 'analysis',
-  // }, {
-  //   name: '监控页',
-  //   path: 'monitor',
-  // }, 
-  {
+  children: [{
+    name: '分析页',
+    path: 'analysis',
+  }, {
+    name: '监控页',
+    path: 'monitor',
+  }, {
     name: '工作台',
     path: 'workplace',
+    // hideInBreadcrumb: true,
     // hideInMenu: true,
   }],
 }, {
-  name: '资产管理',
-  icon: 'form',
-  path: 'assets',
-  children: [
-    {
-      name: '设备管理',
-      path: 'host',
-      children: [
-        {
-          name: '设备列表',
-          path: 'list',
-          icon: 'hdd',
-        },
-        {
-          name: '添加设备',
-          path: 'add',
-          icon: "plus-circle-o",
-        },
-      ],
-    },
-    {
-      name: '硬件厂商',
-      path: 'hadiry',
-      children: [
-        {
-          name: '设备列表',
-          path: 'list',
-          icon: 'hdd',
-        },
-        {
-          name: '添加设备',
-          path: 'add',
-          icon: "plus-circle-o",
-        },
-      ],
-    },
-    {
-      name: '硬件类型',
-      path: 'hadirytype',
-      children: [
-        {
-          name: '设备列表',
-          path: 'list',
-          icon: 'hdd',
-        },
-        {
-          name: '添加设备',
-          path: 'add',
-          icon: "plus-circle-o",
-        },
-      ],
-    },
-    {
-      name: '系统类型',
-      path: 'os',
-      children: [
-        {
-          name: '设备列表',
-          path: 'list',
-          icon: 'hdd',
-        },
-        {
-          name: '添加设备',
-          path: 'add',
-          icon: "plus-circle-o",
-        },
-      ],
-    },
-    {
-      name: '设备环境',
-      path: 'env',
-      children: [
-        {
-          name: '设备列表',
-          path: 'list',
-          icon: 'hdd',
-        },
-        {
-          name: '添加设备',
-          path: 'add',
-          icon: "plus-circle-o",
-        },
-      ],
-    },
-  ],
-}, {
-  name: '机房管理',
+  name: '资源管理',
   icon: 'table',
-  path: 'idc',
+  path: 'resource',
   children: [{
-    name: '机房列表',
-    path: 'list',
-  }, {
-    name: '添加机房',
-    path: 'add',
+    name: '机房管理',
+    icon: 'table',
+    path: 'idc',
+    children: [
+      {
+        name: '机房列表',
+        path: 'idclist',
+      },{
+        name: '运营商管理',
+        path: 'provider',
+      },{
+        name: 'IP资源管理',
+        path: 'ipresource',
+      },{
+        name: '机柜管理',
+        path: 'cabinet',
+      }
+    ]
   }],
 }, {
-  name: '产品管理',
+  name: '项目管理',
   icon: 'profile',
   path: 'project',
-  children: [{
-    name: '项目组管理',
-    path: 'group',
-    children:[
+  children: [
+    {
+        name: '产品线列表',
+        path: 'listline',
+    },
     {
       name: '项目组列表',
-      path: 'list',
-    }, {
-      name: '添加项目组',
-      path: 'advanced',
-    }],
-  }, {
-    name: '项目管理',
-    path: 'pro',
-    children:[
+      path: 'listgroup',
+    },
     {
       name: '项目列表',
-      path: 'list',
-    }, {
-      name: '添加项目',
-      path: 'add',
+      path: 'listpro',
     }, {
       name: '发布信息',
       path: 'carving',
       hideInMenu: true,
-    }],
-  }],
-}, {
+    },
+  ],
+},{
   name: '发布日志',
   icon: 'rocket',
   path: 'push',
@@ -215,35 +132,33 @@ const menuData = [{
     path: '403',
   }],
 }, {
-  name: '用户管理',
-  icon: 'layout',
-  path: 'users',
-  children: [{
-    name: '用户列表',
-    path: 'list',
-    ico: 'idcard',
-  }, {
-    name: '添加用户',
-    path: 'add',
-    ico: 'user-add',
-  }],
+  name: '回收站',
+  icon: 'profile',
+  path: 'recycle',
+  children: [
+    {
+        name: '回收列表',
+        path: 'recyclelist',
+    }
+  ],
 },{
-  name: '用户中心',
+  name: '账户',
   icon: 'user',
-  path: 'cuser',
+  path: 'user',
+  authority: 'guest',
   children: [{
-    name: '个人信息',
-    path: 'info',
-    ico: 'idcard',
+    name: '登录',
+    path: 'login',
+  }, {
+    name: '注册',
+    path: 'register',
+  }, {
+    name: '注册结果',
+    path: 'register-result',
   }],
-}, {
-  name: '使用文档',
-  icon: 'book',
-  path: 'http://blog.kukafei520.net',
-  target: '_blank',
 }];
 
-function formatter(data, parentPath = '', parentAuthority) {
+function formatter(data, parentPath = '/', parentAuthority) {
   return data.map((item) => {
     let { path } = item;
     if (!isUrl(path)) {

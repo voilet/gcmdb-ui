@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Link, Redirect, Switch, Route } from 'dva/router';
 import DocumentTitle from 'react-document-title';
 import { Icon } from 'antd';
@@ -21,15 +21,15 @@ const links = [{
   href: '',
 }];
 
-const copyright = <div>Copyright <Icon type="copyright" /> 2018 gcmdb运维自动化</div>;
+const copyright = <Fragment>Copyright <Icon type="copyright" /> 2018 尚德机构</Fragment>;
 
 class UserLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = 'gcmdb';
+    let title = 'Ant Design Pro';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - CMDB 运维自动化`;
+      title = `${routerData[pathname].name} - Ant Design Pro`;
     }
     return title;
   }
@@ -43,10 +43,10 @@ class UserLayout extends React.PureComponent {
               <div className={styles.header}>
                 <Link to="/">
                   <img alt="logo" className={styles.logo} src={logo} />
-                  <span className={styles.title}>CMDB 运维自动化</span>
+                  <span className={styles.title}>Ant Design</span>
                 </Link>
               </div>
-              <div className={styles.desc}>做最有影响力的cmdb项目</div>
+              <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
             </div>
             <Switch>
               {getRoutes(match.path, routerData).map(item =>
@@ -59,7 +59,7 @@ class UserLayout extends React.PureComponent {
                   />
                 )
               )}
-              <Redirect exact from="/login" to="/login" />
+              <Redirect exact from="/user" to="/user/login" />
             </Switch>
           </div>
           <GlobalFooter links={links} copyright={copyright} />
