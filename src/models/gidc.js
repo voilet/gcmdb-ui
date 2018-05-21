@@ -1,9 +1,9 @@
 import {
-  queryIDC,addIDC,deleteIDC,modifyIDC,
+  queryIDC,addIDC,deleteIDC,modifyIDC,queryIdcRelation,queryIdcUser,
   addProvider,queryProvider,modifyProvider,deleteProvider,
   queryCabinet,addCabinet,deleteCabinet,modifyCabinet,
   deleteBay,queryBay,addBay,modifyBay,
-  queryIpResource,addIpResource,modifyIpResource,deleteIpResource,checkIpResource
+  queryIpResource,addIpResource,modifyIpResource,deleteIpResource,checkIpResource,queryIpClassify
   } from '../services/ResourceMangementAPI/Idc/IdcService'
 import {message} from 'antd'
 
@@ -12,6 +12,10 @@ export default {
   namespace: 'gidc',
 
   state: {
+    //关系数据
+    relation: {
+      data:[],
+    },
     //机房数据
     idc: {
       data: [],
@@ -33,13 +37,37 @@ export default {
       pagination: {}
     },
     ipresource:{
-      data:[],
+      data:{
+        ipresourcelist: [],
+        iptype:[],
+        ippurpose:[]
+      },
       pagination: {}
-    }
+    },
+    ipcheck: {
+      data:[]
+    },
+    ipclassify:{
+      data:{
+        iptype:[],
+        ippurpose: []
+      }
+    },
+    loading: false
   },
 
 
   effects: {
+      //获取user
+      *queryUser(_, { call, put }) {
+        const response = yield call(queryIdcUser);
+        yield put({
+          type: 'saveUser',
+          payload: response,
+        });
+      },
+    
+
     // 获取机房列表
     *queryIDC({ payload }, { call, put }) {
       const response = yield call(queryIDC, payload) 
@@ -52,7 +80,34 @@ export default {
           message.error(response.data)
       }
     },
-
+    //查询机柜 && 机架 && 机房
+    *queryIdcRelation({ payload }, { call, put }) {
+      const response = yield call(queryIdcRelation, payload)
+      const payloadObj=payload.substring(payload.indexOf('?') + 1).split('&').map((item) => item.split('=')).reduce((params, pairs) => (params[pairs[0]] = pairs[1] || '', params), {})
+      let stateName = ""
+      switch(payloadObj.tag)
+      {
+        case "idc":
+        stateName = 'idcSave';
+        break;
+        case 'cabinet':
+        stateName = 'cabinetSave';
+        break;
+        case 'bays':
+        stateName = 'querySave';
+        break;
+      }
+      console.log(payloadObj.tag)
+      console.log(stateName)
+      if (response.code == 200) {
+        yield put({
+          type: stateName,
+          payload: response,
+        });
+        } else {
+          message.error(response.data)
+      }
+    },
     //添加机房
     *addIDC({ payload }, { call,put }) {
       yield call(addIDC, payload.description);
@@ -79,7 +134,7 @@ export default {
     },
 
       //查询机柜信息
-    *queryCabinet({ payload }, { call }) {
+    *queryCabinet({ payload }, { call , put}) {
         const response =   yield call(queryCabinet, payload);
         if (response.code == 200) {
           yield put({
@@ -92,13 +147,13 @@ export default {
       },
 
       //添加机柜信息
-      *addCabinet({ payload }, { call }) {
+      *addCabinet({ payload }, { call, put }) {
         yield call(addCabinet, payload.field);
         yield put({ type: 'reloadCabinet'})
       },
   
       //删除机柜信息
-      *deleteCabinet({ payload }, { call }) {
+      *deleteCabinet({ payload }, { call, put }) {
         yield call(deleteCabinet, payload);
         yield put({ type: 'reloadCabinet'})
       },
@@ -206,13 +261,29 @@ export default {
       }
     },
 
+     //查询IP资源池
+     *queryIpClassify({ payload }, { call,put }) {
+      const response = yield call(queryIpClassify, payload) 
+   
+      if (response.code == 200) {
+        yield put({
+          type: 'ipClassify',
+          payload: response || [],
+        });
+      } else {
+        message.error(response.data);
+      }
+    },
+
      //检查IP资源池
      *checkIpResource({ payload }, { call,put }) {
+       console.log("checkIpResource",payload)
       const response = yield call(checkIpResource, payload) 
       if (response.code == 200) {
         yield put({
-          type: 'IpResourceSave',
+          type: 'ipCheck',
           payload: response,
+
         });
       } else {
         message.error(response.data);
@@ -221,7 +292,7 @@ export default {
 
     //添加ip资源池
     *addIpResource({ payload }, { call,put }) {
-      yield call(addIpResource, payload.description);
+      yield call(addIpResource, payload);
       yield put({ type: 'reloadIpResource'})
     },
 
@@ -241,12 +312,24 @@ export default {
      //重新加载ip资源池
     *reloadIpResource(action, { put, select }) {
       const ipresource = yield select(state => state.gidc.ipresource );
-      yield put({ type: 'queryProvider', payload: { ipresource } });
+      yield put({ type: 'queryIpResource', payload: { ipresource } });
     },
 
   },
 
   reducers: {
+    saveUser(state, action) {
+      return {
+        ...state,
+         user: action.payload,
+      };
+    },
+    relationSave(state, action) {
+      return {
+        ...state,
+         relation: action.payload,
+      };
+    },
     idcSave(state, action) {
       return {
         ...state,
@@ -264,7 +347,13 @@ export default {
     cabinetSave(state,action) {
       return {
         ...state,
-        provider: action.payload
+        cabinet: action.payload
+      }
+    },
+    querySave(state,action) {
+      return {
+        ...state,
+        bays: action.payload
       }
     },
     IpResourceSave(state,action) {
@@ -273,6 +362,17 @@ export default {
         ipresource: action.payload
       }
     },
-
+    ipClassify(state,action) {
+      return {
+        ...state,
+        ipclassify: action.payload
+      }
+    },
+    ipCheck(state,action) {
+      return {
+        ...state,
+        ipcheck: action.payload
+      }
+    },
   },
 };

@@ -105,6 +105,7 @@ export default class ProviderList extends PureComponent {
           <div className={styles.tableList}>  
           <div style={{height:40}}>
             <AddProvider
+              dispatch = {this.props.dispatch}
               form = {this.props.form}
               /> 
           </div> 

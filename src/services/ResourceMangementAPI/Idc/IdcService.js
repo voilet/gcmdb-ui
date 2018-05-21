@@ -1,6 +1,20 @@
 import { stringify } from 'qs';
 import request from '../../../utils/request';
 
+
+
+//获取机器管理员
+export async function queryIdcUser() {
+  return request(`/v1/assets/idc/queryuser`);
+}
+
+
+//获取机房机柜列表
+export async function queryIdcRelation(params) {
+  return request(`/v1/assets/idc/queryrelation/${params}`);
+}
+
+
 //获取运营商列表
 export async function queryProvider() {
   return request('/v1/assets/idc/queryprovider');
@@ -101,7 +115,7 @@ export async function addCabinet(params) {
 
 //修改机柜
 export async function modifyCabinet(params) {
-  return request(`/v1/assets/idc/modifycabinet`, {
+  return request(`/v1/assets/idc/modifycabinet/${params.ID}`, {
     method: 'POST',
     body: {
       ...params,
@@ -183,7 +197,7 @@ export async function addIpResource(params) {
 
 //修改ip
 export async function modifyIpResource(params) {
-  return request(`/v1/assets/idc/modifyipresource`, {
+  return request(`/v1/assets/idc/modifyipresource/${params.ID}`, {
     method: 'POST',
     body: {
       ...params,
@@ -194,10 +208,23 @@ export async function modifyIpResource(params) {
 
 //删除ip
 export async function deleteIpResource(params) {
-  return request(`/v1/assets/idc/deleteipresource?${stringify(params)}`)
+  return request(`/v1/assets/idc/deleteipresource`, {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
 }
 
 //检查ip
 export async function checkIpResource(params) {
   return request(`/v1/assets/idc/checkip?${stringify(params)}`)
+}
+
+
+
+//查询ip
+export async function queryIpClassify() {
+  return request('/v1/assets/idc/queryclassify');
 }

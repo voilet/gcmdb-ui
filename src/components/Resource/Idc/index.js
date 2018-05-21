@@ -327,7 +327,7 @@ class Idc extends PureComponent {
                     dataSource={this.state.data} 
                     columns={this.columns} 
                     onChange={this.handleTableChange}
-                    />;
+                    />
               </div>)
             
   }

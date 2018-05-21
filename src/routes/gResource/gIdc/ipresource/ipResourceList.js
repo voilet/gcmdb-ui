@@ -13,14 +13,21 @@ import {
   Menu,
   DatePicker,
   message,
+  Divider
 } from 'antd';
 
-//import IpResource from '../../../../components/IpResource';
+
+
+
+import IpTable from '../../../../components/Resource/IpTable';
+
+
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
 import AddResource from './addipResource'
 import styles from './ipresouce.less'
 
 const FormItem = Form.Item;
+const Search = Input.Search;
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
@@ -33,12 +40,24 @@ export default class ipResourceList extends PureComponent {
   state = {
     selectedRows: [],
     formValues: {},
+    enable:false,
+    data: [],
   };
+
+  componentWillReceiveProps(nextProps) {
+    // clean state
+   
+  }
+
 
   componentDidMount() {
     const {dispatch} = this.props;
     dispatch({
       type: 'gidc/queryIpResource',
+    });
+
+    dispatch({
+      type: 'gidc/queryIpClassify',
     });
   }
 
@@ -86,19 +105,44 @@ export default class ipResourceList extends PureComponent {
   }
   
   //删除单条数据
-  handleDeleteData = (val) => {
+  handleDeleteData = (val,tag) => {
+    let arr1 = new Array()
+  
+    if (!isNaN(val.ID)) {
+      console.log("xxxxxxxx")
+      arr1.push(val.ID)
+    } else {
+      arr1 = val
+    }
+ 
+    const fields = {
+      "ipaddrlist": JSON.stringify({data: arr1}),
+      "tag": val.tag
+      }
+
     this.props.dispatch({
       type: 'gidc/deleteIpResource',
-      payload: val 
+      payload: fields 
     });
-}
 
+  }
+
+  handleMenuClick = (val) => {
+     if (val == "remove") {
+      handleDeleteData(this.state.selectedRows)
+     }
+  }
  
   render() {
     const { gidc } = this.props;
-    const {selectedRows} = this.state;
-    console.log("this.props",this.props)
+    const {selectedRows,enable} = this.state;
+    
+    if (gidc.ipcheck.data == "ok") {
+        this.setState({enable : true}) 
+    }
 
+    console.log("this.props",this.props)
+    
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
         <Menu.Item key="remove">删除</Menu.Item>
@@ -112,7 +156,10 @@ export default class ipResourceList extends PureComponent {
           <div className={styles.tableList}>  
           <div style={{height:40}}>
             <AddResource 
-            ipresource = {gidc.ipresource}
+            ipclassify = {gidc.ipclassify}
+            ipcheck = {gidc.ipcheck}
+            checkloading = {gidc.loading}
+            enable = {enable}
              />
               {
                 selectedRows.length > 0 && (
@@ -124,18 +171,22 @@ export default class ipResourceList extends PureComponent {
                     </Dropdown>
                   </div>
                 )
-              }  
+              }
+               <Search
+            placeholder="搜索ip"
+            onSearch={value => console.log(value)}
+            enterButton />  
           </div> 
-            
-            {/* <IdcTable
+
+            <Divider>  IP资源数据  </Divider>
+            <IpTable
               selectedRows={selectedRows}
-              //loading={ruleLoading}
-              gidc={gidc.idc}
+              ipresource={gidc.ipresource}
               handleSaveData = {this.handleSaveData}
               handleDeleteData = {this.handleDeleteData}
               handleSelectRows={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
-            /> */}
+            />
         </div>
         </Card>
       </PageHeaderLayout>

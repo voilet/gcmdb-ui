@@ -15,7 +15,7 @@ const EditableCell = ({ editable, value, onChange }) => (
   </div>
 );
 
-class IpResource extends PureComponent {
+class IpTable extends PureComponent {
     
      state = {
         data: [],
@@ -267,4 +267,4 @@ class IpResource extends PureComponent {
   }
 }
 
-export default IpResource;
+export default IpTable;

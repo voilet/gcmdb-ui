@@ -162,9 +162,10 @@ class Provider extends PureComponent {
         
         if (target) {
           target[column] = value;
-          this.setState({ data: newData,
+          this.setState({ 
+            data: newData,
             disabled:false
-                         });
+          });
         }
       }
 

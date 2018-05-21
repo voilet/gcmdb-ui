@@ -13,12 +13,13 @@ import {
   Menu,
   DatePicker,
   message,
+  Divider
 } from 'antd';
 
-import IdcTable from '../../../../components/IdcTable';
+import IdcTable from '../../../../components/Resource/Cabinet';
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
-import AddIDC from './addIDC'
-import styles from './IDC.less'
+import Addcabinet from './addcabinet'
+import styles from './cabinet.less'
 
 const FormItem = Form.Item;
 
@@ -79,7 +80,7 @@ export default class CabinetList extends PureComponent {
   //保存编辑数据
   handleSaveData = (val) => {
     this.props.dispatch({
-      type: 'gidc/addCabinet',
+      type: 'gidc/modifyCabinet',
       payload: val 
     });
   }
@@ -101,25 +102,24 @@ export default class CabinetList extends PureComponent {
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
         <Menu.Item key="remove">批量删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
       </Menu>
     )
 
     return (
-      <PageHeaderLayout title="机房列表">
+      <PageHeaderLayout title="机柜管理">
         <Card bordered={false}>
           <div className={styles.tableList}>  
           <div style={{height:40}}>
-            <AddIDC
-              dispatch = {this.props.dispatch}
-              />
+            <Addcabinet
+              cabinet={gidc.cabinet}             
+             />
   
           </div> 
-            
+          <Divider>  机柜数据  </Divider>
             <IdcTable
               selectedRows={selectedRows}
               //loading={ruleLoading}
-              gidc={gidc.idc}
+              cabinet={gidc.cabinet}
               handleSaveData = {this.handleSaveData}
               handleDeleteData = {this.handleDeleteData}
               handleSelectRows={this.handleSelectRows}

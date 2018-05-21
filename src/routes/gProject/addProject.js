@@ -46,9 +46,12 @@ export default class AddProject   extends PureComponent {
  
 
   handleModalVisible = (flag) => {
+    const form = this.props.form;
+    form.resetFields();
     this.setState({
       modalVisible: !!flag,
     });
+
   }
 
 
@@ -88,12 +91,10 @@ export default class AddProject   extends PureComponent {
 
 
   handleSelectLineValue = (value) => {
-
+    console.log(value)
     this.props.dispatch({
     type: 'gproline/getProjectGroupbyId',
-    payload: {
-      description: value,
-    },
+    payload: value
     });
     
   }

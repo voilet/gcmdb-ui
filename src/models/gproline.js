@@ -1,7 +1,18 @@
 // import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc,
 //   addIdc, queryUserList, querCaseList, querTree, queryProjectList, queryProjectGetId, createUser,addProject } from '../services/api';
 
-import {querProjectLine,queryProject,querProjectGroup,queryRule,addProject,addProjectLine,addProjectGroup,querProjectGroupbyId} from '../services/ProjectMangementAPI/Project/Project'
+import {  querProjectLine,
+          queryProject,
+          querProjectGroup, 
+          queryRule,
+          addProject,
+          addProjectLine,
+          addProjectGroup,
+          querProjectGroupbyId,
+          querGroupbyLId,
+          querProjectbyGId,
+          queryTree
+        } from '../services/ProjectMangementAPI/Project/Project'
 
 import {message} from 'antd'
 
@@ -24,8 +35,11 @@ export default {
     //查询项目组
     progroupdata: [],
     
-    //查询特定项目组
-    progroupdatabyid: [],
+    //通过line id查询特定项目组
+    progroupbylid: [],
+
+    //通过groud id查询特定项目
+    probygid: [],
 
     //查询项目
     projectdata: {
@@ -40,29 +54,38 @@ export default {
     // 获取项目列表
     *getProjectList({ payload }, { call, put }) {
       const response = yield call(queryProject, payload) 
-  //    console.log('response------------------------------',response)
+     // console.log('response------------------------------',payload)
       yield put({
         type: 'projectSave',
-        payload: response || [],
+        payload: response,
       });
     
     },
 
-    //添加项目列表
-    *addProject({ payload }, { call }) {
-    
-      yield call(addProject, payload.description);
-      message.success('提交成功');
+    //通过line id 获取项目组列表
+    *getProjectGroupbyId({ payload }, { call,put }) {
+      const response = yield call(querGroupbyLId,payload)
+      yield put({
+        type: 'progroupbyLidSave',
+        payload: response.data || [],
+      });
     },
 
-  //通过id 获取项目组列表
-  *getProjectGroupbyId({ payload }, { call,put }) {
-    const response = yield call(querProjectGroupbyId,payload.description)
+  //通过group id 获取项目列表
+  *getProjectbyId({ payload }, { call,put }) {
+    const response = yield call(querProjectbyGId,payload)
     yield put({
-      type: 'progroupbyIdSave',
+      type: 'progroupbyGidSave',
       payload: response.data || [],
     });
   },
+
+
+    //添加项目列表
+    *addProject({ payload }, { call, put}) {
+      yield call(addProject, payload.description);
+      yield put({ type: 'reloadProject'})
+    },
 
     //获取项目组列表
     *getProjectGroup({ payload }, { call, put }) {  
@@ -94,22 +117,34 @@ export default {
     //获取产品线列表
     *getProjectLine({ payload }, { call, put }) {  
       const response = yield call(querProjectLine);
-      console.log('getProjectLine',response)
       yield put({
         type: 'projectlineSave',
-        payload: response.data || [],
+        payload: response.data,
       });
     
     },
-    
+
+    //重新加载列表
+    *reloadProject(action, { put, select }) {
+     // const idc = yield select(state => state.gidc.idc );
+      yield put({ type: 'getProjectList', payload: { } });
+    },
+    //编辑产品线列表
+    *modifyProject({ payload }, { call }) {
+      yield call(modifyProject, payload);
+      yield put({ type: 'reloadProject'})
+    },
     //获取树节点
     *getTree({ payload }, { call, put }) {
-      const response = yield call(querTree, payload);
-      yield put({
-        type: 'saveTree',
-        payload: response,
-      });
+      const response = yield call(queryTree, payload);
+      if (response.code == 200) {
+        yield put({
+          type: 'saveTree',
+          payload: response,
+        });
+      }
     },
+    
   },
 
   reducers: {
@@ -120,10 +155,17 @@ export default {
       };
     },
 
-    progroupbyIdSave(state, action) {
+    progroupbyLidSave(state, action) {
       return {
         ...state,
-        progroupdatabyid: action.payload 
+        progroupbylid: action.payload 
+      };
+    },
+
+    progroupbyGidSave(state, action) {
+      return {
+        ...state,
+        probygid: action.payload 
       };
     },
 
@@ -144,8 +186,9 @@ export default {
     saveTree(state, action) {
       return {
         ...state,
-        project: action.payload,
+        treedata: action.payload,
       };
     },
+    
   },
 };

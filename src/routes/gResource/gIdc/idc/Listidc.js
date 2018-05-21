@@ -16,7 +16,7 @@ import {
   Divider
 } from 'antd';
 
-import IdcTable from '../../../../components/Resource/Idc';
+import CabTable from '../../../../components/Resource/Idc';
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
 import AddIDC from './addIDC'
 import styles from './IDC.less'
@@ -143,7 +143,7 @@ export default class Listidc extends PureComponent {
               }  
           </div> 
           <Divider>  机房数据  </Divider>
-            <IdcTable
+            <CabTable
               selectedRows={selectedRows}
               //loading={ruleLoading}
               gidc={gidc.idc}

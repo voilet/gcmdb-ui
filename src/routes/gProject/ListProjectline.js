@@ -56,6 +56,7 @@ export default class TableList extends PureComponent {
     dispatch({
       type: 'gproline/getProjectLine',
     });
+    console.log('*****',this.props)
   }
 
 
@@ -143,6 +144,31 @@ export default class TableList extends PureComponent {
       selectedRows: rows,
     });
   }
+  //保存
+  handleSaveData = (val) => {
+    console.log(val)
+    // this.props.dispatch({
+    //   type: 'gproline/modifyProject',
+    //   payload: val 
+    // });
+  }
+  handleDeleteData = (val) => {
+    console.log(val)
+    const { ID } = val
+    //false是逻辑删除  true是物理删除
+    // infolist:{"componentname": "cpu", "ids": [1, 2]}
+    let obj = {},ids=[]
+    obj.componentname='disk'
+    ids.push(ID)
+    obj.ids=ids
+    // this.props.dispatch({
+    //   type: 'ghardware/deleteHardwareComponents',
+    //   payload: {
+    //     tag:false,
+    //     infolist:JSON.stringify(obj)
+    //   }
+    // });
+}
 
   handleSearch = (e) => {
     e.preventDefault();
@@ -253,12 +279,12 @@ export default class TableList extends PureComponent {
                 dispatch = {dispatch}
               /> 
 
-              <AddProject 
+              { <AddProject 
                 refreshTable = {this.handleRefreshTableChange}
                 prolinedata = {gproline.prolinedata}
-                progroupdata = {gproline.progroupdatabyid}
+                progroupdata = {gproline.progroupbylid}
                 dispatch = {dispatch}
-              /> 
+              />  }
 
               {
                 selectedRows.length > 0 && (
@@ -275,6 +301,11 @@ export default class TableList extends PureComponent {
             <ProjectTable
               selectedRows={selectedRows}
               // loading={loading}
+              dispatch = {dispatch}
+              handleSaveData={this.handleSaveData}
+              handleDeleteData={this.handleDeleteData}
+              prolinedata = {gproline.prolinedata}
+              progroupdata = {gproline.progroupbylid}
               prodata={this.props.gproline.projectdata }
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

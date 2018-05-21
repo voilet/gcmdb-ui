@@ -79,6 +79,12 @@ export const getRouterData = (app) => {
     //   component: dynamicWrapper(app, ['rule'], () => import('../routes/gProject/ListProject')),
     // },
 
+
+    //套餐列表
+    '/resource/hardware/deviceplan/compose_plan': {
+      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/plan/ListPlan')),
+    },
+
     //机房列表
     '/resource/idc/idclist': {
       component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/idc/Listidc')),
@@ -95,15 +101,51 @@ export const getRouterData = (app) => {
     },
 
 
-    //  //机柜列表
-    //  '/resource/idc/cabinet': {
-    //   component: dynamicWrapper(app, ['gidc'], () => import('../routes/gresource/gIdc/cabinet/CabinetList')),
-    // },
+     //机柜列表
+     '/resource/idc/cabinet': {
+      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/cabinet/CabinetList')),
+    },
 
-    // 产品线列表
-    // '/project/listline': {
-    //   component: dynamicWrapper(app, ['gproline'], () => import('../routes/gProject/ListProjectline')),
-    // },
+    //产品树
+    '/project/treelist': {
+      component: dynamicWrapper(app, ['gproline'], () => import('../routes/gProject/ListProjectTree')),
+    },
+
+      //产品线列表
+      '/project/listline': {
+      component: dynamicWrapper(app, ['gproline'], () => import('../routes/gProject/ListProjectline')),
+    },
+
+    //主机管理列表
+    '/resource/hardware/servermachines': {
+      component: dynamicWrapper(app, ['gdevice'], () => import('../routes/gResource/gHardware/servermachines/Listservermachines')),
+    },
+
+    //cpu列表
+    '/resource/hardware/deviceplan/plan_cpu': {
+      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/cpu/Listcpu')),
+    },
+    //内存列表
+    '/resource/hardware/deviceplan/plan_memory': {
+      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/memory/Listmemory')),
+    },
+    //硬盘列表
+    '/resource/hardware/deviceplan/plan_disk': {
+      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/disk/Listdisk')),
+    },
+    //电源列表
+    '/resource/hardware/deviceplan/plan_power': {
+      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/power/Listpower')),
+    },
+    //网卡列表
+    '/resource/hardware/deviceplan/plan_adaptor': {
+      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/adaptor/Listadaptor')),
+    },
+
+    //套餐列表
+    '/resource/hardware/deviceplan/compose_plan': {
+      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/plan/ListPlan')),
+    },
     // '/dashboard/analysis': {
     //   component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
     // },

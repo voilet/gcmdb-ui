@@ -39,6 +39,44 @@ const menuData = [{
         path: 'cabinet',
       }
     ]
+  },{
+    name: '硬件管理',
+    icon: 'table',
+    path: 'hardware',
+    children: [
+      {
+        name: '主机管理',
+        path: 'servermachines',
+      },{
+        name: '套餐管理',
+        path: 'deviceplan',
+        children: [
+          {
+            name: 'cpu套餐',
+            path: 'plan_cpu',
+          },{
+            name: '内存套餐',
+            path: 'plan_memory',
+          },{
+            name: '硬盘套餐',
+            path: 'plan_disk',
+          },{
+            name: '电源套餐',
+            path: 'plan_power',
+          },{
+            name: '网卡套餐',
+            path: 'plan_adaptor',
+          },{
+            name: '套餐列表',
+            path: 'compose_plan',
+          }
+
+        ]
+      },{
+        name: '容灾块管理',
+        path: 'redundancy',
+      }
+    ]
   }],
 }, {
   name: '项目管理',
@@ -50,13 +88,10 @@ const menuData = [{
         path: 'listline',
     },
     {
-      name: '项目组列表',
-      path: 'listgroup',
+      name: '产品树',
+      path: 'treelist',
     },
     {
-      name: '项目列表',
-      path: 'listpro',
-    }, {
       name: '发布信息',
       path: 'carving',
       hideInMenu: true,
