@@ -147,10 +147,22 @@ export default class TableList extends PureComponent {
   //保存
   handleSaveData = (val) => {
     console.log(val)
-    // this.props.dispatch({
-    //   type: 'gproline/modifyProject',
-    //   payload: val 
-    // });
+    const { ID, group_id, group_title, line_id, pro_alias, pro_code_url, pro_enable, pro_remarks} = val
+    const params = {
+      ID,
+      title:group_title,
+      alias:pro_alias,
+      remarks:pro_remarks,
+      code_url:pro_code_url,
+      enable:pro_enable,
+      groupid:group_id,
+      lineid:line_id,
+    }
+
+    this.props.dispatch({
+      type: 'gproline/modifyProject',
+      payload: params 
+    });
   }
   handleDeleteData = (val) => {
     console.log(val)

@@ -11,7 +11,8 @@ import {  querProjectLine,
           querProjectGroupbyId,
           querGroupbyLId,
           querProjectbyGId,
-          queryTree
+          queryTree,
+          modifyProject
         } from '../services/ProjectMangementAPI/Project/Project'
 
 import {message} from 'antd'
@@ -130,7 +131,7 @@ export default {
       yield put({ type: 'getProjectList', payload: { } });
     },
     //编辑产品线列表
-    *modifyProject({ payload }, { call }) {
+    *modifyProject({ payload }, { call, put }) {
       yield call(modifyProject, payload);
       yield put({ type: 'reloadProject'})
     },

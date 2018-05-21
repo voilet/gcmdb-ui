@@ -168,7 +168,7 @@ class StandardTable extends PureComponent {
       });
     }
 
-    console.log('handleChange',value)
+    console.log('handleChange',value,key,column)
   }
 
   handleSelectLineValue(value, key, column){
