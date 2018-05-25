@@ -1,28 +1,14 @@
-// import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc,
-//   addIdc, queryUserList, querCaseList, querTree, queryProjectList, queryProjectGetId, createUser,addProject } from '../services/api';
-
-import {queryProjectList,querProjectGroup,queryRule} from '../services/api'
+import { queryRule, removeRule, addRule } from '../services/api';
 
 export default {
   namespace: 'rule',
 
   state: {
-    //数据
     data: {
       list: [],
       pagination: {},
     },
-    //树节点数据
-    treedata: {
-      data: []
-    },
-    //查询产品线
-    prolinedata: [],
-    
-    //查询项目组
-    progroupdata: []
   },
-
 
   effects: {
     *fetch({ payload }, { call, put }) {
@@ -32,11 +18,6 @@ export default {
         payload: response,
       });
     },
-
-    
-
-
-
     *add({ payload, callback }, { call, put }) {
       const response = yield call(addRule, payload);
       yield put({
@@ -45,7 +26,6 @@ export default {
       });
       if (callback) callback();
     },
-
     *remove({ payload, callback }, { call, put }) {
       const response = yield call(removeRule, payload);
       yield put({
@@ -57,33 +37,10 @@ export default {
   },
 
   reducers: {
-    projectSave(state, action) {
+    save(state, action) {
       return {
         ...state,
         data: action.payload,
-      };
-    },
-
-    progroupSave(state, action) {
-      return {
-        ...state,
-        data: action.payload,
-        progroupdata: action.payload
-      };
-    },
-    
-    projectlineSave(state, action) {
-      return {
-        ...state,
-        data: action.payload,
-        prolinedata: action.payload
-      };
-    },
-
-    saveTree(state, action) {
-      return {
-        ...state,
-        project: action.payload,
       };
     },
   },

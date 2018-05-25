@@ -2,8 +2,6 @@ import { routerRedux } from 'dva/router';
 import { fakeAccountLogin } from '../services/api';
 import { setAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
-import { logoutActive } from '../services/user';
-
 
 export default {
   namespace: 'login',
@@ -14,24 +12,20 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
-
       const response = yield call(fakeAccountLogin, payload);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       });
-      console.log()
       // Login successfully
-      if (response.code === '200') {
+      if (response.status === 'ok') {
         reloadAuthorized();
         yield put(routerRedux.push('/'));
       }
     },
-
-    *logout(_, { call,put, select }) {
+    *logout(_, { put, select }) {
       try {
         // get location pathname
-        yield call(logoutActive);
         const urlParams = new URL(window.location.href);
         const pathname = yield select(state => state.routing.location.pathname);
         // add the parameters in the url
@@ -56,9 +50,8 @@ export default {
       setAuthority(payload.currentAuthority);
       return {
         ...state,
-        status: payload.code,
+        status: payload.status,
         type: payload.type,
-        msg: payload.msg,
       };
     },
   },

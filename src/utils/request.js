@@ -43,38 +43,36 @@ function checkStatus(response) {
  * @return {object}           An object containing either "data" or "err"
  */
 export default function request(url, options) {
-
   const defaultOptions = {
     credentials: 'include',
   };
   const newOptions = { ...defaultOptions, ...options };
   if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
-  //  if (!(newOptions.body instanceof FormData)) {
+    if (!(newOptions.body instanceof FormData)) {
       newOptions.headers = {
-        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
         ...newOptions.headers,
-      }
-     
-      const searchParams = Object.keys(options.body).map((key) => {return encodeURIComponent(key) + '=' + encodeURIComponent(options.body[key]);}).join('&');
-      // Object.keys(options.body).map((key) => {
-      //   console.log('key',key)
-      //   console.log('value',options.body[key])
-      //   console.log('encodeURIComponent',encodeURIComponent(key) + '=' + encodeURIComponent(options.body[key]))
-      //   return encodeURIComponent(key) + '=' + encodeURIComponent(options.body[key]);
-      // }).join('&');
-      
-      newOptions.body = searchParams;
+      };
+      newOptions.body = JSON.stringify(newOptions.body);
+    } else {
+      // newOptions.body is FormData
+      newOptions.headers = {
+        Accept: 'application/json',
+        ...newOptions.headers,
+      };
+    }
   }
+
   return fetch(url, newOptions)
     .then(checkStatus)
-    .then((response) => {
+    .then(response => {
       if (newOptions.method === 'DELETE' || response.status === 204) {
         return response.text();
       }
       return response.json();
     })
-    .catch((e) => {
+    .catch(e => {
       const { dispatch } = store;
       const status = e.name;
       if (status === 401) {
