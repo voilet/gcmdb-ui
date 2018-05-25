@@ -2,8 +2,6 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'dva';
 import {
-  Row,
-  Col,
   Card,
   Form,
   Input,
@@ -12,7 +10,6 @@ import {
   Dropdown,
   Menu,
   DatePicker,
-  message,
   Divider
 } from 'antd';
 
@@ -38,10 +35,9 @@ export default class ListAdaptor extends PureComponent {
 
   componentDidMount() {
     const {dispatch} = this.props;
-
     dispatch({
-      type: 'ghardware/queryHardwareComponents',
-      payload:`adaptor`
+      type: 'ghardware/queryHardwareComponentAdaptor',
+      payload: `adaptor`
     });
 
   }
@@ -67,8 +63,8 @@ export default class ListAdaptor extends PureComponent {
     }
 
     dispatch({
-      type: 'ghardware/queryHardwareComponents',
-      payload:`adaptor`
+      type: 'ghardware/queryHardwareComponentAdaptor',
+      payload: `adaptor`
     });
   }
 
@@ -82,47 +78,41 @@ export default class ListAdaptor extends PureComponent {
 
   //保存编辑数据
   handleSaveData = (val) => {
+    const { ID, description, num, title, categoryadaptorinfo } = val
     this.props.dispatch({
-      type: 'ghardware/modifyIDC',
-      payload: val 
+      type: 'ghardware/modifyHardwareComponents',
+      payload: {
+        ID,
+        componentname: 'adaptor',
+        description,
+        category: val.categoryadaptorinfo.newId == undefined ? val.categoryadaptorinfo.ID : val.categoryadaptorinfo.newId ,
+        num,
+        title
+      } 
     });
   }
   
   //删除单条数据
   handleDeleteData = (val) => {
-    console.log(val)
     const { ID } = val
-    //false是逻辑删除  true是物理删除
-    // infolist:{"componentname": "cpu", "ids": [1, 2]}
-    let obj = {},ids=[]
-    obj.componentname='adaptor'
+    let ids=[]
     ids.push(ID)
-    obj.ids=ids
+
     this.props.dispatch({
       type: 'ghardware/deleteHardwareComponents',
       payload: {
         tag:false,
-        infolist:JSON.stringify(obj)
+        infolist:JSON.stringify({
+          componentname: 'adaptor',
+          ids
+        })
       }
     });
-}
-
-
-//批量开启机房 
-// handleOpenAllstatus = (val) => {
-
-// }
-
-// handleMenuClick = (val) => {
-//    if (val.key == "approval") {
-       
-//    } 
-// }
+  }
  
   render() {
     const { ghardware } = this.props;
-    const {selectedRows} = this.state;
-    console.log("this.props",this.props)
+    const { selectedRows } = this.state;
 
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -134,10 +124,10 @@ export default class ListAdaptor extends PureComponent {
       <PageHeaderLayout title="网卡套餐">
         <Card bordered={false}>
           <div className={styles.tableList}>  
-          <div style={{height:40}}>
-            <AddAdaptor
-              //dispatch = {this.props.dispatch}
-              hardwaredata = {ghardware.allinfo}
+            <div style={{height:40}}>
+              <AddAdaptor
+                //dispatch = {this.props.dispatch}
+                hardwaredata = {ghardware.adaptorInfo}
               />
               {
                 selectedRows.length > 0 && (
@@ -150,18 +140,18 @@ export default class ListAdaptor extends PureComponent {
                   </div>
                 )
               }  
-          </div> 
-          <Divider>  网卡数据  </Divider>
+            </div> 
+            <Divider>  网卡数据  </Divider>
             <CabTable
-              selectedRows={selectedRows}
+              //selectedRows={selectedRows}
               //loading={ruleLoading}
-              ghardware={ghardware.allinfo}
+              ghardware={ghardware.adaptorInfo}
               handleSaveData = {this.handleSaveData}
               handleDeleteData = {this.handleDeleteData}
-              handleSelectRows={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
+              //handleSelectRows={this.handleSelectRows}
+              //onChange={this.handleStandardTableChange}
             />
-        </div>
+          </div>
         </Card>
       </PageHeaderLayout>
     );

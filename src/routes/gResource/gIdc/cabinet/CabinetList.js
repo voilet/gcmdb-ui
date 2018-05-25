@@ -2,8 +2,6 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'dva';
 import {
-  Row,
-  Col,
   Card,
   Form,
   Input,
@@ -12,7 +10,6 @@ import {
   Dropdown,
   Menu,
   DatePicker,
-  message,
   Divider
 } from 'antd';
 
@@ -37,7 +34,7 @@ export default class CabinetList extends PureComponent {
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'gidc/queryCabinet',
     });
@@ -79,9 +76,14 @@ export default class CabinetList extends PureComponent {
 
   //保存编辑数据
   handleSaveData = (val) => {
+    const { bay_details } = val
+    
     this.props.dispatch({
       type: 'gidc/modifyCabinet',
-      payload: val 
+      payload: {
+        ...val,
+        bay_details:JSON.stringify({data:bay_details})
+      }
     });
   }
   
@@ -96,8 +98,7 @@ export default class CabinetList extends PureComponent {
  
   render() {
     const { gidc } = this.props;
-    const {selectedRows} = this.state;
-    console.log("this.props",this.props)
+    const { selectedRows } = this.state;
 
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -109,23 +110,24 @@ export default class CabinetList extends PureComponent {
       <PageHeaderLayout title="机柜管理">
         <Card bordered={false}>
           <div className={styles.tableList}>  
-          <div style={{height:40}}>
-            <Addcabinet
-              cabinet={gidc.cabinet}             
-             />
-  
-          </div> 
-          <Divider>  机柜数据  </Divider>
+            <div style={{height:40}}>
+              <Addcabinet
+                cabinet={gidc.cabinet}
+                dispatch={this.props.dispatch}             
+              />
+    
+            </div> 
+            <Divider>  机柜数据  </Divider>
             <IdcTable
-              selectedRows={selectedRows}
+              //selectedRows={selectedRows}
               //loading={ruleLoading}
               cabinet={gidc.cabinet}
               handleSaveData = {this.handleSaveData}
               handleDeleteData = {this.handleDeleteData}
-              handleSelectRows={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
+              //handleSelectRows={this.handleSelectRows}
+              //onChange={this.handleStandardTableChange}
             />
-        </div>
+          </div>
         </Card>
       </PageHeaderLayout>
     );

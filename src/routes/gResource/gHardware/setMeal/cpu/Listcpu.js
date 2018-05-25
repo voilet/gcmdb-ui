@@ -2,8 +2,6 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'dva';
 import {
-  Row,
-  Col,
   Card,
   Form,
   Input,
@@ -12,7 +10,6 @@ import {
   Dropdown,
   Menu,
   DatePicker,
-  message,
   Divider
 } from 'antd';
 
@@ -39,15 +36,9 @@ export default class Listcpu extends PureComponent {
   componentDidMount() {
     const {dispatch} = this.props;
     dispatch({
-      type: 'ghardware/queryHardwareComponents',
-      payload:`cpu`
+      type: 'ghardware/queryHardwareComponentCpu',
+      payload: `cpu`
     });
-
-    // dispatch({
-    //   type: 'gidc/queryProvider',
-    // });
-
-
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -72,7 +63,7 @@ export default class Listcpu extends PureComponent {
 
     dispatch({
       type: 'ghardware/queryHardwareComponents',
-      payload:`cpu`
+      payload: `cpu`
     });
   }
 
@@ -86,47 +77,37 @@ export default class Listcpu extends PureComponent {
 
   //保存编辑数据
   handleSaveData = (val) => {
-    // this.props.dispatch({
-    //   type: 'ghardware/modifyHardwareComponents',
-    //   payload: val 
-    // });
+    this.props.dispatch({
+      type: 'ghardware/modifyHardwareComponents',
+      payload: {
+        componentname: 'cpu',
+        category: val.categorycpuinfo.newId == undefined ? val.categorycpuinfo.ID : val.categorycpuinfo.newId ,
+        ...val
+      } 
+    });
   }
   
   //删除单条数据
   handleDeleteData = (val) => {
-    console.log(val)
     const { ID } = val
-    //false是逻辑删除  true是物理删除
-    // infolist:{"componentname": "cpu", "ids": [1, 2]}
-    let obj = {},ids=[]
-    obj.componentname='cpu'
+    let ids=[]
     ids.push(ID)
-    obj.ids=ids
     this.props.dispatch({
       type: 'ghardware/deleteHardwareComponents',
       payload: {
         tag:false,
-        infolist:JSON.stringify(obj)
+        infolist:JSON.stringify({
+          componentname: 'cpu',
+          ids
+        })
       }
     });
-}
+  }
 
-
-//批量开启机房 
-// handleOpenAllstatus = (val) => {
-
-// }
-
-// handleMenuClick = (val) => {
-//    if (val.key == "approval") {
-       
-//    } 
-// }
  
   render() {
     const { ghardware } = this.props;
-    const {selectedRows} = this.state;
-    console.log("this.props",this.props)
+    const { selectedRows } = this.state;
 
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -138,10 +119,10 @@ export default class Listcpu extends PureComponent {
       <PageHeaderLayout title="CPU套餐">
         <Card bordered={false}>
           <div className={styles.tableList}>  
-          <div style={{height:40}}>
-            <AddCPU
-              //dispatch = {this.props.dispatch}
-              hardwaredata = {ghardware.allinfo}
+            <div style={{height:40}}>
+              <AddCPU
+                dispatch = {this.props.dispatch}
+                hardwaredata = {ghardware.cpuInfo}
               />
               {
                 selectedRows.length > 0 && (
@@ -154,18 +135,18 @@ export default class Listcpu extends PureComponent {
                   </div>
                 )
               }  
-          </div> 
-          <Divider>  CPU数据  </Divider>
+            </div> 
+            <Divider>  CPU数据  </Divider>
             <CabTable
-              selectedRows={selectedRows}
+              //selectedRows={selectedRows}
               //loading={ruleLoading}
-              ghardware={ghardware.allinfo}
+              ghardware={ghardware.cpuInfo}
               handleSaveData = {this.handleSaveData}
               handleDeleteData = {this.handleDeleteData}
-              handleSelectRows={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
+              //handleSelectRows={this.handleSelectRows}
+              //onChange={this.handleStandardTableChange}
             />
-        </div>
+          </div>
         </Card>
       </PageHeaderLayout>
     );

@@ -1,9 +1,13 @@
 import request from '../utils/request';
 
 export async function query() {
-  return request('/api/users');
+  return request('/v1/user/info');
 }
 
 export async function queryCurrent() {
-  return request('/api/currentUser');
+  return request('/v1/user/currentUser');
+  // return request('/api/currentUser');
+}
+export async function logoutActive() {
+  return request('/logout');
 }

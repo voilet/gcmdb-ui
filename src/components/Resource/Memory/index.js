@@ -1,11 +1,11 @@
-import { Table, Input, Popconfirm, Alert, Badge, Divider, Icon,Switch} from 'antd';
+import { Table, Input, Popconfirm, Alert, Badge, Divider, Icon,Switch, Select } from 'antd';
 import React, { PureComponent, Fragment } from 'react';
 import moment from 'moment';
 import styles from './index.less';
 import { stat } from 'fs';
 
 
-
+const { Option } =  Select;
 const EditableCell = ({ editable, value, onChange }) => (
   <div>
     {editable
@@ -21,6 +21,7 @@ class MemTab extends PureComponent {
         selectedRowKeys: [],
         totalCallNo: 0,
         data: [],
+        category:[],
         status: false,
         disabled: true
       };
@@ -54,18 +55,7 @@ class MemTab extends PureComponent {
         title: '类型',
         dataIndex: 'categorymeminfo',
         width: '15%',
-        render: (text, record) => {
-          //this.renderColumns(text.title, record, 'Categorycpuinfo')
-          console.log(text)
-          let title = text == undefined ? "" : text.title
-          return (
-            <EditableCell
-              editable={record.editable}
-              value={title}
-              onChange={value => this.handleChange(value, record.ID, column)}
-            />
-          )
-        },
+        render: (text, record) => this.renderSelect(text,record,'categorymeminfo',this.state.category),
     },{
         title: '操作',
         dataIndex: 'ID',
@@ -117,7 +107,13 @@ class MemTab extends PureComponent {
         // }
         if (nextProps.ghardware.data) {
             this.setState({
-                data: nextProps.ghardware.data.list,
+              data: nextProps.ghardware.data.list.map((item)=>{
+                if(item.tabStatus==undefined){
+                  item.tabStatus=true
+                }
+                return item
+              }),
+              category: nextProps.ghardware.data.category
             })
         }
       }
@@ -132,7 +128,35 @@ class MemTab extends PureComponent {
           />
         );
       }
-
+      renderSelect(text, record, column,category) {
+        console.log(text)
+        return (
+          <Select 
+            defaultValue={text == undefined ? '' : text.title }
+            disabled={record.tabStatus} 
+            style={{ width: 'auto' }} 
+            onChange={(value)=>{this.handSelectChange(value,record.ID,column,text.title)}}
+          >
+            {category==undefined? [] : category.map((item)=>{
+              return (<Option key={item.ID} value={item.ID}>{item.title}</Option>)
+            })}
+          </Select>
+        );
+      }
+      handSelectChange(value, key, column,title){
+        const newData = [...this.state.data];
+        const target = newData.filter(item => key === item.ID)[0];
+        
+        if (target) {
+          target[column] = {...target[column],title,newId:value};
+          this.setState({ 
+            data: newData,
+            disabled:false
+          });
+        }
+        console.log(target)
+        console.log(value, key, column,title)
+      }
       handleStatusChange = (key,e) => {
         const newData = [...this.state.data];
         const target = newData.filter(item => key === item.ID)[0];
@@ -186,9 +210,14 @@ class MemTab extends PureComponent {
         if (target) {
           target.editable = true;
           this.setState({ 
-              data: newData,
-              disabled: false
-             });
+            data: newData.map((item)=>{
+              if(item.ID==key){
+                item.tabStatus=false
+              }
+              return item
+            }),
+            disabled: false
+          });
         }
       }
 
@@ -199,9 +228,14 @@ class MemTab extends PureComponent {
           delete target.editable;
           target.enable = this.state.status
           this.setState({ 
-              data: newData,
-              disabled: true
-             });
+            data: newData.map((item)=>{
+              if(item.ID==key){
+                item.tabStatus=true
+              }
+              return item
+            }),
+            disabled: true
+          });
           this.cacheData = newData.map(item => ({ ...item }));
           console.log('target',target)
           this.props.handleSaveData(target)
@@ -215,7 +249,12 @@ class MemTab extends PureComponent {
           Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
           delete target.editable;
           this.setState({ 
-            data: newData,
+            data: newData.map((item)=>{
+              if(item.ID==key){
+                item.tabStatus=true
+              }
+              return item
+            }),
             disabled: true
          });
         }

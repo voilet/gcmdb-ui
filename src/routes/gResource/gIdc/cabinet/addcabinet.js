@@ -18,10 +18,9 @@ import {
   } from 'antd';
 
 
-  const Option = Select.Option
-const FormItem = Form.Item;
+const Option = Select.Option
 
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+const FormItem = Form.Item;
 
 const { TextArea } = Input;
 
@@ -47,11 +46,10 @@ export default class Addcabinet extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    // clean state
     if (nextProps.cabinet.data) {
         this.setState({
-          bay_heights:nextProps.cabinet.data.bay_heights == undefined ? [] : nextProps.cabinet.data.bay_heights,
-          idc_info_lets:nextProps.cabinet.data.idc_info_lets == undefined ? [] : nextProps.cabinet.data.idc_info_lets
+          bay_heights: nextProps.cabinet.data.bay_heights == undefined ? [] : nextProps.cabinet.data.bay_heights,
+          idc_info_lets: nextProps.cabinet.data.idc_info_lets == undefined ? [] : nextProps.cabinet.data.idc_info_lets
         })
     }
   }
@@ -59,102 +57,63 @@ export default class Addcabinet extends PureComponent {
   handleAddIDC = (e) => {
 
     const form = this.props.form;
-    console.log(form)
-    // form.validateFields((err) => {
-    //     if (err) return;
-    //     console.log("err-------------------------------",err)
-    // });
+    const { enable } = this.state
     e.preventDefault();
       form.validateFields((err, values) => {
       
       if (!err) {
+        if(uuid>0){
+        const names = form.getFieldValue('names') ? form.getFieldValue('names') : ""
+        const selectprovider = form.getFieldValue('selectprovider') ? form.getFieldValue('selectprovider') : ""
+        let data = selectprovider.map((item,index)=>{
+          return {
+            bay_name:`bay${index+1}`,
+            height_id:item
+          }
+        })
         const fields = {
-          'idc_name': form.getFieldValue('idc_name')? form.getFieldValue('idc_name') :  '',
-          'alias': form.getFieldValue('alias')? form.getFieldValue('alias') :  '',
-          'band_width':form.getFieldValue('band_width')? form.getFieldValue('band_width') : "",
-          'phone':form.getFieldValue('phone')? form.getFieldValue('phone') : "",
-          'addresses':form.getFieldValue('addresses')? form.getFieldValue('addresses') : "",
-          'ip_range':form.getFieldValue('phone')? form.getFieldValue('ip_range') : "",
-          'remarks':form.getFieldValue('phone')? form.getFieldValue('remarks') : "",
-          'enable':form.getFieldValue('enable')? form.getFieldValue('enable') : "",
+          'cabinet_name': form.getFieldValue('cabinet_name')? form.getFieldValue('cabinet_name') :  '',
+          'power': form.getFieldValue('power')? form.getFieldValue('power') :  '',
+          'idcid':form.getFieldValue('idcid')? form.getFieldValue('idcid') : "",
+          'cableport':form.getFieldValue('cableport')? form.getFieldValue('cableport') : "",
+          'capacity':form.getFieldValue('capacity')? form.getFieldValue('capacity') : "",
+          'status':enable,
+          'bay_details':JSON.stringify({data})
          }
      
-         this.props.dispatch({
-           type: 'gidc/addIDC',
-           payload: {
-             description: fields,
-           },
-         });
-     
-         message.success('添加成功');
-         this.setState({
-           modalVisible: false,
-         });
-     
-         this.props.dispatch({
-             type: 'gidc/getIDCList',
-             payload: '',
-         });
-         form.resetFields();
+        this.props.dispatch({
+          type: 'gidc/addCabinet',
+          payload: {
+            description: fields,
+          },
+        });
+
+        message.success('添加成功');
+
+        this.setState({
+          modalVisible: false,
+        });
+    
+        uuid=0;
+
+        form.resetFields();
+
+        }else{
+          message.error('请至少添加一个bays信息');
+        }
       };
     });
   
     
   }
 
-  handleLineStatus = e => {
-    //已上线
-    if ( e.target.value == 1 ) {
-      this.setState({
-        showFormProline: false,
-        valueProline: e.target.value
-        })
-    } else {
-      this.setState({
-        showFormProline: true,
-        valueProline: e.target.value
-      })
-    } 
-  }
 
-
-  handleSelectLineValue = (value) => {
-    this.setState({
-      selectedLineValue: value,
-    });
-  }
-
-  getFields() {
-    const count = this.state.expand ? 10 : 8;
-    const { getFieldDecorator } = this.props.form;
-    const children = [];
-    for (let i = 0; i < 10; i++) {
-      children.push(
-        <Col span={12} key={i} style={{ display: i < count ? 'block' : 'none' }}>
-          <FormItem label={`Field ${i}`}>
-            {getFieldDecorator(`field-${i}`, {
-              rules: [{
-                required: true,
-                message: 'Input something!',
-              }],
-            })(
-              <Input placeholder="placeholder" />
-            )}
-          </FormItem>
-        </Col>
-      );
-    }
-    return children;
-  }
 
   add = () => {
     const { form } = this.props;
-    // can use data-binding to get
     const keys = form.getFieldValue('keys');
     const nextKeys = keys.concat(uuid);
     uuid++;
-    // can use data-binding to set
-    // important! notify form to detect changes
     form.setFieldsValue({
       keys: nextKeys,
     });
@@ -162,50 +121,38 @@ export default class Addcabinet extends PureComponent {
 
   remove = (k) => {
     const { form } = this.props;
-    // can use data-binding to get
     const keys = form.getFieldValue('keys');
-    // We need at least one passenger
     if (keys.length === 1) {
       return;
     }
-
-    // can use data-binding to set
+    uuid--;
     form.setFieldsValue({
       keys: keys.filter(key => key !== k),
     });
   }
   emptyClick = (k) =>{
     const { form } = this.props;
-    const names = form.getFieldValue('names');
     const selectprovider = form.getFieldValue('selectprovider');
-    // let selectproviderNewObj = {}
-    // for(const key in selectprovider){
-    //   if( key == "" )
-    //   if( key == k ){
-    //     selectproviderNewObj[key] = ''
-    //   }else{
-    //     selectproviderNewObj[key] = selectprovider[key]
-    //   }
-    // }
     form.setFieldsValue({
-      names: names.map((key,ind)=>{
-        if(ind==k){
+      selectprovider: selectprovider.map((item,key)=>{
+        if(key==k){
           return '';
-        }else{
-          return key;
-        }     
+        }
+        return item;
       })
     });
-    console.log(form.getFieldValue('names'))
-    console.log(form.getFieldValue('selectprovider'))
 
+  }
+  handleStatusChange(val){
+    this.setState({
+      enable:val
+    })
   }
 
   render() {
     const { submitting,form,dispatch} = this.props;
     const {enable} = this.state
     const { getFieldDecorator, getFieldValue } = this.props.form;
-    console.log('dispatch',this.props)
     
     const formItemLayout = {
       labelCol: {
@@ -225,84 +172,75 @@ export default class Addcabinet extends PureComponent {
     };
     
     getFieldDecorator('keys', { initialValue: [] });
+
     const keys = getFieldValue('keys');
     const formItems = keys.map((k, index) => {
       return (
         <FormItem  {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-        // label={index === 0 ? 'Passengers' : ''}
-        required={false}
-        key={k}
+          required={false}
+          key={k}
        >
-        <Col>
-        one 
-        </Col>
         <Row type="flex" justify="start" >
-          <Col>
-          {getFieldDecorator(`names[${k}]`, {
-              validateTrigger: ['onChange', 'onBlur'],
-              rules: [{
-                required: true,
-                whitespace: true,
-                message: "Please input passenger's name or delete this field.",
-              }],
-            })(
-              <Input placeholder="passenger name" style={{ width: '70%', marginRight: 8 }} />
-            )}
         
+          <Col>
+            <FormItem >
+              {
+                getFieldDecorator(`names[${k}]`, {
+                  validateTrigger: ['onChange', 'onBlur'],
+                  initialValue:`bay${k+1}`,
+                  rules: [{
+                    required: true,
+                    whitespace: true,
+                    message: "Please input passenger's name or delete this field.",
+                  }],
+                })(
+                  <Input placeholder="请输入bay名" disabled style={{ width: '70%', marginRight: 8 }} />
+                )
+              }
+            </FormItem>
           </Col>
           <Col>
-          {getFieldDecorator(`selectprovider[${k}]`,{
+            <FormItem >
+              {
+                getFieldDecorator(`selectprovider[${k}]`,{
                   rules: [{
                     required: true,
                   }],
-                }
-                )(
+                })(
                   <Select
-                  // mode="multiple"
-                    placeholder="选择运营商"
+                    placeholder="选择高度"
                     style={{ width: 120 }}
-                    //onChange = {this.handleSelectGroupValue} 
-                    //optionFilterProp="children"
-                  // filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                   {
                     this.state.bay_heights.map((obj)=>{
-                      return (<Option key={obj.ID} value={obj.height}>{obj.height}</Option>)
+                      return (<Option key={obj.ID} value={obj.ID}>{obj.height}</Option>)
                     })
                   }
-                    
                   </Select>
-
-                )}
-
+                )
+              }
+            </FormItem>      
           </Col>
           <Col offset={2}>
-            {keys.length > 1 ? (
+            {
+              keys.length > 1 ? (
                 <Icon
                   className="dynamic-delete-button"
                   type="minus-circle-o"
                   disabled={keys.length === 1}
                   onClick={() => this.remove(k)}
                 />
-              ) : null}
+              ) : null
+            }
           </Col>
           <Col offset={2}>
             <Button size="small" type="default" onClick={()=>{this.emptyClick(k)}}>
-                empty
+              empty
             </Button>
           </Col>
         </Row>
       </FormItem>
       )
-       
-     
-     
-
-         
-        
-       
-    
-        
     });
 
 
@@ -321,207 +259,132 @@ export default class Addcabinet extends PureComponent {
           width={600}
           onCancel={() => this.handleModalVisible()}
         >
-        <Row>
-            <Divider> 机 柜 </Divider>
-        </Row>
-        <Row gutter={24}>    
-          <Col span={12} key ={1} style={{ display: 'block' }}>
-          <FormItem label= "机柜名称">
-            {getFieldDecorator(`field-${0}`, {
-              rules: [{
-                required: true,
-                message: 'Input something!',
-              }],
-            })(
-              <Input placeholder="placeholder" />
-            )}
-          </FormItem>
-        </Col>
-        <Col span={12} key ={2} style={{ display: 'block' }}>
-          <FormItem label="机柜容量">
-            {getFieldDecorator(`field-${1}`, {
-              rules: [{
-                required: true,
-                message: 'Input something!',
-              }],
-            })(
-              <Input placeholder="placeholder" />
-            )}
-          </FormItem>
-        </Col>
-        </Row>
-
-        <Row gutter={24}>    
-          <Col span={12} key ={1} style={{ display: 'block' }}>
-          <FormItem label="所属机房">
-          {getFieldDecorator('selectprovider',{
-              rules: [{
-                required: true
-              }],
-            }
-            )(<Select 
-                style={{ width: 264 }} //onChange={handleChange}
-                placeholder="所属机房"
-                >
+          <Row>
+              <Divider> 机 柜 </Divider>
+          </Row>
+          <Row gutter={24}>    
+            <Col span={12} key ={1} style={{ display: 'block' }}>
+              <FormItem label= "机柜名称">
                 {
-                  this.state.idc_info_lets.map((obj,ind)=>{
-                    return (<Option key={obj.idc_id} value={obj.idc_name}>{obj.idc_id}</Option>)
-                  })
+                  getFieldDecorator(`cabinet_name`, {
+                    rules: [{
+                      required: true,
+                      message: 'Input something!',
+                    }],
+                  })(
+                    <Input placeholder="请输入机柜名称" />
+                  )
                 }
-              </Select>
-            )}
-          </FormItem>
-        </Col>
-        <Col span={12} key ={2} style={{ display: 'block' }}>
-        <FormItem label="网口数">
-            {getFieldDecorator(`field-${1}`, {
-              rules: [{
-                required: true,
-                message: 'Input something!',
-              }],
-            })(
-              <Input placeholder="placeholder" />
-            )}
-          </FormItem>
-        </Col>
-        </Row>
+              </FormItem>
+            </Col>
+            <Col span={12} key ={2} style={{ display: 'block' }}>
+              <FormItem label="机柜电量">
+                {
+                  getFieldDecorator(`power`, {
+                    rules: [{
+                      required: true,
+                      message: 'Input something!',
+                    }],
+                  })(
+                    <Input placeholder="请输入机柜电量" />
+                  )
+                }
+              </FormItem>
+            </Col>
+          </Row>
 
-      <Row gutter={24}>    
-          <Col span={12} key ={1} style={{ display: 'block' }}>
-          <FormItem label="机柜容量">
-            {getFieldDecorator(`field-${0}`, {
-              rules: [{
-                required: true,
-                message: 'Input something!',
-              }],
-            })(
-              <Input placeholder="placeholder" />
-            )}
-          </FormItem>
-        </Col>
-        <Col span={12} key ={2} style={{ display: 'block' }}>
-          <FormItem label="机柜状态">
-          <Switch 
-                    checkedChildren="通电" 
-                    unCheckedChildren="未通电" 
-                    checked={enable} 
-                    onChange={(e) => this.handleStatusChange(record.ID,e)} 
-                    disabled={this.state.disabled} />
-          </FormItem>
-        </Col>
-        </Row>
+          <Row gutter={24}>    
+            <Col span={12} key ={1} style={{ display: 'block' }}>
+              <FormItem label="所属机房">
+              {getFieldDecorator('idcid',{
+                  rules: [{
+                    required: true
+                  }],
+                }
+                )(<Select 
+                    style={{ width: 264 }} 
+                    placeholder="请选择所属机房"
+                  >
+                    {
+                      this.state.idc_info_lets.map((obj,ind)=>{
+                        return (<Option key={ind} value={obj.idc_id}>{obj.idc_name}</Option>)
+                      })
+                    }
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col span={12} key ={2} style={{ display: 'block' }}>
+              <FormItem label="网口数">
+                {
+                  getFieldDecorator(`cableport`, {
+                    rules: [{
+                      required: true,
+                      message: 'Input something!',
+                    }],
+                  })(
+                    <Input placeholder="请输入网口数" />
+                  )
+                }
+              </FormItem>
+            </Col>
+          </Row>
 
-     <Row gutter={24}>    
-          <Col span={12} key ={1} style={{ display: 'block' }}>
-          <FormItem label="空闲机架">
-            ddddddd xxxx
-          </FormItem>
-        </Col>
-        <Col span={12} key ={2} style={{ display: 'block' }}>
-          <FormItem label="空闲网口">
-              sxxxxx
-          </FormItem>
-        </Col>
-        </Row>
+          <Row gutter={24}>    
+            <Col span={12} key ={1} style={{ display: 'block' }}>
+              <FormItem label="机柜容量">
+                {
+                  getFieldDecorator(`capacity`, {
+                    rules: [{
+                      required: true,
+                      message: 'Input something!',
+                    }],
+                  })(
+                    <Input placeholder="请输入机柜容量" />
+                  )
+                }
+              </FormItem>
+            </Col>
+            <Col span={12} key ={2} style={{ display: 'block' }}>
+              <FormItem label="机柜状态">
+                <Switch 
+                  checkedChildren="通电" 
+                  unCheckedChildren="未通电" 
+                  checked={enable} 
+                  onChange={(value) => this.handleStatusChange(value)} 
+                  disabled={this.state.disabled} 
+                />
+              </FormItem>
+            </Col>
+          </Row>
 
-        <Row>
-            <Divider>bays</Divider>
-        </Row>
+          <Row gutter={24}>    
+            <Col span={12} key ={1} style={{ display: 'block' }}>
+              <FormItem label="空闲机架">
+                ddddddd xxxx
+              </FormItem>
+            </Col>
+            <Col span={12} key ={2} style={{ display: 'block' }}>
+              <FormItem label="空闲网口">
+                sxxxxx
+              </FormItem>
+            </Col>
+          </Row>
 
-        <Row gutter={24}>     
-          <Form >
-            {formItems}
-            <FormItem {...formItemLayoutWithOutLabel}>
-              <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
-                <Icon type="plus" /> 添加机架
-              </Button>
-            </FormItem>
-          </Form>
-        </Row>
-          {/* <FormItem
-            {...formItemLayout}
-            label="名称"
-          >
-            {getFieldDecorator('idc_name', {
-              rules: [{
-                required: true, message: '请输入机房名称',
-              }],
-            })(
-              <Input placeholder="请输入机房名称" />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="机房别名"
-          >
-            {getFieldDecorator('alias', {
-              rules: [{
-                required: true, message: '请输入机房别名',
-              }],
-            })(
-              <Input placeholder="请输入机房别名，主机名使用" />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="带宽"
-          >
-            {getFieldDecorator('band_width', {
-              rules: [{
-                required: true, message: '请输入机房带宽',
-              }],
-            })(
-              <Input placeholder="请输入机房带宽" />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="联系电话"
-          >
-            {getFieldDecorator('phone', {
-              rules: [{
-                required: true, message: '请输入机房联系电话',
-              }],
-            })(
-              <Input placeholder="请输入机房联系电话" />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="地址"
-          >
-            {getFieldDecorator('addresses', {
-              rules: [{
-                required: true, message: '请输入机房地址',
-              }],
-            })(
-              <Input placeholder="请输入机房地址" />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="ip地址段"
-          >
-            {getFieldDecorator('ip_range', {
-              rules: [{
-                required: true, message: '描述',
-              }],
-            })(
-              <TextArea style={{ minHeight: 32 }} placeholder="ip地址段 10.1.0.0/16" rows={4} />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="描述"
-          >
-            {getFieldDecorator('remarks', {
-              rules: [{
-                required: true, message: '描述',
-              }],
-            })(
-              <TextArea style={{ minHeight: 32 }} placeholder="机房描述" rows={4} />
-            )}
-          </FormItem> */}
+          <Row>
+              <Divider>bays</Divider>
+          </Row>
+
+          <Row gutter={24}>     
+            <Form >
+              {formItems}
+              <FormItem {...formItemLayoutWithOutLabel}>
+                <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
+                  <Icon type="plus" /> 添加机架
+                </Button>
+              </FormItem>
+            </Form>
+          </Row>
         </Modal>
     </div>
     );

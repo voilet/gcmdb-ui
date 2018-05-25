@@ -2,8 +2,6 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'dva';
 import {
-  Row,
-  Col,
   Card,
   Form,
   Input,
@@ -12,7 +10,6 @@ import {
   Dropdown,
   Menu,
   DatePicker,
-  message,
   Divider
 } from 'antd';
 
@@ -37,20 +34,20 @@ export default class Listmem extends PureComponent {
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
-      type: 'ghardware/queryHardwareComponents',
-      payload:`mem`
+      type: 'ghardware/queryHardwareComponentMem',
+      payload: `mem`
     });
 
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = {...obj};
+      const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
@@ -66,7 +63,7 @@ export default class Listmem extends PureComponent {
     }
 
     dispatch({
-      type: 'ghardware/queryHardwareComponents',
+      type: 'ghardware/queryHardwareComponentMem',
       payload:`mem`
     });
   }
@@ -81,28 +78,34 @@ export default class Listmem extends PureComponent {
 
   //保存编辑数据
   handleSaveData = (val) => {
-    // this.props.dispatch({
-    //   type: 'ghardware/modifyIDC',
-    //   payload: val 
-    // });
-  }
-  
-  //删除单条数据
+    const { ID, description, mainfrequency, num, title, volume, categorymeminfo } = val
+        this.props.dispatch({
+          type: 'ghardware/modifyHardwareComponents',
+          payload: {
+            ID,
+            componentname:'mem',
+            description,
+            mainfrequency,
+            category: sval.categorymeminfo.newId == undefined ? val.categorymeminfo.ID : val.categorymeminfo.newId,
+            num,
+            title,
+            volume
+          } 
+        });
+      }
  //删除单条数据
   handleDeleteData = (val) => {
-    console.log(val)
     const { ID } = val
-    //false是逻辑删除  true是物理删除
-    // infolist:{"componentname": "cpu", "ids": [1, 2]}
-    let obj = {},ids=[]
-    obj.componentname='mem'
+    let ids=[]
     ids.push(ID)
-    obj.ids=ids
     this.props.dispatch({
       type: 'ghardware/deleteHardwareComponents',
       payload: {
-        tag:false,
-        infolist:JSON.stringify(obj)
+        tag: false,
+        infolist: JSON.stringify({
+          componentname: 'mem',
+          ids
+        })
       }
     });
   }
@@ -112,9 +115,7 @@ export default class Listmem extends PureComponent {
  
   render() {
     const { ghardware } = this.props;
-    const {selectedRows} = this.state;
-    console.log("this.props",this.props)
-
+    const { selectedRows } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
         <Menu.Item key="approval">批量开启</Menu.Item>
@@ -125,34 +126,34 @@ export default class Listmem extends PureComponent {
       <PageHeaderLayout title="内存套餐">
         <Card bordered={false}>
           <div className={styles.tableList}>  
-          <div style={{height:40}}>
-            <AddMEMORY
-              //dispatch = {this.props.dispatch}
-              hardwaredata = {ghardware.allinfo}
+            <div style={{height:40}}>
+              <AddMEMORY
+                dispatch = {this.props.dispatch}
+                hardwaredata = {ghardware.memInfo}
+                />
+                {
+                  selectedRows.length > 0 && (
+                    <div >
+                      <Dropdown overlay={menu} >
+                        <Button >
+                          更多操作 <Icon type="down"/>
+                        </Button>
+                      </Dropdown>
+                    </div>
+                  )
+                }  
+            </div> 
+            <Divider>  内存数据  </Divider>
+              <CabTable
+                //selectedRows={selectedRows}
+                //loading={ruleLoading}
+                ghardware={ghardware.memInfo}
+                handleSaveData = {this.handleSaveData}
+                handleDeleteData = {this.handleDeleteData}
+                //handleSelectRows={this.handleSelectRows}
+                //onChange={this.handleStandardTableChange}
               />
-              {
-                selectedRows.length > 0 && (
-                  <div >
-                    <Dropdown overlay={menu} >
-                      <Button >
-                        更多操作 <Icon type="down"/>
-                      </Button>
-                    </Dropdown>
-                  </div>
-                )
-              }  
-          </div> 
-          <Divider>  内存数据  </Divider>
-            <CabTable
-              selectedRows={selectedRows}
-              //loading={ruleLoading}
-              ghardware={ghardware.allinfo}
-              handleSaveData = {this.handleSaveData}
-              handleDeleteData = {this.handleDeleteData}
-              handleSelectRows={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-            />
-        </div>
+          </div>
         </Card>
       </PageHeaderLayout>
     );

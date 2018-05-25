@@ -34,7 +34,7 @@ import {
       //查询用户列表
       *queryUser({ payload }, { call, put }) {
         const response = yield call(queryUser, payload) 
-        if (response.code == 200) {
+        if (response.status  == 200) {
           yield put({
             type: 'userSave',
             payload: response,
@@ -46,7 +46,7 @@ import {
       //查询用户密码queryHostPassword
       *queryHostPassword({ payload }, { call, put }) {
         const response = yield call(queryHostPassword, payload) 
-        if (response.code == 200) {
+        if (response.status  == 200) {
           yield put({
             type: 'passwordSave',
             payload: response,
@@ -58,7 +58,7 @@ import {
       //查询主机基础信息
       *queryHost({ payload }, { call, put }) {
         const response = yield call(queryHosts, payload) 
-        if (response.code == 200) {
+        if (response.status  == 200) {
           yield put({
             type: 'hostinfo',
             payload: response,
@@ -98,7 +98,7 @@ import {
       //查询主机详细信息
       *queryHostDetail({ payload }, { call, put }) {
         const response = yield call(queryHostsDetail, payload) 
-        if (response.code == 200) {
+        if (response.status  == 200) {
           yield put({
             type: 'hardwareComponentsSave',
             payload: response,

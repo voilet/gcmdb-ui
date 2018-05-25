@@ -187,14 +187,7 @@ class StandardTable extends PureComponent {
         payload: value
       });
     }
-
-    
-
-    
-    
-  }
-  handSelectChange=(value)=>{
-    console.log(value)
+  
   }
   canceldelete(key) {
     const newData = [...this.state.data];

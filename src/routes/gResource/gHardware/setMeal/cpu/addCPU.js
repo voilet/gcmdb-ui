@@ -18,9 +18,8 @@ import {
 
 const FormItem = Form.Item;
 
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
-
 const { TextArea } = Input;
+
 const Option = Select.Option
 
 @connect((props) => (props))
@@ -31,8 +30,7 @@ export default class AddCPU extends PureComponent {
   
   state = {
     modalVisible: false,
-    selectedGroupValue: {},
-    enable : false
+    selectedGroupValue: {}
   };
 
 
@@ -48,36 +46,34 @@ export default class AddCPU extends PureComponent {
 
     const form = this.props.form;
 
-      e.preventDefault();
-      form.validateFields((err, values) => {
-      console.log(err)
+    e.preventDefault();
+
+    form.validateFields((err, values) => {
       if (!err) {
         const fields = {
-          'title': form.getFieldValue('title')? form.getFieldValue('title') :  '',
-          'num': form.getFieldValue('num')? form.getFieldValue('num') :  '',
-          'mainfrequency':form.getFieldValue('mainfrequency')? form.getFieldValue('mainfrequency') : "",
-          'cores':form.getFieldValue('cores')? form.getFieldValue('cores') : "",
-          'description':form.getFieldValue('description')? form.getFieldValue('description') : "",
-          'componentname':'cpu',
-          'category':form.getFieldValue('category')? form.getFieldValue('category') : ""
+          'title': form.getFieldValue('title') ? form.getFieldValue('title') :  '',
+          'num': form.getFieldValue('num') ? form.getFieldValue('num') :  '',
+          'mainfrequency': form.getFieldValue('mainfrequency') ? form.getFieldValue('mainfrequency') : "",
+          'cores': form.getFieldValue('cores') ? form.getFieldValue('cores') : "",
+          'description': form.getFieldValue('description') ? form.getFieldValue('description') : "",
+          'category': form.getFieldValue('category') ? form.getFieldValue('category') : "",
+          'componentname': 'cpu'
         }
-        // debugger
-        console.log(fields)
+
         this.props.dispatch({
-           type: 'ghardware/addHardwareComponents',
-           payload: {
-            description:fields
-           }
+          type: 'ghardware/addHardwareComponents',
+          payload: {
+            description: fields
+          }
          });
         
         message.success('添加成功');
+
         this.setState({
-           modalVisible: false,
-           enable: false
-         });
+          modalVisible: false
+        });
      
-      
-         form.resetFields();
+        form.resetFields();
       };
     });
   
@@ -120,70 +116,80 @@ export default class AddCPU extends PureComponent {
             {...formItemLayout}
             label="名称"
           >
-            {getFieldDecorator('title', {
-              rules: [{
-                required: true, message: '请输入CPU名称',
-              }],
-            })(
-              <Input placeholder="请输入CPU名称" />
-            )}
+            {
+              getFieldDecorator('title', {
+                rules: [{
+                  required: true, message: '请输入CPU名称',
+                }],
+              })(
+                <Input placeholder="请输入CPU名称" />
+              )
+            }
           </FormItem>
 
           <FormItem
             {...formItemLayout}
             label="数量"
           >
-            {getFieldDecorator('num', {
-              rules: [{
-                required: true, message: '请输入CPU数量',
-              }],
-            })(
-              <Input placeholder="请输入CPU数量" />
-            )}
+            {
+              getFieldDecorator('num', {
+                rules: [{
+                  required: true, message: '请输入CPU数量',
+                }],
+              })(
+                <Input placeholder="请输入CPU数量" />
+              )
+            }
           </FormItem>
 
           <FormItem
             {...formItemLayout}
             label="频率"
           >
-            {getFieldDecorator('mainfrequency', {
-              rules: [{
-                required: true, message: '请输入CPU频率',
-              }],
-            })(
-              <Input placeholder="请输入CPU频率" />
-            )}
+            {
+              getFieldDecorator('mainfrequency', {
+                rules: [{
+                  required: true, message: '请输入CPU频率',
+                }],
+              })(
+                <Input placeholder="请输入CPU频率" />
+              )
+            }
           </FormItem>
 
           <FormItem
             {...formItemLayout}
             label="核数"
           >
-            {getFieldDecorator('cores', {
-              rules: [{
-                required: true, message: '请输入CPU核数',
-              }],
-            })(
-              <Input placeholder="请输入CPU核数" />
-            )}
+            {
+              getFieldDecorator('cores', {
+                rules: [{
+                  required: true, message: '请输入CPU核数',
+                }],
+              })(
+                <Input placeholder="请输入CPU核数" />
+              )
+            }
           </FormItem>
 
           <FormItem
             {...formItemLayout}
             label="类型"
           >
-            {getFieldDecorator('category', {
-              rules: [{
-                required: true, message: '请选择CPU类型',
-              }],
-            })(
-              <Select
-                style={{ width: '100%' }}
-                placeholder="请选择CPU类型"
-              >
-                {categoryData.map(item=>(<Option key={item.ID} value={Number(item.ID)}>{item.title}</Option>))}
-              </Select>
-            )}
+            {
+              getFieldDecorator('category', {
+                rules: [{
+                  required: true, message: '请选择CPU类型',
+                }],
+              })(
+                <Select
+                  style={{ width: '100%' }}
+                  placeholder="请选择CPU类型"
+                >
+                  {categoryData.map(item=>(<Option key={item.ID} value={Number(item.ID)}>{item.title}</Option>))}
+                </Select>
+              )
+            }
           </FormItem>
          
          
@@ -191,13 +197,13 @@ export default class AddCPU extends PureComponent {
             {...formItemLayout}
             label="描述"
           >
-            {getFieldDecorator('description')(
-              <TextArea style={{ minHeight: 32 }} placeholder="CPU描述" rows={4} />
-            )}
+            {
+              getFieldDecorator('description')(
+                <TextArea style={{ minHeight: 32 }} placeholder="CPU描述" rows={4} />
+              )
+            }
           </FormItem>
 
-
-        
         </Modal>
     </div>
     );

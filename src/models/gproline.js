@@ -12,7 +12,8 @@ import {  querProjectLine,
           querGroupbyLId,
           querProjectbyGId,
           queryTree,
-          modifyProject
+          modifyProject,
+          deleteProject
         } from '../services/ProjectMangementAPI/Project/Project'
 
 import {message} from 'antd'
@@ -124,13 +125,17 @@ export default {
       });
     
     },
-
+    //删除产品列表
+    *deleteProject({ payload }, { call, put }) {
+      yield call(deleteProject, payload);
+      yield put({ type: 'reloadProject'})
+    },
     //重新加载列表
     *reloadProject(action, { put, select }) {
      // const idc = yield select(state => state.gidc.idc );
       yield put({ type: 'getProjectList', payload: { } });
     },
-    //编辑产品线列表
+    //编辑产品列表
     *modifyProject({ payload }, { call, put }) {
       yield call(modifyProject, payload);
       yield put({ type: 'reloadProject'})
@@ -138,7 +143,7 @@ export default {
     //获取树节点
     *getTree({ payload }, { call, put }) {
       const response = yield call(queryTree, payload);
-      if (response.code == 200) {
+      if (response.status  == 200) {
         yield put({
           type: 'saveTree',
           payload: response,

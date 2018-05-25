@@ -71,7 +71,7 @@ export default {
     // 获取机房列表
     *queryIDC({ payload }, { call, put }) {
       const response = yield call(queryIDC, payload) 
-      if (response.code == 200) {
+      if (response.status  == 200) {
         yield put({
           type: 'idcSave',
           payload: response,
@@ -97,9 +97,7 @@ export default {
         stateName = 'querySave';
         break;
       }
-      console.log(payloadObj.tag)
-      console.log(stateName)
-      if (response.code == 200) {
+      if (response.status  == 200) {
         yield put({
           type: stateName,
           payload: response,
@@ -136,7 +134,7 @@ export default {
       //查询机柜信息
     *queryCabinet({ payload }, { call , put}) {
         const response =   yield call(queryCabinet, payload);
-        if (response.code == 200) {
+        if (response.status  == 200) {
           yield put({
             type: 'cabinetSave',
             payload: response || [],
@@ -148,7 +146,7 @@ export default {
 
       //添加机柜信息
       *addCabinet({ payload }, { call, put }) {
-        yield call(addCabinet, payload.field);
+        yield call(addCabinet, payload.description);
         yield put({ type: 'reloadCabinet'})
       },
   
@@ -159,7 +157,7 @@ export default {
       },
 
       //修改机柜信息
-      *modifyCabinet({ payload }, { call }) {
+      *modifyCabinet({ payload }, { call, put }) {
         yield call(modifyCabinet, payload);
         yield put({ type: 'reloadCabinet'})
       },
@@ -175,7 +173,7 @@ export default {
       //查询bays信息
       *queryBays({ payload }, { call }) {      
         const response =   yield call(queryBay, payload);
-        if (response.code == 200) {
+        if (response.status  == 200) {
           yield put({
             type: 'querySave',
             payload: response || [],
@@ -212,7 +210,7 @@ export default {
       //查询运营商信息
       *queryProvider({ payload }, { call,put }) {
         const response = yield call(queryProvider, payload) 
-        if (response.code == 200) {
+        if (response.status  == 200) {
           yield put({
             type: 'providerSave',
             payload: response || [],
@@ -251,7 +249,7 @@ export default {
      //查询IP资源池
      *queryIpResource({ payload }, { call,put }) {
       const response = yield call(queryIpResource, payload) 
-      if (response.code == 200) {
+      if (response.status  == 200) {
         yield put({
           type: 'IpResourceSave',
           payload: response || [],
@@ -265,7 +263,7 @@ export default {
      *queryIpClassify({ payload }, { call,put }) {
       const response = yield call(queryIpClassify, payload) 
    
-      if (response.code == 200) {
+      if (response.status  == 200) {
         yield put({
           type: 'ipClassify',
           payload: response || [],
@@ -277,9 +275,8 @@ export default {
 
      //检查IP资源池
      *checkIpResource({ payload }, { call,put }) {
-       console.log("checkIpResource",payload)
       const response = yield call(checkIpResource, payload) 
-      if (response.code == 200) {
+      if (response.status  == 200) {
         yield put({
           type: 'ipCheck',
           payload: response,

@@ -170,16 +170,15 @@ export default class TableList extends PureComponent {
     //false是逻辑删除  true是物理删除
     // infolist:{"componentname": "cpu", "ids": [1, 2]}
     let obj = {},ids=[]
-    obj.componentname='disk'
     ids.push(ID)
     obj.ids=ids
-    // this.props.dispatch({
-    //   type: 'ghardware/deleteHardwareComponents',
-    //   payload: {
-    //     tag:false,
-    //     infolist:JSON.stringify(obj)
-    //   }
-    // });
+    this.props.dispatch({
+      type: 'gproline/deleteProject',
+      payload: {
+        tag:false,
+        infolist:JSON.stringify(obj)
+      }
+    });
 }
 
   handleSearch = (e) => {

@@ -1,11 +1,11 @@
-import { Table, Input, Popconfirm, Alert, Badge, Divider, Icon,Switch} from 'antd';
+import { Table, Input, Popconfirm, Alert, Badge, Divider, Icon,Switch, Select } from 'antd';
 import React, { PureComponent, Fragment } from 'react';
 import moment from 'moment';
 import styles from './index.less';
 import { stat } from 'fs';
 
 
-
+const { Option } =  Select;
 const EditableCell = ({ editable, value, onChange }) => (
   <div>
     {editable
@@ -21,6 +21,7 @@ class DiskTab extends PureComponent {
         selectedRowKeys: [],
         totalCallNo: 0,
         data: [],
+        category:[],
         status: false,
         disabled: true
       };
@@ -49,18 +50,7 @@ class DiskTab extends PureComponent {
         title: '类型',
         dataIndex: 'categorydiskinfo',
         width: '15%',
-        render: (text, record) => {
-          //this.renderColumns(text.title, record, 'Categorycpuinfo')
-          console.log(text)
-          let title = text == undefined ? "" : text.title
-          return (
-            <EditableCell
-              editable={record.editable}
-              value={title}
-              onChange={value => this.handleChange(value, record.ID, column)}
-            />
-          )
-        },
+        render: (text, record) => this.renderSelect(text,record,'categorydiskinfo',this.state.category),
     },{
         title: '描述',
         dataIndex: 'description',
@@ -109,15 +99,15 @@ class DiskTab extends PureComponent {
     
       componentWillReceiveProps(nextProps) {
         // clean state
-        if (nextProps.selectedRows.length === 0) {
-          this.setState({
-            selectedRowKeys: [],
-            totalCallNo: 0,
-          });
-        }
         if (nextProps.ghardware.data) {
             this.setState({
-                data: nextProps.ghardware.data.list,
+                data: nextProps.ghardware.data.list.map((item)=>{
+                  if(item.tabStatus==undefined){
+                    item.tabStatus=true
+                  }
+                  return item
+                }),
+                category: nextProps.ghardware.data.category
             })
         }
       }
@@ -132,7 +122,32 @@ class DiskTab extends PureComponent {
           />
         );
       }
-
+      renderSelect(text, record, column,category) {
+        return (
+          <Select 
+            defaultValue={text == undefined ? '' : text.title }
+            disabled={record.tabStatus} 
+            style={{ width: 'auto' }} 
+            onChange={(value)=>{this.handSelectChange(value,record.ID,column,text.title)}}
+          >
+            {category==undefined? [] : category.map((item)=>{
+              return (<Option key={item.ID} value={item.ID}>{item.title}</Option>)
+            })}
+          </Select>
+        );
+      }
+      handSelectChange(value, key, column,title){
+        const newData = [...this.state.data];
+        const target = newData.filter(item => key === item.ID)[0];
+        
+        if (target) {
+          target[column] = {...target[column],title,newId:value};
+          this.setState({ 
+            data: newData,
+            disabled:false
+          });
+        }
+      }
       handleStatusChange = (key,e) => {
         const newData = [...this.state.data];
         const target = newData.filter(item => key === item.ID)[0];
@@ -142,7 +157,6 @@ class DiskTab extends PureComponent {
               data: newData,
              });
         }
-        console.log("data",this.state.data)
       }
 
 
@@ -174,9 +188,6 @@ class DiskTab extends PureComponent {
             disabled:false
                          });
         }
-
-        console.log('handleChange',value)
-        console.log('handleChange',value)
       }
 
       edit(key) {    
@@ -186,7 +197,12 @@ class DiskTab extends PureComponent {
         if (target) {
           target.editable = true;
           this.setState({ 
-              data: newData,
+              data: newData.map((item)=>{
+                if(item.ID==key){
+                  item.tabStatus=false
+                }
+                return item
+              }),
               disabled: false
              });
         }
@@ -199,11 +215,15 @@ class DiskTab extends PureComponent {
           delete target.editable;
           target.enable = this.state.status
           this.setState({ 
-              data: newData,
-              disabled: true
+            data: newData.map((item)=>{
+              if(item.ID==key){
+                item.tabStatus=true
+              }
+              return item
+            }),
+            disabled: true
              });
           this.cacheData = newData.map(item => ({ ...item }));
-          console.log('target',target)
           this.props.handleSaveData(target)
         }
       }
@@ -215,7 +235,12 @@ class DiskTab extends PureComponent {
           Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
           delete target.editable;
           this.setState({ 
-            data: newData,
+            data: newData.map((item)=>{
+              if(item.ID==key){
+                item.tabStatus=true
+              }
+              return item
+            }),
             disabled: true
          });
         }

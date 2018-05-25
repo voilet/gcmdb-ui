@@ -2,8 +2,6 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'dva';
 import {
-  Row,
-  Col,
   Card,
   Form,
   Input,
@@ -12,7 +10,6 @@ import {
   Dropdown,
   Menu,
   DatePicker,
-  message,
   Divider
 } from 'antd';
 
@@ -20,7 +17,6 @@ import CabTable from '../../../../../components/Resource/Disk';
 import PageHeaderLayout from '../../../../../layouts/PageHeaderLayout';
 import AddDisk from './addDisk'
 import styles from './Disk.less'
-import ghardware from '../../../../../models/ghardware';
 
 const FormItem = Form.Item;
 
@@ -38,17 +34,17 @@ export default class Listdisk extends PureComponent {
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
-      type: 'ghardware/queryHardwareComponents',
-      payload:`disk`
+      type: 'ghardware/queryHardwareComponentDisk',
+      payload: `disk`
     });
 
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = {...obj};
@@ -67,8 +63,8 @@ export default class Listdisk extends PureComponent {
     }
 
     dispatch({
-      type: 'ghardware/queryHardwareComponents',
-      payload:`disk`
+      type: 'ghardware/queryHardwareComponentDisk',
+      payload: `disk`
     });
   }
 
@@ -77,52 +73,46 @@ export default class Listdisk extends PureComponent {
     this.setState({
       selectedRows: rows,
     });
-    
   }
 
   //保存编辑数据
   handleSaveData = (val) => {
-    // this.props.dispatch({
-    //   type: 'ghardware/modifyHardwareComponents',
-    //   payload: val 
-    // });
-  }
+    const { ID, description, num, title, volume, rpm, categorydiskinfo } = val
+      this.props.dispatch({
+        type: 'ghardware/modifyHardwareComponents',
+        payload: {
+          ID,
+          componentname: 'disk',
+          description,
+          category: val.categorydiskinfo.newId == undefined ? val.categorydiskinfo.ID : val.categorydiskinfo.newId ,
+          num,
+          rpm,
+          title,
+          volume
+        } 
+      });
+    }
   
   //删除单条数据
   handleDeleteData = (val) => {
-    console.log(val)
     const { ID } = val
-    //false是逻辑删除  true是物理删除
-    // infolist:{"componentname": "cpu", "ids": [1, 2]}
-    let obj = {},ids=[]
-    obj.componentname='disk'
+    let ids = []
     ids.push(ID)
-    obj.ids=ids
     this.props.dispatch({
       type: 'ghardware/deleteHardwareComponents',
       payload: {
-        tag:false,
-        infolist:JSON.stringify(obj)
+        tag: false,
+        infolist: JSON.stringify({
+          componentname: 'disk',
+          ids
+        })
       }
     });
-}
+  }
 
-
-//批量开启机房 
-// handleOpenAllstatus = (val) => {
-
-// }
-
-// handleMenuClick = (val) => {
-//    if (val.key == "approval") {
-       
-//    } 
-// }
- 
   render() {
     const { ghardware } = this.props;
-    const {selectedRows} = this.state;
-    console.log("this.props",this.props)
+    const { selectedRows } = this.state;
 
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -134,10 +124,10 @@ export default class Listdisk extends PureComponent {
       <PageHeaderLayout title="硬盘套餐">
         <Card bordered={false}>
           <div className={styles.tableList}>  
-          <div style={{height:40}}>
-            <AddDisk
-              //dispatch = {this.props.dispatch}
-              hardwaredata = {ghardware.allinfo}
+            <div style={{height:40}}>
+              <AddDisk
+                dispatch = {this.props.dispatch}
+                hardwaredata = {ghardware.diskInfo}
               />
               {
                 selectedRows.length > 0 && (
@@ -150,18 +140,18 @@ export default class Listdisk extends PureComponent {
                   </div>
                 )
               }  
-          </div> 
-          <Divider>  硬盘数据  </Divider>
+            </div> 
+            <Divider>  硬盘数据  </Divider>
             <CabTable
-              selectedRows={selectedRows}
+              //selectedRows={selectedRows}
               //loading={ruleLoading}
-              ghardware={ghardware.allinfo}
+              ghardware={ghardware.diskInfo}
               handleSaveData = {this.handleSaveData}
               handleDeleteData = {this.handleDeleteData}
-              handleSelectRows={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
+              //handleSelectRows={this.handleSelectRows}
+              //onChange={this.handleStandardTableChange}
             />
-        </div>
+          </div>
         </Card>
       </PageHeaderLayout>
     );

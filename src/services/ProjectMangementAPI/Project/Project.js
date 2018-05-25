@@ -88,3 +88,13 @@ export async function querProjectbyGId(id) {
         },
       });
     }
+//删除项目
+    export async function deleteProject(params) {
+      return request(`/v1/assets/project/delete`, {
+        method: 'POST',
+        body: {
+          ...params,
+          method: 'post',
+        },
+      });
+    }

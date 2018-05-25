@@ -108,9 +108,51 @@ adaptor_id:1
 title: A12
 comment:test
 */
-//修改套餐组件
+//修改套餐列表
 export async function modifyHardwarePlan(params) {
   return request(`/v1/assets/plan/compose/modify/${params.ID}`, {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
+
+
+/*
+套餐id
+/assets/plan/component/modify/1
+cpu:
+/assets/plan/component/modify/1?componentname=cpu&
+num=1&title="名称"&mainfrequency="频率"&cores=核数&
+category=类别&description=描述
+
+mem:
+/assets/plan/component/modify/1?componentname=mem&
+num=1&title="名称"&mainfrequency="频率"&volume=容量&
+description=描述
+
+disk:
+/assets/plan/component/modify/1?componentname=disk&
+num=1&title="名称"&volume="大小"&rpm=转数&
+category=类别&description=描述&
+
+
+power:
+/assets/plan/component/modify/1?componentname=power&
+num=1&title="名称"&volume=大小&description=描述
+
+adaptor
+/assets/plan/component/modify/1?componentname=adaptor&
+num=1&title="名称"&category=类别&description=描述
+
+
+*/
+//修改套餐组件包括 cpu mem disk等
+export async function modifyComponents(params) {
+  return request(`/v1/assets/plan/component/modify/${params.ID}`, {
     method: 'POST',
     body: {
       ...params,

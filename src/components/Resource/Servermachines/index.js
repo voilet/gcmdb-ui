@@ -4,6 +4,7 @@ import moment from 'moment';
 import styles from './index.less';
 import { stat } from 'fs';
 
+const { Option } = Select;
 
 
 const EditableCell = ({ editable, value, onChange }) => (
