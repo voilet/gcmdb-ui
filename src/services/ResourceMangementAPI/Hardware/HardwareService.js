@@ -1,12 +1,10 @@
 import { stringify } from 'qs';
 import request from '../../../utils/request';
 
-
 //查询用户
 export async function queryUser() {
   return request(`/v1/assets/idc/queryuser`);
-}  
-
+}
 
 //获取套餐组件列表
 export async function queryHardwareComponents(params) {
@@ -33,7 +31,6 @@ export async function addHardwareComponents(params) {
   });
 }
 
-
 /*
 ID:1
 cores:3 cores
@@ -55,7 +52,6 @@ export async function modifyHardwareComponents(params) {
   });
 }
 
-
 /*
 tag:false //false是逻辑删除  true是物理删除
 infolist:{"componentname": "cpu", "ids": [1, 2]}
@@ -70,7 +66,6 @@ export async function deleteHardwareComponents(params) {
     },
   });
 }
-
 
 //获取套餐列表
 export async function queryHardwarePlan(params) {
@@ -97,7 +92,6 @@ export async function addHardwarePlan(params) {
   });
 }
 
-
 /*
 ID:1
 cpu_id:1
@@ -118,8 +112,6 @@ export async function modifyHardwarePlan(params) {
     },
   });
 }
-
-
 
 /*
 套餐id
@@ -161,7 +153,6 @@ export async function modifyComponents(params) {
   });
 }
 
-
 /*
 tag:false //false是逻辑删除  true是物理删除
 infolist:{"componentname": "cpu", "ids": [1, 2]}
@@ -176,7 +167,6 @@ export async function deleteHardwarePlan(params) {
     },
   });
 }
-
 
 /*
 currentPage=1
@@ -196,7 +186,7 @@ export async function queryHostsDetail(params) {
 ///v1/assets/hardware/host/password/query/1
 //查询密码
 export async function queryHostPassword(params) {
-  return request(`/v1/assets/hardware/host/password/query/${params}`,{
+  return request(`/v1/assets/hardware/host/password/query/${params}`, {
     method: 'POST',
     body: {
       method: 'post',
@@ -225,8 +215,6 @@ export async function deleteHost(params) {
     },
   });
 }
-
-
 
 //修改主机
 export async function modifyHost(params) {

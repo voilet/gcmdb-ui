@@ -3,8 +3,7 @@ import moment from 'moment';
 import { Table, Alert, Badge, Divider, Icon } from 'antd';
 import styles from './index.less';
 
-
-const statusMap = ['default', 'processing', 'success', 'error', 'warning', "error"];
+const statusMap = ['default', 'processing', 'success', 'error', 'warning', 'error'];
 
 class StandardTable extends PureComponent {
   state = {
@@ -32,20 +31,19 @@ class StandardTable extends PureComponent {
     }
 
     this.setState({ selectedRowKeys, totalCallNo });
-  }
+  };
 
-  handleTableChange = ( filters, sorter) => {
-    this.props.onChange( filters, sorter);
-  }
+  handleTableChange = (filters, sorter) => {
+    this.props.onChange(filters, sorter);
+  };
 
   cleanSelectedKeys = () => {
     this.handleRowSelectChange([], []);
-  }
+  };
 
   render() {
     const { selectedRowKeys, totalCallNo } = this.state;
     const { gidc, loading } = this.props;
-
 
     const columns = [
       {
@@ -59,33 +57,34 @@ class StandardTable extends PureComponent {
       {
         title: '地址范围',
         dataIndex: 'ip_range',
-
       },
       {
         title: '联系电话',
         dataIndex: 'phone',
-
       },
       {
         title: '位置',
         dataIndex: 'addresses',
-
       },
       {
         title: '别名',
         dataIndex: 'alias',
-
       },
 
       {
         title: '操作',
         dataIndex: 'ID',
 
-        render: (val) => (
+        render: val => (
           <div>
-            <a href= {"/#/assets/host/modify/" + val} > <Icon type="edit" /></a>
+            <a href={'/#/assets/host/modify/' + val}>
+              {' '}
+              <Icon type="edit" />
+            </a>
             <Divider type="vertical" />
-            <a href= {"/#/assets/host/delete/" + val} ><Icon type="delete" /></a>
+            <a href={'/#/assets/host/delete/' + val}>
+              <Icon type="delete" />
+            </a>
           </div>
         ),
       },
@@ -103,12 +102,14 @@ class StandardTable extends PureComponent {
       <div className={styles.standardTable}>
         <div className={styles.tableAlert}>
           <Alert
-            message={(
+            message={
               <div>
                 已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 台&nbsp;
-                <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>清空</a>
+                <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>
+                  清空
+                </a>
               </div>
-            )}
+            }
             type="info"
             showIcon
           />

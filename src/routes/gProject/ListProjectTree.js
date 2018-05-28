@@ -82,9 +82,9 @@ export default class TableTree extends PureComponent {
         return <TreeNode key={item.key} title={title} id={item.id} data-key={item.id} />;
       });
     return (
-      <Row gutter={24}>
-        <Col span={6} style={{ paddingRight: 0 }}>
-          <Card>
+      <Row gutter={24} style={{ height: '100%' }}>
+        <Col span={6} style={{ paddingRight: 0, height: '100%' }}>
+          <Card style={{ height: '100%' }}>
             <div>
               <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange} />
               <Tree
@@ -97,8 +97,8 @@ export default class TableTree extends PureComponent {
             </div>
           </Card>
         </Col>
-        <Col span={18} style={{ paddingLeft: 0 }}>
-          <Card>
+        <Col span={18} style={{ paddingLeft: 0, height: '100%' }}>
+          <Card style={{ height: '100%' }}>
             <TreeTab />
           </Card>
         </Col>

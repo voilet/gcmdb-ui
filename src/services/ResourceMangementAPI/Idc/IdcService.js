@@ -1,29 +1,24 @@
 import { stringify } from 'qs';
 import request from '../../../utils/request';
 
-
-
 //获取机器管理员
 export async function queryIdcUser() {
   return request(`/v1/assets/idc/queryuser`);
 }
-
 
 //获取机房机柜列表
 export async function queryIdcRelation(params) {
   return request(`/v1/assets/idc/queryrelation/${params}`);
 }
 
-
 //获取运营商列表
 export async function queryProvider() {
   return request('/v1/assets/idc/queryprovider');
 }
 
-
 //添加运营商
 export async function addProvider(params) {
-  console.log('addProvider',params)
+  console.log('addProvider', params);
   return request('/v1/assets/idc/addprovider', {
     method: 'POST',
     body: {
@@ -61,7 +56,6 @@ export async function queryIDC() {
   return request('/v1/assets/idc/query');
 }
 
-
 //添加机房
 export async function addIDC(params) {
   return request('/v1/assets/idc/add', {
@@ -95,12 +89,10 @@ export async function deleteIDC(params) {
   });
 }
 
-
 //查询机柜
 export async function queryCabinet() {
   return request('/v1/assets/idc/querycabinet');
 }
-
 
 //添加机柜
 export async function addCabinet(params) {
@@ -135,12 +127,10 @@ export async function deleteCabinet(params) {
   });
 }
 
-
 //查询bays
 export async function queryBay() {
   return request('/v1/assets/idc/querybay');
 }
-
 
 //添加bays
 export async function addBay(params) {
@@ -175,14 +165,10 @@ export async function deleteBay(params) {
   });
 }
 
-
-
-
 //查询ip
 export async function queryIpResource() {
   return request('/v1/assets/idc/queryipresource');
 }
-
 
 //添加ip
 export async function addIpResource(params) {
@@ -219,10 +205,8 @@ export async function deleteIpResource(params) {
 
 //检查ip
 export async function checkIpResource(params) {
-  return request(`/v1/assets/idc/checkip?${stringify(params)}`)
+  return request(`/v1/assets/idc/checkip?${stringify(params)}`);
 }
-
-
 
 //查询ip
 export async function queryIpClassify() {
