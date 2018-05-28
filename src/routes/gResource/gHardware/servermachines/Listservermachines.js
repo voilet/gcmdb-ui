@@ -1,70 +1,59 @@
-
-import React, {PureComponent} from 'react';
-import {connect} from 'dva';
-import {
-  Card,
-  Form,
-  Input,
-  Icon,
-  Tabs,
-  Button,
-  Dropdown,
-  Menu,
-  DatePicker,
-  Divider
-} from 'antd';
+import React, { PureComponent } from 'react';
+import { connect } from 'dva';
+import { Card, Form, Input, Icon, Tabs, Button, Dropdown, Menu, DatePicker, Divider } from 'antd';
 
 import CabTable from '../../../../components/Resource/Servermachines';
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
-import AddSMC from './addservermachines'
-import DetailsTab from '../../../../components/Resource/Servermachines/detailsTab'
-import styles from './servermachines.less'
+import AddSMC from './addservermachines';
+import Searchservermachines from './searchServermachines';
+import DetailsTab from '../../../../components/Resource/Servermachines/detailsTab';
+import styles from './servermachines.less';
 
 const FormItem = Form.Item;
 
 const TabPane = Tabs.TabPane;
 
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+const getValue = obj =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
 
-
-@connect((props) => (props))
-
+@connect(props => props)
 @Form.create()
-
 export default class ListServermachines extends PureComponent {
   state = {
     selectedRows: [],
     formValues: {},
-    numId:'1'
+    numId: '1',
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
-      type: 'gproline/getProjectLine',  
+      type: 'gproline/getProjectLine',
     });
     dispatch({
-      type: 'gdevice/queryHost',  
-      payload:`?currentPage=${1}&pageSize=${20}`
+      type: 'gdevice/queryHost',
+      payload: `?currentPage=${1}&pageSize=${20}`,
     });
     dispatch({
       type: 'gidc/queryIdcRelation',
-      payload: `?tag=idc&id=1`
+      payload: `?tag=idc&id=1`,
     });
     dispatch({
-      type: 'ghardware/queryHardwarePlan'
-    })
+      type: 'ghardware/queryHardwarePlan',
+    });
     dispatch({
-      type:'gdevice/queryUser'
-    })
+      type: 'gdevice/queryUser',
+    });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
-    console.log(pagination, filtersArg, sorter)
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
+    console.log(pagination, filtersArg, sorter);
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = {...obj};
+      const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
@@ -83,122 +72,102 @@ export default class ListServermachines extends PureComponent {
     //   type: 'ghardware/queryHardwareComponents',
     //   payload:`cpu`
     // });
-  }
+  };
 
-  
-  handleSelectRows = (rows) => {
+  handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
     });
-    
-  }
-
-
+  };
 
   //保存编辑数据
-  handleSaveData = (val) => {
+  handleSaveData = val => {
     // this.props.dispatch({
     //   type: 'ghardware/modifyHardwareComponents',
-    //   payload: val 
+    //   payload: val
     // });
-  }
+  };
 
-handleDeleteData = (val) => {
-  console.log(val)
-  const { ID } = val
-  let ids=[]
-  ids.push(ID)
-  this.props.dispatch({
-    type: 'gdevice/deleteHost',
-    payload: {
-      tag:false,
-      infolist:JSON.stringify({ids})
-    }
-  });
-}
+  handleDeleteData = val => {
+    console.log(val);
+    const { ID } = val;
+    let ids = [];
+    ids.push(ID);
+    this.props.dispatch({
+      type: 'gdevice/deleteHost',
+      payload: {
+        tag: false,
+        infolist: JSON.stringify({ ids }),
+      },
+    });
+  };
 
-  tabOnChange(id){
+  tabOnChange(id) {
     this.setState({
-      numId:'2'
-    })
+      numId: '2',
+    });
     this.props.dispatch({
       type: 'gdevice/queryHostDetail',
-      payload: id
-    })
+      payload: id,
+    });
   }
-  tabClickFn(val){
+  tabClickFn(val) {
     this.setState({
-      numId:val
-    })
+      numId: val,
+    });
   }
-  passwordSeeFn(val){
+  passwordSeeFn(val) {
     this.props.dispatch({
       type: 'gdevice/queryHostPassword',
-      payload: val
-    })
+      payload: val,
+    });
   }
   render() {
     const { gproline, gdevice, gidc, ghardware } = this.props;
-    const {selectedRows} = this.state;
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="approval">批量开启</Menu.Item>
-      </Menu>
-    )
+    const { selectedRows } = this.state;
 
     return (
       <PageHeaderLayout title="主机管理">
-      <Card bordered={true}>
-        <div className={styles.tableList}>  
-          <div>search查询管理 待定</div>
-        </div>
-      </Card>
         <Card bordered={false}>
-          <div className={styles.tableList}>  
-            <div style={{height:40}}>
+          <div className={styles.tableList}>
+            <div style={{ height: 40 }}>
+              <div style={{ paddingBottom: '20px' }}>
+                <Searchservermachines />
+              </div>
               <AddSMC
-                dispatch = {this.props.dispatch}
-                gproline = {gproline}
-                gidc = {gidc}
+                dispatch={this.props.dispatch}
+                gproline={gproline}
+                gidc={gidc}
                 user={gdevice.user}
-                ghardware = {ghardware.composedata}
+                ghardware={ghardware.composedata}
               />
-              {
-                selectedRows.length > 0 && (
-                  <div >
-                    <Dropdown overlay={menu} >
-                      <Button >
-                        更多操作 <Icon type="down"/>
-                      </Button>
-                    </Dropdown>
-                  </div>
-                )
-              }  
-            </div> 
-            <Divider>  主机管理  </Divider>
-            <Tabs 
-              defaultActiveKey={this.state.numId} 
+            </div>
+            <Divider> 主机管理 </Divider>
+            <Tabs
+              defaultActiveKey={this.state.numId}
               activeKey={this.state.numId}
-              onTabClick={(val)=>{this.tabClickFn(val)}}
+              onTabClick={val => {
+                this.tabClickFn(val);
+              }}
               animated={false}
             >
               <TabPane tab="主机列表" key="1">
-                <CabTable
-                  //selectedRows={selectedRows}
-                  //loading={ruleLoading}
-                  gdevice={gdevice}
-                  tabOnChange={this.tabOnChange.bind(this)}
-                  passwordSeeFn={this.passwordSeeFn.bind(this)}
-                  handleSaveData = {this.handleSaveData}
-                  handleDeleteData = {this.handleDeleteData}
-                  //handleSelectRows={this.handleSelectRows}
-                  //onChange={this.handleStandardTableChange}
-                />
+                <div>
+                  <CabTable
+                    //selectedRows={selectedRows}
+                    //loading={ruleLoading}
+                    gdevice={gdevice}
+                    tabOnChange={this.tabOnChange.bind(this)}
+                    passwordSeeFn={this.passwordSeeFn.bind(this)}
+                    handleSaveData={this.handleSaveData}
+                    handleDeleteData={this.handleDeleteData}
+                    //handleSelectRows={this.handleSelectRows}
+                    //onChange={this.handleStandardTableChange}
+                  />
+                </div>
               </TabPane>
               <TabPane tab="详情列表" key="2">
-                <DetailsTab 
-                  gdevice={gdevice.hostdetail}
-                />
+                <DetailsTab gdevice={gdevice.hostdetail} />
               </TabPane>
             </Tabs>
           </div>
