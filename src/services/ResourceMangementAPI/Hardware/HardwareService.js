@@ -177,6 +177,11 @@ export async function queryHosts(params) {
   return request(`/v1/assets/hardware/host/query/${params}`);
 }
 
+//按照条件查询主机列表
+export async function queryHostsByCondition(params) {
+  return request(`/v1/assets/hardware/searchhosts/${params}`);
+}
+
 ///v1/assets/hardware/host/detail/query/1
 //查询主机详细表
 export async function queryHostsDetail(params) {

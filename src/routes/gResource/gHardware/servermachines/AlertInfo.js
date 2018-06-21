@@ -49,33 +49,33 @@ export default class Addservermachines extends PureComponent {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.user) {
-      this.setState({
-        userData: nextProps.user.data,
-      });
-    }
-    if (nextProps.gproline.prolinedata) {
-      this.setState({
-        prolinedata: nextProps.gproline.prolinedata.data,
-        progroupbylid: nextProps.gproline.progroupbylid,
-        probygid: nextProps.gproline.probygid,
-      });
-    }
-    if (nextProps.gidc.idc.data) {
-      this.setState({
-        idcData: nextProps.gidc.idc.data,
-        cabinetData: nextProps.gidc.cabinet.data == null ? [] : nextProps.gidc.cabinet.data,
-        baysData:
-          nextProps.gidc.bays.data == undefined || nextProps.gidc.bays.data == null
-            ? []
-            : nextProps.gidc.bays.data,
-      });
-    }
-    if (nextProps.ghardware) {
-      this.setState({
-        hardwareData: nextProps.ghardware.data.list,
-      });
-    }
+    // if (nextProps.user) {
+    //   this.setState({
+    //     userData: nextProps.user.data,
+    //   });
+    // }
+    // if (nextProps.gproline.prolinedata) {
+    //   this.setState({
+    //     prolinedata: nextProps.gproline.prolinedata.data,
+    //     progroupbylid: nextProps.gproline.progroupbylid,
+    //     probygid: nextProps.gproline.probygid,
+    //   });
+    // }
+    // if (nextProps.gidc.idc.data) {
+    //   this.setState({
+    //     idcData: nextProps.gidc.idc.data,
+    //     cabinetData: nextProps.gidc.cabinet.data == null ? [] : nextProps.gidc.cabinet.data,
+    //     baysData:
+    //       nextProps.gidc.bays.data == undefined || nextProps.gidc.bays.data == null
+    //         ? []
+    //         : nextProps.gidc.bays.data,
+    //   });
+    // }
+    // if (nextProps.ghardware) {
+    //   this.setState({
+    //     hardwareData: nextProps.ghardware.data.list,
+    //   });
+    // }
   }
 
   HandleAddPlan = e => {

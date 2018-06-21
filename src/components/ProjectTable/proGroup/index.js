@@ -1,4 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
+import moment from 'moment';
 import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select, Switch } from 'antd';
 import styles from './index.less';
 
@@ -12,7 +13,7 @@ const EditableCell = ({ editable, value, onChange }) => (
   </div>
 );
 
-class TreeTab extends PureComponent {
+class proGroupTable extends PureComponent {
   state = {
     selectedRowKeys: [],
     totalCallNo: 0,
@@ -21,7 +22,22 @@ class TreeTab extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     // clean state
-    console.log(this.props.selectedKey);
+    if (nextProps.selectedRows.length === 0) {
+      this.setState({
+        selectedRowKeys: [],
+        totalCallNo: 0,
+      });
+    }
+
+    console.log('nextProps.progroupdata.data', nextProps.progroupdata);
+    this.setState({
+      data: nextProps.progroupdata.data.map(obj => {
+        if (obj.selectStatus == undefined) {
+          obj.selectStatus = true;
+        }
+        return obj;
+      }),
+    });
   }
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
@@ -182,116 +198,55 @@ class TreeTab extends PureComponent {
 
   render() {
     const { selectedRowKeys, totalCallNo, data } = this.state;
-    const { prodata, loading, progroupdata, prolinedata } = this.props;
-
+    const { loading, progroupdata } = this.props;
+    console.log('prolinedata', progroupdata);
     //debugger
-
+    console.log('this.state', this.state);
     const columns = [
       {
-        title: '项目ID',
-        dataIndex: 'pro_title',
-        key: 'pro_title',
+        title: '项目组别名(英文)',
+        dataIndex: 'alias',
+        key: 'alias',
         width: '120px',
-        render: (text, record) => this.renderColumns(text, record, 'pro_title'),
+        render: (text, record) => this.renderColumns(text, record, 'alias'),
       },
       {
-        title: '项目名',
-        dataIndex: 'pro_alias',
-        key: 'pro_alias',
-        width: '120px',
-        render: (text, record) => this.renderColumns(text, record, 'pro_alias'),
-      },
-      {
-        title: '全路径',
-        dataIndex: 'line_title',
-        key: 'line_title',
-        width: '120px',
-        render: (text, record) => {
-          const prolineOptions = prolinedata.map(post => {
-            return (
-              <Option key={post.ID} value={post.ID}>
-                {post.title}
-              </Option>
-            );
-          });
-          // const key = record.ID
-          // //console.log(key)
-          return (
-            <Select
-              defaultValue={text}
-              disabled={record.selectStatus}
-              style={{ width: 'auto' }}
-              onChange={value => this.handleSelectLineValue(value, record.ID, 'line_title')}
-            >
-              {prolineOptions}
-            </Select>
-          );
-        },
-      },
-      {
-        title: '节点数',
-        dataIndex: 'group_title',
-        key: 'group_title',
-        width: '120px',
-        render: (text, record) => {
-          const progroupOptions = progroupdata.map(post => (
-            <Option key={post.ID} value={post.ID}>
-              {post.title}
-            </Option>
-          ));
-          return (
-            <Select
-              defaultValue={text}
-              disabled={record.selectStatus}
-              style={{ width: 'auto' }}
-              onChange={value => {
-                this.handleChange(value, record.ID, 'group_title');
-              }}
-            >
-              {progroupOptions}
-            </Select>
-          );
-        },
-      },
-      {
-        title: 'IP地址',
-        dataIndex: 'pro_remarks',
-        key: 'pro_remarks',
+        title: '项目组名称(中文)',
+        dataIndex: 'title',
+        key: 'title',
         width: '200px',
-        render: (text, record) => this.renderColumns(text, record, 'pro_remarks'),
+        render: (text, record) => this.renderColumns(text, record, 'title'),
       },
       {
-        title: '服务状态',
-        dataIndex: 'pro_code_url',
-        key: 'pro_code_url',
-        width: '150px',
-        render: (text, record) => this.renderColumns(text, record, 'pro_code_url'),
-      },
-      {
-        title: '运行模式',
-        dataIndex: 'pro_order',
-        key: 'pro_order',
-        width: '100px',
-        render: (text, record) => this.renderColumns(text, record, 'pro_order'),
-      },
-      {
-        title: '域名',
-        dataIndex: 'pro_enable',
-        key: 'pro_enable',
-        width: '150px',
+        title: '创建时间',
+        dataIndex: 'created_at',
+        width: '8%',
         render: (text, record) => {
-          return (
-            <Switch
-              checkedChildren="开启"
-              unCheckedChildren="关闭"
-              value={text}
-              disabled={record.selectStatus}
-              onChange={value => {
-                this.handleChange(value, record.ID, 'pro_enable');
-              }}
-            />
-          );
+          const { created_at } = record;
+          var divStyle = {
+            color: 'red',
+          };
+          return <div style={divStyle}>{created_at.substr(0, 10)}</div>;
         },
+      },
+      {
+        title: '最近更新',
+        dataIndex: 'updated_at',
+        width: '8%',
+        render: (text, record) => {
+          const { updated_at } = record;
+          var divStyle = {
+            color: 'red',
+          };
+          return <div style={divStyle}>{updated_at.substr(0, 10)}</div>;
+        },
+      },
+      {
+        title: '简要说明',
+        dataIndex: 'remarks',
+        key: 'remarks',
+        width: '200px',
+        render: (text, record) => this.renderColumns(text, record, 'remarks'),
       },
 
       {
@@ -337,11 +292,11 @@ class TreeTab extends PureComponent {
       },
     ];
 
-    // const paginationProps = {
-    //   showSizeChanger: true,
-    //   showQuickJumper: true,
-    //   ...prodata.pagination,
-    // };
+    const paginationProps = {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      ...progroupdata.pagination,
+    };
 
     const rowSelection = {
       selectedRowKeys,
@@ -354,14 +309,14 @@ class TreeTab extends PureComponent {
     this.cacheData = this.state.data.map(item => ({ ...item }));
     // console.log('loading', loading)
     return (
-      <div className={styles.TreeTab}>
+      <div className={styles.standardTable}>
         <div className={styles.tableAlert}>
           <Alert
             message={
               <div>
                 已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 个项目&nbsp;
                 <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>
-                  清空
+                  取消勾选
                 </a>
               </div>
             }
@@ -375,7 +330,7 @@ class TreeTab extends PureComponent {
           rowSelection={rowSelection}
           dataSource={data}
           columns={columns}
-          //pagination={paginationProps}
+          pagination={paginationProps}
           onChange={this.handleTableChange}
         />
       </div>
@@ -383,4 +338,4 @@ class TreeTab extends PureComponent {
   }
 }
 
-export default TreeTab;
+export default proGroupTable;

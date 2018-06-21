@@ -1,6 +1,17 @@
 import { stringify } from 'qs';
 import request from '../../../utils/request';
 
+//根据搜索条件查询产品列表
+export async function searchProject(params) {
+  return request('/v1/assets/project/search', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
 //查询树
 export async function queryTree() {
   return request(`/v1/assets/tree`);
@@ -27,9 +38,25 @@ export async function addProject(params) {
   });
 }
 
-// 查询项目组列表
-export async function querProjectGroup() {
-  return request('/v1/assets/pro/groups/query');
+//修改项目
+export async function modifyProject(params) {
+  return request(`/v1/assets/project/modify/${params.ID}`, {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+//删除项目
+export async function deleteProject(params) {
+  return request(`/v1/assets/project/delete`, {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
 }
 
 //通过line id 查询项目组列表
@@ -42,9 +69,36 @@ export async function querProjectbyGId(id) {
   return request(`/v1/assets/project/${id}`);
 }
 
+// 查询项目组列表
+export async function querProjectGroup() {
+  return request('/v1/assets/pro/groups/query');
+}
+
 //添加项目组列表
 export async function addProjectGroup(params) {
   return request('/v1/assets/pro/groups/add', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
+//修改项目组
+export async function modifyProjectGroup(params) {
+  return request(`/v1/assets/pro/groups/modify/${params.ID}`, {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
+//删除项目组
+export async function deleteProjectGroup(params) {
+  return request(`/v1/assets/pro/groups/delete`, {
     method: 'POST',
     body: {
       ...params,
@@ -69,9 +123,9 @@ export async function addProjectLine(params) {
   });
 }
 
-//修改项目
-export async function modifyProject(params) {
-  return request(`/v1/assets/project/modify/${params.ID}`, {
+//修改产品线
+export async function modifyProjectLine(params) {
+  return request(`/v1/assets/projectline/modify/${params.ID}`, {
     method: 'POST',
     body: {
       ...params,
@@ -79,9 +133,10 @@ export async function modifyProject(params) {
     },
   });
 }
-//删除项目
-export async function deleteProject(params) {
-  return request(`/v1/assets/project/delete`, {
+
+//删除产品线
+export async function deleteProjectLine(params) {
+  return request(`/v1/assets/projectline/delete`, {
     method: 'POST',
     body: {
       ...params,

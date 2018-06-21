@@ -1,22 +1,27 @@
 // import { queryRule, removeRule, addRule, querHostList, querySearch, querIdc,
 //   addIdc, queryUserList, querCaseList, querTree, queryProjectList, queryProjectGetId, createUser,addProject } from '../services/api';
 
-import {  querProjectLine,
-          queryProject,
-          querProjectGroup, 
-          queryRule,
-          addProject,
-          addProjectLine,
-          addProjectGroup,
-          querProjectGroupbyId,
-          querGroupbyLId,
-          querProjectbyGId,
-          queryTree,
-          modifyProject,
-          deleteProject
-        } from '../services/ProjectMangementAPI/Project/Project'
+import {
+  querProjectLine,
+  queryProject,
+  querProjectGroup,
+  modifyProjectGroup,
+  deleteProjectGroup,
+  addProject,
+  addProjectLine,
+  modifyProjectLine,
+  deleteProjectLine,
+  addProjectGroup,
+  querProjectGroupbyId,
+  querGroupbyLId,
+  querProjectbyGId,
+  queryTree,
+  modifyProject,
+  deleteProject,
+  searchProject,
+} from '../services/ProjectMangementAPI/Project/Project';
 
-import {message} from 'antd'
+import { message } from 'antd';
 
 export default {
   namespace: 'gproline',
@@ -29,131 +34,240 @@ export default {
     // },
     //树节点数据
     treedata: {
-      data: []
+      data: [],
     },
     //查询产品线
-    prolinedata: [],
-    
+    prolinedata: {
+      data: [],
+      pagination: {},
+    },
+
     //查询项目组
-    progroupdata: [],
-    
+    progroupdata: {
+      data: [],
+      pagination: {},
+    },
+
     //通过line id查询特定项目组
     progroupbylid: [],
 
     //通过groud id查询特定项目
     probygid: [],
 
-    //查询项目
+    //项目
     projectdata: {
       data: [],
       pagination: {},
     },
   },
 
-
   effects: {
+    //搜索项目列表
+    *SearchProjectList({ payload }, { call, put }) {
+      const response = yield call(searchProject, payload);
+      yield put({
+        type: 'projectSearch',
+        payload: response.data,
+      });
+    },
 
     // 获取项目列表
     *getProjectList({ payload }, { call, put }) {
-      const response = yield call(queryProject, payload) 
-     // console.log('response------------------------------',payload)
+      const response = yield call(queryProject, payload);
       yield put({
         type: 'projectSave',
         payload: response,
       });
-    
     },
 
     //通过line id 获取项目组列表
-    *getProjectGroupbyId({ payload }, { call,put }) {
-      const response = yield call(querGroupbyLId,payload)
+    *getProjectGroupbyId({ payload }, { call, put }) {
+      const response = yield call(querGroupbyLId, payload);
       yield put({
         type: 'progroupbyLidSave',
         payload: response.data || [],
       });
     },
 
-  //通过group id 获取项目列表
-  *getProjectbyId({ payload }, { call,put }) {
-    const response = yield call(querProjectbyGId,payload)
-    yield put({
-      type: 'progroupbyGidSave',
-      payload: response.data || [],
-    });
-  },
-
-
-    //添加项目列表
-    *addProject({ payload }, { call, put}) {
-      yield call(addProject, payload.description);
-      yield put({ type: 'reloadProject'})
-    },
-
-    //获取项目组列表
-    *getProjectGroup({ payload }, { call, put }) {  
-      const response = yield call(querProjectGroup, payload);
-    
+    //通过group id 获取项目列表
+    *getProjectbyId({ payload }, { call, put }) {
+      const response = yield call(querProjectbyGId, payload);
       yield put({
-        type: 'progroupSave',
+        type: 'progroupbyGidSave',
         payload: response.data || [],
       });
-  
     },
 
-     
-   //添加项目组列表
-   *addProjectgroup({ payload }, { call }) {
-    yield call(addProjectGroup, payload.description);
-    message.success('提交成功');
-   },
-
-
-   
-    //添加产品线列表
-    *addProjectLine({ payload }, { call }) {
-    const response = yield call(addProjectLine, payload.description);
-      message.success('提交成功');
+    //添加项目列表
+    *addProject({ payload }, { call, put }) {
+      yield call(addProject, payload.description);
+      yield put({ type: 'reloadProject' });
     },
 
-
-    //获取产品线列表
-    *getProjectLine({ payload }, { call, put }) {  
-      const response = yield call(querProjectLine);
-      yield put({
-        type: 'projectlineSave',
-        payload: response.data,
-      });
-    
-    },
     //删除产品列表
     *deleteProject({ payload }, { call, put }) {
       yield call(deleteProject, payload);
-      yield put({ type: 'reloadProject'})
+      yield put({ type: 'reloadProject' });
     },
+
     //重新加载列表
     *reloadProject(action, { put, select }) {
-     // const idc = yield select(state => state.gidc.idc );
-      yield put({ type: 'getProjectList', payload: { } });
+      // const idc = yield select(state => state.gidc.idc );
+      yield put({ type: 'getProjectList', payload: {} });
     },
+
     //编辑产品列表
     *modifyProject({ payload }, { call, put }) {
       yield call(modifyProject, payload);
-      yield put({ type: 'reloadProject'})
+      yield put({ type: 'reloadProject' });
     },
+
+    //获取项目组列表
+    *getProjectGroup({ payload }, { put, call }) {
+      const response = yield call(querProjectGroup, payload);
+      yield put({
+        type: 'proGroupSave',
+        payload: response || [],
+      });
+    },
+
+    //添加项目组列表
+    *addProjectgroup({ payload }, { put, call }) {
+      const response = yield call(addProjectGroup, payload.description);
+
+      if (response.status == '200') {
+        message.success('提交成功');
+      }
+      yield put({ type: 'reloadProjectGroup' });
+    },
+
+    //编辑项目组列表
+    *modifyProjectgroup({ payload }, { call, put }) {
+      yield call(modifyProjectGroup, payload);
+      yield put({ type: 'reloadProjectGroup' });
+    },
+
+    //删除项目组列表
+    *deleteProjectgroup({ payload }, { call, put }) {
+      const response = yield call(deleteProjectGroup, payload);
+      if (response.status == '500') {
+        message.error(response.msg);
+      }
+
+      yield put({ type: 'reloadProjectGroup' });
+    },
+
+    //重新加载产品线
+    *reloadProjectGroup(action, { put, select }) {
+      yield put({ type: 'getProjectGroup', payload: {} });
+    },
+
+    //添加产品线列表
+    *addProjectLine({ payload }, { put, call }) {
+      //const response = yield call(addProjectLine, payload.description);
+      // if (response.status == "200") {
+      //   message.success('提交成功');
+      // }
+      yield call(addProjectLine, payload.description);
+      yield put({ type: 'reloadProjectLine' });
+    },
+
+    //获取产品线列表
+    *getProjectLine({ payload }, { call, put }) {
+      const response = yield call(querProjectLine);
+      yield put({
+        type: 'proLineSave',
+        payload: response,
+      });
+    },
+
+    //编辑产品线列表
+    *modifyProjectLine({ payload }, { call, put }) {
+      yield call(modifyProjectLine, payload);
+      yield put({ type: 'reloadProjectLine' });
+    },
+
+    //删除产品线列表
+    *deleteProjectLine({ payload }, { call, put }) {
+      response = yield call(deleteProjectLine, payload);
+      if (response.status == '500') {
+        message.error(response.msg);
+      }
+
+      yield put({ type: 'reloadProjectLine' });
+    },
+
+    //重新加载产品线
+    *reloadProjectLine(action, { put, select }) {
+      yield put({ type: 'getProjectLine', payload: {} });
+    },
+
     //获取树节点
     *getTree({ payload }, { call, put }) {
       const response = yield call(queryTree, payload);
-      if (response.status  == 200) {
+      if (response.status == 200) {
         yield put({
           type: 'saveTree',
           payload: response,
         });
       }
     },
-    
   },
 
   reducers: {
+    projectSearch(state, action) {
+      //查询项目
+
+      //console.log("action.payload.ProjectLines",action.payload.ProjectLines)
+      //console.log("action.payload.ProjectLines !== null",action.payload.ProjectLines != null)
+      let result = { ...state };
+      //debugger
+      console.log('before+++6666666+++++', result);
+      if (action.payload.ProjectLines) {
+        result.prolinedata = {
+          ...result.prolinedata,
+          data: action.payload.ProjectLines,
+          pagination: action.payload.ProjectLinePagination,
+        };
+      } else if (action.payload.ProjectGroups) {
+        result.progroupdata = {
+          ...result.progroupdata,
+          data: action.payload.ProjectGroups,
+          pagination: action.payload.ProjectGroupPagination,
+        };
+      } else if (action.payload.ProjectLists) {
+        //result.prodata.data  = []
+
+        result.projectdata = {
+          ...result.projectdata,
+          data: action.payload.ProjectLists,
+          pagination: action.payload.ProjectPagination,
+        };
+      } else {
+        result = {
+          ...result,
+          //查询产品线
+          prolinedata: {
+            data: [],
+            pagination: {},
+          },
+
+          //查询项目组
+          progroupdata: {
+            data: [],
+            pagination: {},
+          },
+          projectdata: {
+            data: [],
+            pagination: {},
+          },
+        };
+      }
+
+      console.log('after+++6666666+++++', result);
+      return result;
+    },
+
     projectSave(state, action) {
       return {
         ...state,
@@ -161,31 +275,31 @@ export default {
       };
     },
 
+    proLineSave(state, action) {
+      return {
+        ...state,
+        prolinedata: action.payload,
+      };
+    },
+
+    proGroupSave(state, action) {
+      return {
+        ...state,
+        progroupdata: action.payload,
+      };
+    },
+
     progroupbyLidSave(state, action) {
       return {
         ...state,
-        progroupbylid: action.payload 
+        progroupbylid: action.payload,
       };
     },
 
     progroupbyGidSave(state, action) {
       return {
         ...state,
-        probygid: action.payload 
-      };
-    },
-
-    progroupSave(state, action) {
-      return {
-        ...state,
-        progroupdata: action.payload 
-      };
-    },
-    
-    projectlineSave(state, action) {
-      return {
-        ...state,
-        prolinedata: action.payload 
+        probygid: action.payload,
       };
     },
 
@@ -195,6 +309,5 @@ export default {
         treedata: action.payload,
       };
     },
-    
   },
 };

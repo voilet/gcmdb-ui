@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import styles from './servermachines.less';
+import styles from './projectTree.less';
 
 import { Form, Row, Col, Input, Button, Icon, Select, message } from 'antd';
 
@@ -15,11 +15,11 @@ export default class SearchServermachines extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     //console.log(nextProps.gidc.data)
-    if (nextProps.gidc.data) {
-      this.setState({
-        idcData: nextProps.gidc.data,
-      });
-    }
+    // if(nextProps.gidc.data){
+    //   this.setState({
+    //     idcData: nextProps.gidc.data
+    //   })
+    // }
   }
 
   searchClick = e => {

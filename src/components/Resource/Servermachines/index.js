@@ -11,21 +11,11 @@ import {
   Tooltip,
 } from 'antd';
 import React, { PureComponent, Fragment } from 'react';
-import moment from 'moment';
 import styles from './index.less';
-import { stat } from 'fs';
 
 const { Option } = Select;
 
-const EditableCell = ({ editable, value, onChange }) => (
-  <div>
-    {editable ? (
-      <Input style={{ margin: '-5px 0' }} value={value} onChange={e => onChange(e.target.value)} />
-    ) : (
-      value
-    )}
-  </div>
-);
+const EditableCell = ({ value }) => <div>{value}</div>;
 
 class SamePlan extends PureComponent {
   state = {
@@ -39,10 +29,10 @@ class SamePlan extends PureComponent {
   columns = [
     {
       title: 'ip类型',
-      dataIndex: 'ipaddress',
-      width: '120px',
+      dataIndex: 'ipsummary',
+      width: '130px',
       key: '1',
-      render: (text, record) => this.renderColumns(text, record, 'ipaddress'),
+      render: (text, record) => this.renderColumns(text, record, 'ipsummary'),
     },
     {
       title: '所在产品线',
@@ -50,25 +40,8 @@ class SamePlan extends PureComponent {
       width: '120px',
       key: '2',
       render: (text, record) => {
-        return (
-          <Select
-            showSearch
-            defaultValue={text[0]}
-            style={{ width: 'auto' }}
-            onChange={e => {
-              this.handSelectChange(e.target.value);
-            }}
-            disabled={record.selectStatus}
-          >
-            {text.map((item, ind) => {
-              return (
-                <Option label="projects" key={record.ID + ind} value={item}>
-                  {item}
-                </Option>
-              );
-            })}
-          </Select>
-        );
+        const dataText = text == null || text == undefined ? [] : text;
+        return <div>{dataText[0]}</div>;
       },
     },
     {
@@ -87,23 +60,7 @@ class SamePlan extends PureComponent {
         const time = new Date(text) - new Date();
         let statusText = time < 0 ? '过保' : '在保';
 
-        return (
-          <Select
-            defaultValue={statusText}
-            style={{ width: 'auto' }}
-            onChange={e => {
-              this.handSelectChange(e.target.value);
-            }}
-            disabled={record.selectStatus}
-          >
-            <Option key="stop1" value="1">
-              在保
-            </Option>
-            <Option key="stop2" value="0">
-              过保
-            </Option>
-          </Select>
-        );
+        return <div>{statusText}</div>;
       },
     },
     {
@@ -164,23 +121,7 @@ class SamePlan extends PureComponent {
       width: '120px',
       key: '10',
       render: (text, record) => {
-        return (
-          <Select
-            defaultValue={text == '0' ? '关机' : '开机'}
-            style={{ width: 'auto' }}
-            onChange={e => {
-              this.handSelectChange(e.target.value);
-            }}
-            disabled={record.selectStatus}
-          >
-            <Option key="1" value="1">
-              开机
-            </Option>
-            <Option key="0" value="0">
-              关机
-            </Option>
-          </Select>
-        );
+        return <div>{text == '0' ? '关机' : '开机'}</div>;
       },
     },
     {
@@ -200,20 +141,9 @@ class SamePlan extends PureComponent {
         const { editable, deleteable } = record;
         return (
           <div className="editable-row-operations">
-            {!deleteable &&
-              (editable ? (
-                <span>
-                  <a onClick={() => this.save(record.ID)}>保存</a>
-                  <Divider type="vertical" />
-                  <Popconfirm title="确定取消?" onConfirm={() => this.cancel(record.ID)}>
-                    <a>取消</a>
-                  </Popconfirm>
-                </span>
-              ) : (
-                <span>
-                  <a onClick={() => this.edit(record.ID)}>编辑</a>
-                </span>
-              ))}
+            <span>
+              <a onClick={() => this.edit(record.ID)}>编辑</a>
+            </span>
             {!editable &&
               (deleteable ? (
                 <span>
@@ -253,7 +183,6 @@ class SamePlan extends PureComponent {
     //     totalCallNo: 0,
     //   });
     // }
-    //console.log(nextProps.gdevice)
     if (nextProps.gdevice.host.data) {
       let content = '',
         id = '';
@@ -268,7 +197,6 @@ class SamePlan extends PureComponent {
             pwd = content;
           }
           obj.password = pwd;
-          obj.selectStatus = true;
           return obj;
         }),
       });
@@ -276,142 +204,30 @@ class SamePlan extends PureComponent {
   }
 
   renderColumns(text, record, column) {
-    return (
-      <EditableCell
-        editable={record.editable}
-        value={text}
-        onChange={value => this.handleChange(value, record.ID, column)}
-      />
-    );
+    return <EditableCell value={text} />;
   }
   renderSelect(text, record, column) {
     return (
-      <Select
-        defaultValue="lucy"
-        style={{ width: 'auto' }}
-        onChange={e => {
-          this.handSelectChange(e.target.value);
-        }}
-        disabled={record.selectStatus}
-      >
+      <Select defaultValue="lucy" style={{ width: 'auto' }} disabled={true}>
         <Option key={text + 'jack'} value="jack">
           Jack
         </Option>
       </Select>
     );
   }
-  handSelectChange = val => {
-    console.log(val);
-  };
   detailClick(id) {
-    console.log(id);
     this.props.tabOnChange(id);
   }
   passwordClick(id) {
     this.props.passwordSeeFn(id);
   }
-  handleStatusChange = (key, e) => {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    if (target) {
-      target.enable = e;
-      this.setState({
-        data: newData,
-      });
-    }
-    console.log('data', this.state.data);
-  };
 
   handleTableChange = (filters, sorter) => {
     this.props.onChange(filters, sorter);
-    console.log(filters, sorter);
   };
-
-  handleRowSelectChange = (selectedRowKeys, selectedRows) => {
-    const totalCallNo = selectedRows.reduce((sum, val) => {
-      return sum + parseFloat(val.callNo, 10);
-    }, 0);
-
-    if (this.props.onSelectRow) {
-      this.props.onSelectRow(selectedRows);
-    }
-
-    this.setState({ selectedRowKeys, totalCallNo });
-
-    this.props.handleSelectRows(selectedRowKeys);
-  };
-
-  handleChange(value, key, column) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-
-    if (target) {
-      target[column] = value;
-      this.setState({
-        data: newData,
-        disabled: false,
-      });
-    }
-
-    console.log('handleChange', value);
-    console.log('handleChange', value);
-  }
 
   edit(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-
-    if (target) {
-      target.editable = true;
-      this.setState({
-        data: newData.map(obj => {
-          if (obj.ID === key) {
-            obj.selectStatus = false;
-          }
-          return obj;
-        }),
-        disabled: false,
-      });
-    }
-  }
-
-  save(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    if (target) {
-      delete target.editable;
-      target.enable = this.state.status;
-      this.setState({
-        data: newData.map(obj => {
-          if (obj.ID === key) {
-            obj.selectStatus = true;
-          }
-          return obj;
-        }),
-        disabled: true,
-      });
-      this.cacheData = newData.map(item => ({ ...item }));
-      console.log('target', target);
-      this.props.handleSaveData(target);
-    }
-  }
-
-  cancel(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    if (target) {
-      Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
-      delete target.editable;
-      this.setState({
-        data: newData.map(obj => {
-          if (obj.ID === key) {
-            obj.selectStatus = true;
-          }
-          return obj;
-        }),
-        disabled: true,
-      });
-    }
+    this.props.alertInfoChange(key, false);
   }
 
   askdelete(key) {

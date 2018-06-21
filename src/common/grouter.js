@@ -5,25 +5,24 @@ import { getMenuData } from './gmenu';
 
 let routerDataCache;
 
-const modelNotExisted = (app, model) => (
+const modelNotExisted = (app, model) =>
   // eslint-disable-next-line
   !app._models.some(({ namespace }) => {
     return namespace === model.substring(model.lastIndexOf('/') + 1);
-  })
-);
+  });
 
 // wrapper of dynamic
 const dynamicWrapper = (app, models, component) => {
   // () => require('module')
   // transformed by babel-plugin-dynamic-import-node-sync
   if (component.toString().indexOf('.then(') < 0) {
-    models.forEach((model) => {
+    models.forEach(model => {
       if (modelNotExisted(app, model)) {
         // eslint-disable-next-line
         app.model(require(`../models/${model}`).default);
       }
     });
-    return (props) => {
+    return props => {
       if (!routerDataCache) {
         routerDataCache = getRouterData(app);
       }
@@ -36,20 +35,20 @@ const dynamicWrapper = (app, models, component) => {
   // () => import('module')
   return dynamic({
     app,
-    models: () => models.filter(
-      model => modelNotExisted(app, model)).map(m => import(`../models/${m}.js`)
-    ),
+    models: () =>
+      models.filter(model => modelNotExisted(app, model)).map(m => import(`../models/${m}.js`)),
     // add routerData prop
     component: () => {
       if (!routerDataCache) {
         routerDataCache = getRouterData(app);
       }
-      return component().then((raw) => {
+      return component().then(raw => {
         const Component = raw.default || raw;
-        return props => createElement(Component, {
-          ...props,
-          routerData: routerDataCache,
-        });
+        return props =>
+          createElement(Component, {
+            ...props,
+            routerData: routerDataCache,
+          });
       });
     },
   });
@@ -57,7 +56,7 @@ const dynamicWrapper = (app, models, component) => {
 
 function getFlatMenuData(menus) {
   let keys = {};
-  menus.forEach((item) => {
+  menus.forEach(item => {
     if (item.children) {
       keys[item.path] = { ...item };
       keys = { ...keys, ...getFlatMenuData(item.children) };
@@ -68,83 +67,129 @@ function getFlatMenuData(menus) {
   return keys;
 }
 
-export const getRouterData = (app) => {
+export const getRouterData = app => {
   const routerConfig = {
     '/': {
       component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
     },
-  
+
     // // 项目列表
     //   '/project/listpro': {
     //   component: dynamicWrapper(app, ['rule'], () => import('../routes/gProject/ListProject')),
     // },
 
-
     //套餐列表
     '/resource/hardware/deviceplan/compose_plan': {
-      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/plan/ListPlan')),
+      component: dynamicWrapper(app, ['ghardware'], () =>
+        import('../routes/gResource/gHardware/setMeal/plan/ListPlan')
+      ),
     },
 
     //机房列表
     '/resource/idc/idclist': {
-      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/idc/Listidc')),
+      component: dynamicWrapper(app, ['gidc'], () =>
+        import('../routes/gResource/gIdc/idc/Listidc')
+      ),
     },
 
     //运营商列表
     '/resource/idc/provider': {
-      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/provider/ProviderList')),
+      component: dynamicWrapper(app, ['gidc'], () =>
+        import('../routes/gResource/gIdc/provider/ProviderList')
+      ),
     },
 
     //ip资源列表
-     '/resource/idc/ipresource': {
-      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/ipresource/ipResourceList')),
+    '/resource/idc/ipresource': {
+      component: dynamicWrapper(app, ['gidc'], () =>
+        import('../routes/gResource/gIdc/ipresource/ipResourceList')
+      ),
     },
 
-
-     //机柜列表
-     '/resource/idc/cabinet': {
-      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/cabinet/CabinetList')),
+    //机柜列表
+    '/resource/idc/cabinet': {
+      component: dynamicWrapper(app, ['gidc'], () =>
+        import('../routes/gResource/gIdc/cabinet/CabinetList')
+      ),
     },
+
+    //项目查询
+    '/project/business': {
+      component: dynamicWrapper(app, ['gproline'], () => import('../routes/gProject/SearchList')),
+    },
+    //项目列表
+    '/project/business/prolist': {
+      component: dynamicWrapper(app, ['gproline'], () =>
+        import('../routes/gProject/Project/ListProject')
+      ),
+    },
+    //项目组列表
+    '/project/business/grouplist': {
+      component: dynamicWrapper(app, ['gproline'], () =>
+        import('../routes/gProject/Progroup/ListProjectGroup')
+      ),
+    },
+    //产品线列表
+    '/project/business/linelist': {
+      component: dynamicWrapper(app, ['gproline'], () =>
+        import('../routes/gProject/Proline/ListProjectLine')
+      ),
+    },
+    //已删除列表
+    // '/project/deletedlist': {
+    //   component: dynamicWrapper(app, ['gproline'], () => import('../routes/gProject/Proline/ListProjectLine')),
+    // },
 
     //产品树
     '/project/treelist': {
-      component: dynamicWrapper(app, ['gproline'], () => import('../routes/gProject/ListProjectTree')),
-    },
-
-      //产品线列表
-      '/project/listline': {
-      component: dynamicWrapper(app, ['gproline'], () => import('../routes/gProject/ListProjectline')),
+      component: dynamicWrapper(app, ['gproline'], () =>
+        import('../routes/gProject/ProTree/ListProjectTree')
+      ),
     },
 
     //主机管理列表
     '/resource/hardware/servermachines': {
-      component: dynamicWrapper(app, ['gdevice'], () => import('../routes/gResource/gHardware/servermachines/Listservermachines')),
+      component: dynamicWrapper(app, ['gdevice'], () =>
+        import('../routes/gResource/gHardware/servermachines/Listservermachines')
+      ),
     },
 
     //cpu列表
     '/resource/hardware/deviceplan/plan_cpu': {
-      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/cpu/Listcpu')),
+      component: dynamicWrapper(app, ['ghardware'], () =>
+        import('../routes/gResource/gHardware/setMeal/cpu/Listcpu')
+      ),
     },
     //内存列表
     '/resource/hardware/deviceplan/plan_memory': {
-      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/memory/Listmemory')),
+      component: dynamicWrapper(app, ['ghardware'], () =>
+        import('../routes/gResource/gHardware/setMeal/memory/Listmemory')
+      ),
     },
     //硬盘列表
     '/resource/hardware/deviceplan/plan_disk': {
-      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/disk/Listdisk')),
+      component: dynamicWrapper(app, ['ghardware'], () =>
+        import('../routes/gResource/gHardware/setMeal/disk/Listdisk')
+      ),
     },
     //电源列表
     '/resource/hardware/deviceplan/plan_power': {
-      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/power/Listpower')),
+      component: dynamicWrapper(app, ['ghardware'], () =>
+        import('../routes/gResource/gHardware/setMeal/power/Listpower')
+      ),
     },
     //网卡列表
     '/resource/hardware/deviceplan/plan_adaptor': {
-      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/adaptor/Listadaptor')),
+      component: dynamicWrapper(app, ['ghardware'], () =>
+        import('../routes/gResource/gHardware/setMeal/adaptor/Listadaptor')
+      ),
     },
 
     //套餐列表
     '/resource/hardware/deviceplan/compose_plan': {
-      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/plan/ListPlan')),
+      component: dynamicWrapper(app, ['ghardware'], () =>
+        import('../routes/gResource/gHardware/setMeal/plan/ListPlan')
+      ),
     },
     // '/dashboard/analysis': {
     //   component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
@@ -153,11 +198,11 @@ export const getRouterData = (app) => {
     //   component: dynamicWrapper(app, ['monitor'], () => import('../routes/Dashboard/Monitor')),
     // },
     //'/dashboard/workplace': {
-  //    component: dynamicWrapper(app, ['project', 'activities', 'chart'], () => import('../routes/Dashboard/Workplace')),
-      // hideInBreadcrumb: true,
-      // name: '工作台',
-      // authority: 'admin',
-  //  },
+    //    component: dynamicWrapper(app, ['project', 'activities', 'chart'], () => import('../routes/Dashboard/Workplace')),
+    // hideInBreadcrumb: true,
+    // name: '工作台',
+    // authority: 'admin',
+    //  },
     // '/form/basic-form': {
     //   component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/BasicForm')),
     // },
@@ -206,24 +251,26 @@ export const getRouterData = (app) => {
     // '/profile/advanced': {
     //   component: dynamicWrapper(app, ['profile'], () => import('../routes/Profile/AdvancedProfile')),
     // },
-    // '/result/success': {
-    //   component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
-    // },
-    // '/result/fail': {
-    //   component: dynamicWrapper(app, [], () => import('../routes/Result/Error')),
-    // },
-    // '/exception/403': {
-    //   component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
-    // },
-    // '/exception/404': {
-    //   component: dynamicWrapper(app, [], () => import('../routes/Exception/404')),
-    // },
-    // '/exception/500': {
-    //   component: dynamicWrapper(app, [], () => import('../routes/Exception/500')),
-    // },
-    // '/exception/trigger': {
-    //   component: dynamicWrapper(app, ['error'], () => import('../routes/Exception/triggerException')),
-    // },
+    '/result/success': {
+      component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
+    },
+    '/result/fail': {
+      component: dynamicWrapper(app, [], () => import('../routes/Result/Error')),
+    },
+    '/exception/403': {
+      component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
+    },
+    '/exception/404': {
+      component: dynamicWrapper(app, [], () => import('../routes/Exception/404')),
+    },
+    '/exception/500': {
+      component: dynamicWrapper(app, [], () => import('../routes/Exception/500')),
+    },
+    '/exception/trigger': {
+      component: dynamicWrapper(app, ['error'], () =>
+        import('../routes/Exception/triggerException')
+      ),
+    },
     '/user': {
       component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
     },
@@ -247,7 +294,7 @@ export const getRouterData = (app) => {
   // eg. {name,authority ...routerConfig }
   const routerData = {};
   // The route matches the menu
-  Object.keys(routerConfig).forEach((path) => {
+  Object.keys(routerConfig).forEach(path => {
     // Regular match item name
     // eg.  router /user/:id === /user/chen
     const pathRegexp = pathToRegexp(path);

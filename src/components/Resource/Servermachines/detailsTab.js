@@ -42,7 +42,7 @@ class detailsTab extends PureComponent {
     const { data } = this.state;
     // 主机名 网卡1 网卡2 网卡3 网卡4 网卡bond 地址，第一块网卡pxe  远控卡ip 硬件厂家 硬件厂商 硬件类型 Cpu 型号 x86_64 and i386 cpu核数 系统版本 硬盘 内存 资产编号 交换机端口 快速服务编号 SN编号 bios 日期 bios 版本 备注说明 系统环境agent版本
     const nameStr =
-      '主机名 网卡1 网卡2 网卡3 网卡4 网卡bond 地址,第一块网卡pxe 远控卡ip 硬件厂家 硬件厂商 硬件类型 Cpu型号 x86_64andi386 cpu核数 系统版本 硬盘 内存 资产编号 交换机端口 快速服务编号 SN编号 bios日期 bios版本 备注说明 系统环境 agent版本';
+      '序列号 主机名 网卡1 网卡2 网卡3 网卡4 网卡bond 地址,第一块网卡pxe 远控卡ip 硬件厂家 硬件厂商 硬件类型 Cpu型号 x86_64andi386 cpu核数 系统版本 硬盘 内存 资产编号 交换机端口 快速服务编号 SN编号 bios日期 bios版本 备注说明 系统环境 agent版本';
     const nameArr = nameStr.split(' ');
     let dataArr = [];
     for (let key in data) {
@@ -59,6 +59,7 @@ class detailsTab extends PureComponent {
       return obj;
     });
     const tabData = dataArr.slice((key - 1) * 9, key * 9);
+    console.log(tabData);
     return (
       <Table
         bordered

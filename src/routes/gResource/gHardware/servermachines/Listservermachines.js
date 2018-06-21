@@ -5,6 +5,7 @@ import { Card, Form, Input, Icon, Tabs, Button, Dropdown, Menu, DatePicker, Divi
 import CabTable from '../../../../components/Resource/Servermachines';
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
 import AddSMC from './addservermachines';
+import AlertInfo from './AlertInfo';
 import Searchservermachines from './searchServermachines';
 import DetailsTab from '../../../../components/Resource/Servermachines/detailsTab';
 import styles from './servermachines.less';
@@ -25,6 +26,7 @@ export default class ListServermachines extends PureComponent {
     selectedRows: [],
     formValues: {},
     numId: '1',
+    alertStatus: false,
   };
 
   componentDidMount() {
@@ -45,6 +47,9 @@ export default class ListServermachines extends PureComponent {
     });
     dispatch({
       type: 'gdevice/queryUser',
+    });
+    dispatch({
+      type: 'gidc/queryIDC',
     });
   }
 
@@ -79,6 +84,13 @@ export default class ListServermachines extends PureComponent {
       selectedRows: rows,
     });
   };
+  //编辑
+  alertInfoChange(id, val) {
+    console.log(id, val);
+    this.state({
+      alertStatus: val,
+    });
+  }
 
   //保存编辑数据
   handleSaveData = val => {
@@ -124,7 +136,7 @@ export default class ListServermachines extends PureComponent {
   }
   render() {
     const { gproline, gdevice, gidc, ghardware } = this.props;
-    const { selectedRows } = this.state;
+    const { selectedRows, alertStatus } = this.state;
 
     return (
       <PageHeaderLayout title="主机管理">
@@ -132,7 +144,7 @@ export default class ListServermachines extends PureComponent {
           <div className={styles.tableList}>
             <div style={{ height: 40 }}>
               <div style={{ paddingBottom: '20px' }}>
-                <Searchservermachines />
+                <Searchservermachines gidc={gidc.idc} />
               </div>
               <AddSMC
                 dispatch={this.props.dispatch}
@@ -161,9 +173,11 @@ export default class ListServermachines extends PureComponent {
                     passwordSeeFn={this.passwordSeeFn.bind(this)}
                     handleSaveData={this.handleSaveData}
                     handleDeleteData={this.handleDeleteData}
+                    alertInfoChange={this.alertInfoChange.bind(this)}
                     //handleSelectRows={this.handleSelectRows}
                     //onChange={this.handleStandardTableChange}
                   />
+                  <AlertInfo alertStatus={alertStatus} />
                 </div>
               </TabPane>
               <TabPane tab="详情列表" key="2">
