@@ -147,12 +147,45 @@ export const getRouterData = app => {
       ),
     },
 
-    //主机管理列表
-    '/resource/hardware/servermachines': {
+    //主机列表header
+    '/resource/hardware/host': {
       component: dynamicWrapper(app, ['gdevice'], () =>
-        import('../routes/gResource/gHardware/servermachines/Listservermachines')
+        import('../routes/gResource/gHardware/hostInfo/hostHeader')
       ),
     },
+
+    //主机列表
+    '/resource/hardware/host/list': {
+      component: dynamicWrapper(app, ['gdevice'], () =>
+        import('../routes/gResource/gHardware/hostInfo/hostList')
+      ),
+    },
+
+    //主机详情列表
+    '/resource/hardware/host/detail': {
+      component: dynamicWrapper(app, ['gdevice'], () =>
+        import('../routes/gResource/gHardware/hostInfo/hostDetail')
+      ),
+    },
+
+    //修改主机详情列表
+    '/resource/hardware/host/edit': {
+      component: dynamicWrapper(app, ['gdevice'], () =>
+        import('../routes/gResource/gHardware/hostInfo/editHost')
+      ),
+    },
+
+    //主机详情列表
+    '/resource/hardware/host/add': {
+      component: dynamicWrapper(app, ['gdevice'], () =>
+        import('../routes/gResource/gHardware/hostInfo/addHost')
+      ),
+    },
+
+    //  //主机删除列表
+    //  '/resource/hardware/host/deleted': {
+    //   component: dynamicWrapper(app, ['gdevice'], () => import('../routes/gResource/gHardware/hostInfo/hostDeletedList')),
+    // },
 
     //cpu列表
     '/resource/hardware/deviceplan/plan_cpu': {

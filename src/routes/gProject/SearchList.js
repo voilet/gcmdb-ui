@@ -109,6 +109,7 @@ export default class SearchList extends PureComponent {
   render() {
     const { activekey } = this.state;
     const { match, routerData, location, loading } = this.props;
+    debugger;
     const routes = getRoutes(match.path, routerData);
 
     console.log(this.props);

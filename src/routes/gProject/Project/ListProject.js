@@ -44,6 +44,10 @@ export default class TableList extends PureComponent {
     dispatch({
       type: 'gproline/getProjectList',
     });
+
+    dispatch({
+      type: 'gproline/getProjectLine',
+    });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -166,21 +170,28 @@ export default class TableList extends PureComponent {
       pro_enable,
       pro_remarks,
     } = val;
-    const params = {
-      ID,
-      title: pro_title,
-      alias: pro_alias,
-      remarks: pro_remarks,
-      code_url: pro_code_url,
-      enable: pro_enable,
-      groupid: group_id,
-      lineid: line_id,
-    };
 
-    this.props.dispatch({
-      type: 'gproline/modifyProject',
-      payload: params,
-    });
+    if (group_id != '-1') {
+      const params = {
+        ID,
+        title: pro_title,
+        alias: pro_alias,
+        remarks: pro_remarks,
+        code_url: pro_code_url,
+        enable: pro_enable,
+        groupid: group_id,
+        lineid: line_id,
+      };
+
+      this.props.dispatch({
+        type: 'gproline/modifyProject',
+        payload: params,
+      });
+    } else {
+      this.props.dispatch({
+        type: 'gproline/getProjectList',
+      });
+    }
   };
 
   handleDeleteData = val => {
@@ -236,43 +247,41 @@ export default class TableList extends PureComponent {
     );
 
     return (
-      <PageHeaderLayout>
-        <Card bordered={false}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              <Row gutter={16}>
-                <Col span={2}>
-                  <AddProject />
-                </Col>
-                <Col span={2}>
-                  {selectedRows.length > 0 && (
-                    <span>
-                      <Dropdown overlay={menu}>
-                        <Button>
-                          更多操作 <Icon type="down" />
-                        </Button>
-                      </Dropdown>
-                    </span>
-                  )}
-                </Col>
-              </Row>
-            </div>
-            <Divider> 项目列表 </Divider>
-            <ProjectTable
-              selectedRows={selectedRows}
-              // loading={loading}
-              dispatch={dispatch}
-              handleSaveData={this.handleSaveData}
-              handleDeleteData={this.handleDeleteData}
-              prolinedata={gproline.prolinedata}
-              progroupbylid={gproline.progroupbylid}
-              prodata={this.props.gproline.projectdata}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-            />
+      <Card bordered={false}>
+        <div className={styles.tableList}>
+          <div className={styles.tableListOperator}>
+            <Row gutter={16}>
+              <Col span={2}>
+                <AddProject />
+              </Col>
+              <Col span={2}>
+                {selectedRows.length > 0 && (
+                  <span>
+                    <Dropdown overlay={menu}>
+                      <Button>
+                        更多操作 <Icon type="down" />
+                      </Button>
+                    </Dropdown>
+                  </span>
+                )}
+              </Col>
+            </Row>
           </div>
-        </Card>
-      </PageHeaderLayout>
+          <Divider> 项目列表 </Divider>
+          <ProjectTable
+            selectedRows={selectedRows}
+            // loading={loading}
+            dispatch={dispatch}
+            handleSaveData={this.handleSaveData}
+            handleDeleteData={this.handleDeleteData}
+            prolinedata={gproline.prolinedata}
+            progroupbylid={gproline.progroupbylid}
+            prodata={this.props.gproline.projectdata}
+            onSelectRow={this.handleSelectRows}
+            onChange={this.handleStandardTableChange}
+          />
+        </div>
+      </Card>
     );
   }
 }

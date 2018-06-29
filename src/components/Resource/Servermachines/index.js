@@ -227,7 +227,7 @@ class SamePlan extends PureComponent {
   };
 
   edit(key) {
-    this.props.alertInfoChange(key, false);
+    this.props.alertInfoChange(true, key);
   }
 
   askdelete(key) {

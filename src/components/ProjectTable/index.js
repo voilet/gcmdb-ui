@@ -3,6 +3,8 @@ import moment from 'moment';
 import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select, Switch } from 'antd';
 import styles from './index.less';
 
+const { Option } = Select;
+
 const EditableCell = ({ editable, value, onChange }) => (
   <div>
     {editable ? (
@@ -18,6 +20,7 @@ class StandardTable extends PureComponent {
     selectedRowKeys: [],
     totalCallNo: 0,
     data: [],
+    selectedLine: false,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -105,7 +108,7 @@ class StandardTable extends PureComponent {
         disabled: true,
       });
       this.cacheData = newData.map(item => ({ ...item }));
-      console.log('target', target);
+
       this.props.handleSaveData(target);
     }
   }
@@ -166,24 +169,42 @@ class StandardTable extends PureComponent {
         disabled: false,
       });
     }
+  }
 
-    console.log('handleChange', value, key, column);
+  handleGroupValue(value, key, column) {
+    const newData = [...this.state.data];
+    const target = newData.filter(item => key === item.ID)[0];
+
+    if (target) {
+      target[column] = value.split(',')[0];
+      target['group_title'] = value.split(',')[1];
+
+      this.setState({
+        data: newData,
+        disabled: false,
+      });
+    }
   }
 
   handleSelectLineValue(value, key, column) {
-    console.log(value, key, column);
+    // console.log(value, key, column)
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
 
     if (target) {
       target[column] = value;
-      this.setState({
-        data: newData,
-        disabled: false,
-      });
+      target['group_title'] = '请选择';
+      target['group_id'] = '-1';
+
       this.props.dispatch({
         type: 'gproline/getProjectGroupbyId',
         payload: value,
+      });
+
+      this.setState({
+        data: newData,
+        disabled: false,
+        selectedLine: true,
       });
     }
   }
@@ -200,7 +221,7 @@ class StandardTable extends PureComponent {
   render() {
     const { selectedRowKeys, totalCallNo, data } = this.state;
     const { prodata, loading, progroupbylid, prolinedata } = this.props;
-    console.log('this.props', this.props);
+    //console.log("this.props",this.props)
     //debugger
 
     const columns = [
@@ -231,14 +252,13 @@ class StandardTable extends PureComponent {
               </Option>
             );
           });
-          // const key = record.ID
-          // //console.log(key)
+
           return (
             <Select
               defaultValue={text}
               disabled={record.selectStatus}
               style={{ width: 'auto' }}
-              onChange={value => this.handleSelectLineValue(value, record.ID, 'line_title')}
+              onChange={value => this.handleSelectLineValue(value, record.ID, 'line_id')}
             >
               {prolineOptions}
             </Select>
@@ -251,18 +271,27 @@ class StandardTable extends PureComponent {
         key: 'group_title',
         width: '120px',
         render: (text, record) => {
-          const progroupOptions = progroupbylid.map(post => (
-            <Option key={post.ID} value={post.ID}>
-              {post.title}
+          let progroupOptions = (
+            <Option value="disabled" disabled>
+              Disabled
             </Option>
-          ));
+          );
+
+          if (progroupbylid.length > 0) {
+            progroupOptions = progroupbylid.map(post => (
+              <Option key={post.ID} value={post.ID + ',' + post.title}>
+                {post.title}
+              </Option>
+            ));
+          }
+
           return (
             <Select
-              defaultValue={text}
+              value={record.group_title}
               disabled={record.selectStatus}
               style={{ width: 'auto' }}
               onChange={value => {
-                this.handleChange(value, record.ID, 'group_title');
+                this.handleGroupValue(value, record.ID, 'group_id');
               }}
             >
               {progroupOptions}

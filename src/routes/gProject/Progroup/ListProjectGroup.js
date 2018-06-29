@@ -177,32 +177,30 @@ export default class ProGroupList extends PureComponent {
     };
 
     return (
-      <PageHeaderLayout>
-        <Card bordered={false}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              <Row gutter={16}>
-                <Col span={2}>
-                  <AddProGroup />
-                </Col>
-                <Col span={2} />
-              </Row>
-            </div>
-
-            <Divider> 项目组列表 </Divider>
-            <ProGroup
-              selectedRows={selectedRows}
-              // loading={loading}
-              dispatch={dispatch}
-              handleSaveData={this.handleSaveData}
-              handleDeleteData={this.handleDeleteData}
-              progroupdata={gproline.progroupdata}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-            />
+      <Card bordered={false}>
+        <div className={styles.tableList}>
+          <div className={styles.tableListOperator}>
+            <Row gutter={16}>
+              <Col span={2}>
+                <AddProGroup />
+              </Col>
+              <Col span={2} />
+            </Row>
           </div>
-        </Card>
-      </PageHeaderLayout>
+
+          <Divider> 项目组列表 </Divider>
+          <ProGroup
+            selectedRows={selectedRows}
+            // loading={loading}
+            dispatch={dispatch}
+            handleSaveData={this.handleSaveData}
+            handleDeleteData={this.handleDeleteData}
+            progroupdata={gproline.progroupdata}
+            onSelectRow={this.handleSelectRows}
+            onChange={this.handleStandardTableChange}
+          />
+        </div>
+      </Card>
     );
   }
 }

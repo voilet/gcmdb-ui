@@ -168,31 +168,29 @@ export default class ProLineList extends PureComponent {
     };
 
     return (
-      <PageHeaderLayout>
-        <Card bordered={false}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              <Row gutter={16}>
-                <Col span={2}>
-                  <AddProline />
-                </Col>
-                <Col span={2} />
-              </Row>
-            </div>
-            <Divider> 产品线列表 </Divider>
-            <ProjectLine
-              selectedRows={selectedRows}
-              // loading={loading}
-              dispatch={dispatch}
-              handleSaveData={this.handleSaveData}
-              handleDeleteData={this.handleDeleteData}
-              prolinedata={gproline.prolinedata}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-            />
+      <Card bordered={false}>
+        <div className={styles.tableList}>
+          <div className={styles.tableListOperator}>
+            <Row gutter={16}>
+              <Col span={2}>
+                <AddProline />
+              </Col>
+              <Col span={2} />
+            </Row>
           </div>
-        </Card>
-      </PageHeaderLayout>
+          <Divider> 产品线列表 </Divider>
+          <ProjectLine
+            selectedRows={selectedRows}
+            // loading={loading}
+            dispatch={dispatch}
+            handleSaveData={this.handleSaveData}
+            handleDeleteData={this.handleDeleteData}
+            prolinedata={gproline.prolinedata}
+            onSelectRow={this.handleSelectRows}
+            onChange={this.handleStandardTableChange}
+          />
+        </div>
+      </Card>
     );
   }
 }

@@ -68,6 +68,7 @@ export default class AddProject extends PureComponent {
 
   handleSelectLineValue = value => {
     console.log(value);
+
     this.props.dispatch({
       type: 'gproline/getProjectGroupbyId',
       payload: value,
@@ -75,7 +76,6 @@ export default class AddProject extends PureComponent {
   };
 
   handleSelectGroupValue = value => {
-    console.log('handleSelectGroupValue', value);
     this.setState({
       selectedGroupValue: value,
     });
@@ -85,6 +85,7 @@ export default class AddProject extends PureComponent {
     const { getFieldDecorator } = this.props.form;
     const { submitting, form, dispatch, progroupdata, gproline } = this.props;
     console.log('addproject', this.props.gproline);
+
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -127,8 +128,8 @@ export default class AddProject extends PureComponent {
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
               >
-                {gproline.prolinedata.length > 0 &&
-                  gproline.prolinedata.map(post => {
+                {gproline.prolinedata.data.length > 0 &&
+                  gproline.prolinedata.data.map(post => {
                     return (
                       <Option key={post.ID} value={post.ID}>
                         {post.title}
@@ -151,8 +152,8 @@ export default class AddProject extends PureComponent {
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
               >
-                {gproline.progroupdata.length > 0 &&
-                  gproline.progroupdata.map(post => (
+                {gproline.progroupbylid.length > 0 &&
+                  gproline.progroupbylid.map(post => (
                     <Option key={post.ID} value={post.ID}>
                       {post.title}
                     </Option>

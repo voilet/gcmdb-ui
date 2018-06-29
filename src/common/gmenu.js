@@ -57,7 +57,25 @@ const menuData = [
         children: [
           {
             name: '主机管理',
-            path: 'servermachines',
+            path: 'host',
+            children: [
+              {
+                name: '主机列表',
+                path: 'list',
+              },
+              {
+                name: '主机详情',
+                path: 'detail',
+              },
+              {
+                name: '添加主机',
+                path: 'add',
+              },
+              {
+                name: '删除列表',
+                path: 'deleted',
+              },
+            ],
           },
           {
             name: '套餐管理',
