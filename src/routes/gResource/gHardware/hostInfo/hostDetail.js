@@ -48,47 +48,6 @@ Array.prototype.remove = function(val) {
   }
 };
 
-const hostdetailInit = {
-  detail_id: -1,
-  fqdn: '空值',
-  serialnumber: '空值',
-  eth1: '空值',
-  eth2: '空值',
-  eth3: '空值',
-  eth4: '空值',
-  password: '空值',
-  guardblock: '空值',
-  start_guaratee: '空值',
-  stop_guaratee: '空值',
-  status: -1,
-  hoststatus: '空值',
-  agent_survival: null,
-  remarks: '空值',
-  bond: '空值',
-  mac: '空值',
-  internal_ip: '空值',
-  manufacturer: '空值',
-  cpu_model: '空值',
-  cpuarch: '空值',
-  num_cpus: '空值',
-  osrelease: '空值',
-  disk: '空值',
-  memory: '空值',
-  assets_number: '空值',
-  switch_port: '空值',
-  service_code: '空值',
-  biosreleasedate: '空值',
-  biosversion: '空值',
-  agent_version: '空值',
-  hardware_vendor: '空值',
-  equipment_type: '空值',
-  system_driver_env: '空值',
-  user: '空值',
-  projects: [],
-  composeplan: '空值',
-  idc_title: '空值',
-};
-
 let newTabIndex = 0;
 
 let panes = new Array();
@@ -99,13 +58,23 @@ export default class HostDetail extends Component {
   state = {
     activeKey: '-1',
     title: '',
-    panes: [],
+    addpanes: [],
+    removepanes: [],
     headlist: [],
+    panes: [],
   };
 
   componentDidMount() {
+    console.log(11111);
     //console.log("this.props.location.state+++++++++++",this.props.location.query.id)
     const { dispatch, location, gdevice } = this.props;
+    console.log(panes, 'panes');
+    if (panes && panes.length > 0) {
+      this.setState({
+        panes,
+        activeKey: panes[0].key,
+      });
+    }
     if (location.query !== undefined) {
       dispatch({
         type: 'gdevice/queryHostDetail',
@@ -116,42 +85,27 @@ export default class HostDetail extends Component {
 
   componentWillReceiveProps = nextProps => {
     const { gdevice } = nextProps;
-    //const headlist = gdevice.headlist
 
-    //const panes = gdevice.panes
+    if (!isEqual(nextProps.gdevice.hostdetail.data, this.props.gdevice.hostdetail.data)) {
+      if (gdevice.hostdetail.data.length) {
+        const activeKey = `${gdevice.hostdetail.data[0].detail_id}`;
+        const title = gdevice.hostdetail.data[0].fqdn;
 
-    console.log('nextProps.gdevice.hostdetail', nextProps.gdevice.hostdetail);
-    console.log('nextProps.gdevice.hostdetail', this.props.gdevice.hostdetail);
-    console.log('panes', panes);
-
-    if (gdevice.hostdetail.data.length) {
-      const activeKey = `${gdevice.hostdetail.data[0].detail_id}`;
-      const title = gdevice.hostdetail.data[0].fqdn;
-
-      console.log('headlist++++++++++++', headlist);
-
-      if (!this.isInArray(headlist, title)) {
-        headlist.push(title);
-        panes.push({ information: gdevice.hostdetail.data, key: `${activeKey}`, title: title });
+        if (!this.isInArray(headlist, title)) {
+          headlist.push(title);
+          panes.push({ information: gdevice.hostdetail.data, key: `${activeKey}`, title: title });
+        }
+        this.setState({ panes, headlist, activeKey });
       }
-      this.setState({ panes, headlist, activeKey });
     }
   };
 
-  //  if (!isEqual(nextProps.gdevice.hostdetail.data, this.props.gdevice.hostdetail.data)) {
-
-  //     }
-  //     else {
-  //       if (gdevice.hostdetail.data.length) {
-
-  //         const activeKey = `${gdevice.hostdetail.data[0].detail_id}`
-  //         const title   = gdevice.hostdetail.data[0].fqdn
-  //         console.log("headlist++++++++++++",headlist)
-
-  //         this.setState({ panes,headlist,activeKey });
-  //         }
-  //     }
-  //   }
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'gdevice/empty',
+    });
+  };
 
   isInArray = (arr, value) => {
     for (var i = 0; i < arr.length; i++) {
@@ -231,15 +185,9 @@ export default class HostDetail extends Component {
       }
     });
 
-    console.log('panes', panes);
-
     panes.map(function(value, index, array) {
       if (value.key == targetKey) {
-        console.log('value.information[0].fqdn', value.information[0].fqdn);
-
         headlist.remove(value.information[0].fqdn);
-
-        console.log('headlist', headlist);
       }
     });
 

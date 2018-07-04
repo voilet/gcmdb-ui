@@ -164,5 +164,14 @@ export default {
         headlist: action.payload,
       };
     },
+    empty(state, action) {
+      return {
+        ...state,
+        hostdetail: {
+          ...state.hostdetail,
+          data: [],
+        },
+      };
+    },
   },
 };

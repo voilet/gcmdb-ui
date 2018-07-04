@@ -13,11 +13,13 @@ import {
   Select,
   Button,
   DatePicker,
+  InputNumber,
 } from 'antd';
 import DescriptionList from '../../../../components/DescriptionList';
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
 
 import styles from './hostDetail.less';
+import moment from 'moment';
 
 const { Description } = DescriptionList;
 const TabPane = Tabs.TabPane;
@@ -32,6 +34,9 @@ const formItemLayout = {
     span: 18,
   },
 };
+
+const dateFormat = 'YYYY/MM/DD';
+const monthFormat = 'YYYY/MM';
 
 const projectColumns = [
   {
@@ -94,6 +99,23 @@ export default class HostDetail extends Component {
         type: 'gdevice/queryHostDetail',
         payload: location.query.id,
       });
+
+      dispatch({
+        type: 'gidc/queryIdcRelation',
+        payload: `?tag=idc`,
+      });
+
+      dispatch({
+        type: 'gproline/getProjectLine',
+      });
+
+      dispatch({
+        type: 'ghardware/queryHardwarePlan',
+      });
+
+      dispatch({
+        type: 'gdevice/queryUser',
+      });
     }
   }
 
@@ -117,6 +139,57 @@ export default class HostDetail extends Component {
       }
       this.setState({ panes, headlist, activeKey });
     }
+  };
+
+  handleIdcChange = value => {
+    this.props.dispatch({
+      type: 'gidc/queryIdcRelation',
+      payload: `?tag=cabinet&id=${value}`,
+    });
+
+    this.props.form.setFieldsValue({
+      cabinet_id: this.props.gidc.cabinet.data.map(post => {
+        return post.title;
+      }),
+    });
+  };
+
+  handlecabinetChange = value => {
+    this.props.dispatch({
+      type: 'gidc/queryIdcRelation',
+      payload: `?tag=bays&id=${value}`,
+    });
+
+    this.props.form.setFieldsValue({
+      bay_id: this.props.gidc.bays.data.map(post => {
+        return post.title;
+      }),
+    });
+  };
+
+  handleProjectLine = value => {
+    this.props.dispatch({
+      type: 'gproline/getProjectGroupbyId',
+      payload: value,
+    });
+  };
+
+  handleProjectGroup = value => {
+    this.props.dispatch({
+      type: 'gproline/getProjectbyId',
+      payload: value,
+    });
+  };
+
+  projectRemove = k => {
+    const { form } = this.props;
+    const keys = form.getFieldValue('keys');
+    if (keys.length === 1) {
+      return;
+    }
+    form.setFieldsValue({
+      keys: keys.filter(key => key !== k),
+    });
   };
 
   isInArray = (arr, value) => {
@@ -164,7 +237,174 @@ export default class HostDetail extends Component {
   }
 
   tabcontent = (information, projectcolumns) => {
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const { gidc, gproline, gdevice, ghardware } = this.props;
+    let cabinetOptions, cabinetValue;
+
+    const idcOptions = this.props.gidc.idc.data.map(post => {
+      return (
+        <Option key={post.ID} value={post.ID}>
+          {post.title}
+        </Option>
+      );
+    });
+
+    if (gidc.cabinet.data.length == 0) {
+      cabinetOptions = gidc.cabinet.data.map(post => {
+        return (
+          <Option key="-1" value="-1">
+            请选择
+          </Option>
+        );
+      });
+      cabinetValue = '请选择';
+    } else {
+      cabinetOptions = gidc.cabinet.data.map(post => {
+        return (
+          <Option key={post.ID} value={post.ID}>
+            {post.title}
+          </Option>
+        );
+      });
+    }
+
+    const baysOptions = gidc.bays.data.map(item => (
+      <Option key={item.ID} value={item.ID}>
+        {item.title}
+      </Option>
+    ));
+
+    const userData = gdevice.user.data.map(item => {
+      return (
+        <Option key={item.ID} value={item.ID}>
+          {item.title}
+        </Option>
+      );
+    });
+
+    const planData = ghardware.composedata.data.list.map(item => {
+      return (
+        <Option key={item.ID} value={item.ID}>
+          {item.title}
+        </Option>
+      );
+    });
+    const x = moment('2018-06-07T11:08:45+08:00', dateFormat);
+    console.log('++++++++++', x);
+    //添加
+    getFieldDecorator('keys', { initialValue: [0] });
+
+    let keys = getFieldValue('keys');
+
+    console.log('formItems+++++++++++++++++++', this.props);
+
+    const formItems = keys.map((k, index) => {
+      //产品线列表
+      const prolineOptions = gproline.prolinedata.data.map(proline => (
+        <Option key={proline.ID} value={proline.ID}>
+          {proline.title}
+        </Option>
+      ));
+
+      const progroupOptions = gproline.progroupbylid.map(item => (
+        <Option key={item.ID} value={item.ID}>
+          {item.title}
+        </Option>
+      ));
+
+      // const probygidArr = probygid.map(obj => obj);
+
+      const probygidOptions = gproline.probygid.map(probygidItem => (
+        <Option key={probygidItem.ID} value={probygidItem.ID}>
+          {probygidItem.title}
+        </Option>
+      ));
+      return (
+        <FormItem label={index == 0 ? '产品线' : ''} key={k}>
+          <Col span={7}>
+            <FormItem>
+              {getFieldDecorator(`proline${k}`, {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择产品线!',
+                  },
+                ],
+              })(
+                <Select
+                  //showSearch
+                  style={{ width: 200, marginRight: 40 }}
+                  onChange={this.handleProjectLine}
+                  //  optionFilterProp="children"
+                  //
+                  //  filterOption={(input, option) =>
+                  //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  //  }
+                >
+                  {prolineOptions}
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col span={7}>
+            <FormItem>
+              {getFieldDecorator(`progroup${k}`, {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择项目组!',
+                  },
+                ],
+              })(
+                <Select
+                  //showSearch
+                  style={{ width: 200, marginRight: 40 }}
+                  onChange={this.handleProjectGroup}
+                  //  optionFilterProp="children"
+                  //  filterOption={(input, option) =>
+                  //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  //  }
+                >
+                  {progroupOptions}
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col span={7}>
+            <FormItem>
+              {getFieldDecorator(`project${k}`, {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择项目!',
+                  },
+                ],
+              })(
+                <Select
+                  //    showSearch
+                  style={{ width: 200, marginRight: 40 }}
+                  //  optionFilterProp="children"
+                  //  filterOption={(input, option) =>
+                  //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  //  }
+                >
+                  {probygidOptions}
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          {keys.length > 1 ? (
+            <Icon
+              className="dynamic-delete-button"
+              type="minus-circle-o"
+              disabled={keys.length === 1}
+              onClick={() => this.projectRemove(k)}
+            />
+          ) : null}
+        </FormItem>
+      );
+    });
+
     return (
       <Card bordered={false}>
         <Form className="ant-advanced-search-form" onSubmit={this.handleSearch}>
@@ -173,38 +413,69 @@ export default class HostDetail extends Component {
               <span>网络信息</span>
             </Col>
           </Row>
+
           <Row gutter={24}>
             <Col span={8}>
-              <FormItem label="远程控制卡IP" {...formItemLayout}>
-                {getFieldDecorator('internal_ip')(<Input placeholder={information.internal_ip} />)}
-              </FormItem>
-            </Col>
-            <Col span={8}>
               <FormItem label="网卡1:" {...formItemLayout}>
-                {information.eth1}
+                {getFieldDecorator('eth1', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入ip地址!',
+                    },
+                  ],
+                  initialValue: `${information.eth1}`,
+                })(<Input placeholder={information.eth1} />)}
               </FormItem>
             </Col>
             <Col span={8}>
               <FormItem label="网卡2:" {...formItemLayout}>
-                {information.eth2}
+                {getFieldDecorator('eth2', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入ip地址!',
+                    },
+                  ],
+                  initialValue: `${information.eth2}`,
+                })(<Input placeholder={information.eth2} />)}
               </FormItem>
-              {/* <span> 网卡2: {information.eth2}</span> */}
+            </Col>
+            <Col span={8}>
+              <FormItem label="主机名(fqdn)" {...formItemLayout}>
+                {getFieldDecorator('fqdn', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入主机名!',
+                    },
+                  ],
+                  initialValue: `${information.fqdn}`,
+                })(<Input placeholder={information.fqdn} />)}
+              </FormItem>
             </Col>
           </Row>
           <Row gutter={24}>
             <Col span={8}>
               <FormItem label="网卡3:" {...formItemLayout}>
-                {information.eth3}
+                {getFieldDecorator('eth3', { initialValue: `${information.eth3}` })(
+                  <Input placeholder={information.eth3} />
+                )}
               </FormItem>
             </Col>
             <Col span={8}>
               <FormItem label="网卡4:" {...formItemLayout}>
-                {information.eth4}
+                {getFieldDecorator('eth4', { rules: [{ initialValue: `${information.eth4}` }] })(
+                  <Input placeholder={information.eth4} />
+                )}
               </FormItem>
             </Col>
+
             <Col span={8}>
-              <FormItem label="主机名(fqdn)" {...formItemLayout}>
-                {information.fqdn}
+              <FormItem label="远程控制卡IP" {...formItemLayout}>
+                {getFieldDecorator('internal_ip', {
+                  rules: [{ initialValue: `${information.internal_ip}` }],
+                })(<Input placeholder={information.internal_ip} />)}
               </FormItem>
             </Col>
           </Row>
@@ -212,7 +483,9 @@ export default class HostDetail extends Component {
           <Row gutter={24}>
             <Col span={8}>
               <FormItem label="MAC地址: " {...formItemLayout}>
-                {information.mac}
+                {getFieldDecorator('mac', { rules: [{ initialValue: `${information.mac}` }] })(
+                  <Input placeholder={information.mac} />
+                )}
               </FormItem>
             </Col>
           </Row>
@@ -227,25 +500,37 @@ export default class HostDetail extends Component {
           <Row>
             <Col span={8}>
               <FormItem label="服务器序列号" {...formItemLayout}>
-                {getFieldDecorator('serialnumber')(
-                  <Input placeholder={information.serialnumber} />
-                )}
+                {getFieldDecorator('serialnumber', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入序列号!',
+                    },
+                  ],
+                  initialValue: `${information.serialnumber}`,
+                })(<Input placeholder="请输入" />)}
               </FormItem>
             </Col>
 
-            <Col span={8}>
-              <FormItem label="资产编号" {...formItemLayout}>
-                {getFieldDecorator('assets_number')(
-                  <Input placeholder={information.assets_number} />
-                )}
+            <Col span={8} key={1} style={{ display: 'block' }}>
+              <FormItem label="机器购买时间" {...formItemLayout}>
+                {getFieldDecorator(`start_guaratee`, {
+                  initialValue: moment('2015/01/01', dateFormat),
+                })(<DatePicker format={dateFormat} onChange={this.newDateChange.bind(this)} />)}
               </FormItem>
             </Col>
 
-            <Col span={8}>
-              <FormItem label="快速服务码" {...formItemLayout}>
-                {getFieldDecorator('service_code')(
-                  <Input placeholder={information.service_code} />
-                )}
+            <Col span={8} key={2} style={{ display: 'block' }}>
+              <FormItem label="机器最后维保" {...formItemLayout}>
+                {getFieldDecorator(`stop_guaratee`, {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择最后维保日期',
+                      initialValue: `${information.stop_guaratee}`,
+                    },
+                  ],
+                })(<DatePicker onChange={this.oldDateChange.bind(this)} />)}
               </FormItem>
             </Col>
           </Row>
@@ -253,19 +538,25 @@ export default class HostDetail extends Component {
           <Row>
             <Col span={8}>
               <FormItem label="服务器生产商" {...formItemLayout}>
-                {information.hardware_vendor}
+                {getFieldDecorator('hardware_vendor', {
+                  rules: [{ initialValue: `${information.hardware_vendor}` }],
+                })(<Input placeholder={information.hardware_vendor} />)}
               </FormItem>
             </Col>
 
             <Col span={8}>
               <FormItem label="服务器型号" {...formItemLayout}>
-                {information.manufacturer}
+                {getFieldDecorator('manufacturer', {
+                  rules: [{ initialValue: `${information.manufacturer}` }],
+                })(<Input placeholder={information.manufacturer} />)}
               </FormItem>
             </Col>
 
             <Col span={8}>
-              <FormItem label="CPU参数" {...formItemLayout}>
-                {information.cpu_model}
+              <FormItem label="CPU 参数" {...formItemLayout}>
+                {getFieldDecorator('cpu_model', {
+                  rules: [{ initialValue: `${information.cpu_model}` }],
+                })(<Input placeholder={information.cpu_model} />)}
               </FormItem>
             </Col>
           </Row>
@@ -273,52 +564,110 @@ export default class HostDetail extends Component {
           <Row>
             <Col span={8}>
               <FormItem label="CPU架构" {...formItemLayout}>
-                {information.cpuarch}
+                {getFieldDecorator('cpuarch', {
+                  rules: [{ initialValue: `${information.cpuarch}` }],
+                })(<Input placeholder={information.cpuarch} />)}
               </FormItem>
             </Col>
 
             <Col span={8}>
               <FormItem label="CPU核数" {...formItemLayout}>
-                {information.num_cpus}
+                {getFieldDecorator('num_cpus', {
+                  rules: [{ initialValue: `${information.num_cpus}` }],
+                })(<InputNumber placeholder={information.num_cpus} />)}
               </FormItem>
             </Col>
 
             <Col span={8}>
               <FormItem label="硬盘详情" {...formItemLayout}>
-                {information.disk}
+                {getFieldDecorator('disk', { rules: [{ initialValue: `${information.disk}` }] })(
+                  <Input placeholder={information.disk} />
+                )}
               </FormItem>
             </Col>
           </Row>
 
           <Row gutter={24}>
             <Col span={8}>
-              <FormItem label="内存详情" {...formItemLayout}>
-                {information.memory}
+              <FormItem label="资产编号" {...formItemLayout}>
+                {getFieldDecorator('assets_number', {
+                  rules: [{ initialValue: `${information.assets_number}` }],
+                })(<Input placeholder={information.assets_number} />)}
               </FormItem>
             </Col>
 
-            <Col span={8} key={1} style={{ display: 'block' }}>
-              <FormItem label="机器购买时间" {...formItemLayout}>
-                {getFieldDecorator(`start_guaratee`, {
-                  rules: [
-                    {
-                      required: true,
-                      message: 'Please select machine purchase date!',
-                    },
-                  ],
-                })(<DatePicker onChange={this.newDateChange.bind(this)} />)}
+            <Col span={8}>
+              <FormItem label="快速服务码" {...formItemLayout}>
+                {getFieldDecorator('service_code', {
+                  rules: [{ initialValue: `${information.service_code}` }],
+                })(<Input placeholder={information.service_code} />)}
               </FormItem>
             </Col>
-            <Col span={8} key={2} style={{ display: 'block' }}>
-              <FormItem label="机器最后维保时间" {...formItemLayout}>
-                {getFieldDecorator(`stop_guaratee`, {
+            <Col span={8}>
+              <FormItem label="内存详情" {...formItemLayout}>
+                {getFieldDecorator('memory', {
+                  rules: [{ initialValue: `${information.memory}` }],
+                })(<Input placeholder={information.memory} />)}
+              </FormItem>
+            </Col>
+          </Row>
+
+          <Row gutter={24}>
+            <Col span={8}>
+              <FormItem label="机房选择" {...formItemLayout}>
+                {getFieldDecorator(`idc_id`, {
                   rules: [
                     {
                       required: true,
-                      message: 'Please select machine final maintenance time!',
+                      message: 'Please select Idc!',
                     },
                   ],
-                })(<DatePicker onChange={this.oldDateChange.bind(this)} />)}
+                })(
+                  <Select
+                    //   showSearch
+                    style={{ width: 200, marginRight: 40 }}
+                    onChange={this.handleIdcChange}
+                    // optionFilterProp="children"
+                    // filterOption={(input, option) =>
+                    //   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    // }
+                  >
+                    {idcOptions}
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem label="机柜选择" {...formItemLayout}>
+                {getFieldDecorator(`cabinet_id`, {
+                  initialValue: '请选择',
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Please select Cabinet!',
+                    },
+                  ],
+                })(
+                  <Select
+                    style={{ width: 200, marginRight: 40 }}
+                    onChange={this.handlecabinetChange}
+                  >
+                    {cabinetOptions}
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem label="机架选择" {...formItemLayout}>
+                {getFieldDecorator(`bay_id`, {
+                  initialValue: '请选择',
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Please select Bays!',
+                    },
+                  ],
+                })(<Select style={{ width: 200, marginRight: 40 }}>{baysOptions}</Select>)}
               </FormItem>
             </Col>
           </Row>

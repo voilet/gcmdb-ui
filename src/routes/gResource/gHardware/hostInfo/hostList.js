@@ -349,9 +349,6 @@ export default class HostList extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <div className={styles.tableListOperator}>
-            <Button icon="plus" type="primary" onClick={() => this.Add()}>
-              添加主机
-            </Button>
             {selectedRows.length > 0 && (
               <span>
                 <Button>批量操作</Button>
