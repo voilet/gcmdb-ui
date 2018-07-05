@@ -1,22 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
-import {
-  Card,
-  Badge,
-  Table,
-  Divider,
-  Tabs,
-  Button,
-  Form,
-  Row,
-  Col,
-  Input,
-  Select,
-  InputNumber,
-  DatePicker,
-  Icon,
-  message,
-} from 'antd';
+import { Card, Badge, Table, Divider, Tabs, Button, Form, Row, Col, Input, Select, InputNumber, DatePicker, Icon, message } from 'antd';
 import isEqual from 'lodash/isEqual';
 import DescriptionList from '../../../../components/DescriptionList';
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
@@ -24,11 +8,13 @@ import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
 import styles from './hostDetail.less';
 import { deepEqual } from 'assert';
 
+
 const { Description } = DescriptionList;
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { TextArea } = Input;
+
 
 const formItemLayout = {
   labelCol: {
@@ -38,6 +24,7 @@ const formItemLayout = {
     span: 18,
   },
 };
+
 
 const projectColumns = [
   {
@@ -53,8 +40,8 @@ const projectColumns = [
       text === 'true' ? (
         <Badge status="success" text="运行中" />
       ) : (
-        <Badge status="error" text="已下线" />
-      ),
+          <Badge status="error" text="已下线" />
+        ),
   },
   {
     title: '负责人',
@@ -63,59 +50,78 @@ const projectColumns = [
   },
 ];
 
-Array.prototype.indexOf = function(val) {
+
+Array.prototype.indexOf = function (val) {
   for (var i = 0; i < this.length; i++) {
     if (this[i] == val) return i;
   }
   return -1;
-};
+}
 
-Array.prototype.remove = function(val) {
+Array.prototype.remove = function (val) {
   var index = this.indexOf(val);
   if (index > -1) {
     this.splice(index, 1);
   }
-};
+}
 
 //const panes = [];
 
-let newTabIndex = 0;
+
+
+
+
+let newTabIndex = 0
 let uuid = 1;
 
-@connect(props => props)
+
+@connect((props) => (props))
 @Form.create()
+
 export default class HostDetail extends Component {
+
+ 
+
   state = {
-    activeKey: '',
-    title: '',
-    panes: [],
+    activeKey: "",
+    title: "",
+    panes:[],
     headlist: [],
-    idcdata: [],
-    // idcdata:[{title:"请选择",ID:"-1"}],
+    idcdata: []
+   // idcdata:[{title:"请选择",ID:"-1"}],
   };
+
+  
 
   componentDidMount() {
     //console.log("this.props.location.state+++++++++++",this.props.location.query.id)
     const { dispatch, location, gdevice } = this.props;
-    const idcdata = this.state.idcdata;
+    const idcdata = this.state.idcdata
+  
+ 
+   
 
     dispatch({
       type: 'gidc/queryIdcRelation',
-      payload: `?tag=idc`,
-    });
-
+      payload: `?tag=idc`
+    })
+ 
     dispatch({
       type: 'gproline/getProjectLine',
-    });
+    })
 
     dispatch({
-      type: 'ghardware/queryHardwarePlan',
-    });
+      type: 'ghardware/queryHardwarePlan'
+    })
 
     dispatch({
-      type: 'gdevice/queryUser',
-    });
+      type:'gdevice/queryUser'
+    })
+    
   }
+
+
+  
 
   newDateChange(date, dateString) {
     const { form } = this.props;
@@ -153,6 +159,7 @@ export default class HostDetail extends Component {
     }
   }
 
+
   passwordBlur() {
     const { form } = this.props;
     const password = form.getFieldValue('password') ? form.getFieldValue('password') : '';
@@ -169,16 +176,17 @@ export default class HostDetail extends Component {
     }
   }
 
-  handleIdcChange = value => {
+
+  handleIdcChange = value => {    
     this.props.dispatch({
       type: 'gidc/queryIdcRelation',
       payload: `?tag=cabinet&id=${value}`,
     });
 
     this.props.form.setFieldsValue({
-      cabinet_id: this.props.gidc.cabinet.data.map(post => {
-        return post.title;
-      }),
+      cabinet_id : this.props.gidc.cabinet.data.map(post => {
+        return post.title 
+    }),
     });
   };
 
@@ -188,12 +196,13 @@ export default class HostDetail extends Component {
       payload: `?tag=bays&id=${value}`,
     });
 
+
     this.props.form.setFieldsValue({
-      bay_id: this.props.gidc.bays.data.map(post => {
-        return post.title;
-      }),
+        bay_id : this.props.gidc.bays.data.map(post => {
+        return post.title 
+    }),
     });
-  };
+  }
 
   handleProjectLine = value => {
     this.props.dispatch({
@@ -227,9 +236,12 @@ export default class HostDetail extends Component {
     form.validateFields((err, values) => {
       if (!err) {
         if (!dateStatus) {
-          message.error('维保时间必须大于购买时间');
+          message.error(
+            '维保时间必须大于购买时间'
+          );
         } else if (!passwordStatus) {
           message.error('两次输入密码不匹配~');
+
         } else if (dateStatus && passwordStatus) {
           const fields = {
             sn: form.getFieldValue('serialnumber') ? form.getFieldValue('serialnumber') : '',
@@ -241,41 +253,31 @@ export default class HostDetail extends Component {
             internal_ip: form.getFieldValue('internal_ip') ? form.getFieldValue('internal_ip') : '',
             mac: form.getFieldValue('mac') ? form.getFieldValue('mac') : '',
             start_guaratee: form.getFieldValue('start_guaratee')
-              ? form.getFieldValue('start_guaratee')
-              : '',
+            ? form.getFieldValue('start_guaratee')
+            : '',
             stop_guaratee: form.getFieldValue('stop_guaratee')
-              ? form.getFieldValue('stop_guaratee')
-              : '',
-            hardware_vendor: form.getFieldValue('hardware_vendor')
-              ? form.getFieldValue('hardware_vendor')
-              : '',
-            manufacturer: form.getFieldValue('manufacturer')
-              ? form.getFieldValue('manufacturer')
-              : '',
+            ? form.getFieldValue('stop_guaratee')
+            : '',
+            hardware_vendor: form.getFieldValue('hardware_vendor') ? form.getFieldValue('hardware_vendor') : '',
+            manufacturer: form.getFieldValue('manufacturer') ? form.getFieldValue('manufacturer') : '',
             cpu_model: form.getFieldValue('cpu_model') ? form.getFieldValue('cpu_model') : '',
             cpuarch: form.getFieldValue('cpuarch') ? form.getFieldValue('cpuarch') : '',
             num_cpus: form.getFieldValue('num_cpus') ? form.getFieldValue('num_cpus') : '',
             disk: form.getFieldValue('disk') ? form.getFieldValue('disk') : '',
-            assets_number: form.getFieldValue('assets_number')
-              ? form.getFieldValue('assets_number')
-              : '',
-            assets_number: form.getFieldValue('service_code')
-              ? form.getFieldValue('service_code')
-              : '',
+            assets_number: form.getFieldValue('assets_number') ? form.getFieldValue('assets_number') : '',
+            assets_number: form.getFieldValue('service_code') ? form.getFieldValue('service_code') : '',
             assets_number: form.getFieldValue('memory') ? form.getFieldValue('memory') : '',
 
             idc_id: form.getFieldValue('idc_id') ? form.getFieldValue('idc_id') : '',
             cabinet_id: form.getFieldValue('cabinet_id') ? form.getFieldValue('cabinet_id') : '',
             bay_id: form.getFieldValue('bay_id') ? form.getFieldValue('bay_id') : '',
-
+   
             osversion: form.getFieldValue('osversion') ? form.getFieldValue('osversion') : '',
             biosversion: form.getFieldValue('biosversion') ? form.getFieldValue('biosversion') : '',
-            agentversion: form.getFieldValue('agentversion')
-              ? form.getFieldValue('agentversion')
-              : '',
+            agentversion: form.getFieldValue('agentversion') ? form.getFieldValue('agentversion') : '',
 
             password: form.getFieldValue('password') ? form.getFieldValue('password') : '',
-
+   
             user_id: form.getFieldValue('user_id') ? form.getFieldValue('user_id') : '',
 
             remarks: form.getFieldValue('remarks') ? form.getFieldValue('remarks') : '',
@@ -304,77 +306,73 @@ export default class HostDetail extends Component {
     });
   };
 
-  handleReset = () => {
+  handleReset =  () => {
     e.preventDefault();
     const form = this.props.form;
     form.resetFields();
-  };
+  }
 
   tabcontent = (information, projectcolumns) => {
+
     const { getFieldDecorator, getFieldValue } = this.props.form;
-    const { gidc, gproline, gdevice, ghardware } = this.props;
-    let cabinetOptions, cabinetValue;
+    const { gidc, gproline,gdevice,ghardware} = this.props
+    let cabinetOptions,cabinetValue
+  
 
     const idcOptions = this.props.gidc.idc.data.map(post => {
-      return (
-        <Option key={post.ID} value={post.ID}>
-          {post.title}
-        </Option>
-      );
-    });
+      return <Option key={post.ID} value={post.ID} >{post.title}</Option>
+    })
 
-    if (gidc.cabinet.data.length == 0) {
+   
+    if  (gidc.cabinet.data.length == 0) {
       cabinetOptions = gidc.cabinet.data.map(post => {
-        return (
-          <Option key="-1" value="-1">
-            请选择
-          </Option>
-        );
-      });
-      cabinetValue = '请选择';
+        return <Option key='-1' value="-1" >请选择</Option>
+      })
+      cabinetValue = "请选择"
     } else {
       cabinetOptions = gidc.cabinet.data.map(post => {
-        return (
-          <Option key={post.ID} value={post.ID}>
-            {post.title}
-          </Option>
-        );
-      });
+        return <Option key={post.ID} value={post.ID} >{post.title}</Option>
+      })
+      
     }
 
     const baysOptions = gidc.bays.data.map(item => (
       <Option key={item.ID} value={item.ID}>
         {item.title}
       </Option>
-    ));
+      
+    ))
+    
 
-    console.log('gdevice.user.data', gdevice.user.data);
-    console.log('ghardware.composedata.data', ghardware.composedata.data.list);
+    console.log("gdevice.user.data",gdevice.user.data)
+    console.log("ghardware.composedata.data",ghardware.composedata.data.list)
 
     const userData = gdevice.user.data.map(item => {
-      return (
-        <Option key={item.ID} value={item.ID}>
-          {item.title}
-        </Option>
-      );
-    });
+     return(
+      <Option key={item.ID} value={item.ID}>
+      {item.title}
+       </Option>
+     )
+     
+  })
 
-    const planData = ghardware.composedata.data.list.map(item => {
-      return (
-        <Option key={item.ID} value={item.ID}>
-          {item.title}
-        </Option>
-      );
-    });
+  const planData = ghardware.composedata.data.list.map(item => {
+    return(
+      <Option key={item.ID} value={item.ID}>
+      {item.title}
+       </Option>
+     )
+})
+  
 
     //添加
-    getFieldDecorator('keys', { initialValue: [0] });
+   getFieldDecorator('keys', { initialValue: [0,1,2] });
+   
+   let keys = getFieldValue('keys');
 
-    let keys = getFieldValue('keys');
-
-    console.log('formItems+++++++++++++++++++', this.props);
-
-    const formItems = keys.map((k, index) => {
+    console.log("formItems+++++++++++++++++++",this.props)
+    
+     const formItems = keys.map((k, index) => {
       //产品线列表
       const prolineOptions = gproline.prolinedata.data.map(proline => (
         <Option key={proline.ID} value={proline.ID}>
@@ -388,7 +386,7 @@ export default class HostDetail extends Component {
         </Option>
       ));
 
-      // const probygidArr = probygid.map(obj => obj);
+     // const probygidArr = probygid.map(obj => obj);
 
       const probygidOptions = gproline.probygid.map(probygidItem => (
         <Option key={probygidItem.ID} value={probygidItem.ID}>
@@ -396,99 +394,105 @@ export default class HostDetail extends Component {
         </Option>
       ));
 
-      console.log('progroupOptions', gproline.progroupbylid);
-      console.log('probygidOptions', gproline.probygid);
+    
 
-      return (
-        <FormItem label={index == 0 ? '产品线' : ''} key={k}>
-          <Col span={7}>
-            <FormItem>
-              {getFieldDecorator(`proline${k}`, {
-                rules: [
-                  {
-                    required: true,
-                    message: '请选择产品线!',
-                  },
-                ],
-              })(
-                <Select
-                  //showSearch
-                  style={{ width: 200, marginRight: 40 }}
-                  onChange={this.handleProjectLine}
-                  //  optionFilterProp="children"
-                  //
-                  //  filterOption={(input, option) =>
-                  //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  //  }
-                >
-                  {prolineOptions}
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col span={7}>
-            <FormItem>
-              {getFieldDecorator(`progroup${k}`, {
-                rules: [
-                  {
-                    required: true,
-                    message: '请选择项目组!',
-                  },
-                ],
-              })(
-                <Select
-                  //showSearch
-                  style={{ width: 200, marginRight: 40 }}
-                  onChange={this.handleProjectGroup}
-                  //  optionFilterProp="children"
-                  //  filterOption={(input, option) =>
-                  //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  //  }
-                >
-                  {progroupOptions}
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col span={7}>
-            <FormItem>
-              {getFieldDecorator(`project${k}`, {
-                rules: [
-                  {
-                    required: true,
-                    message: '请选择项目!',
-                  },
-                ],
-              })(
-                <Select
-                  //    showSearch
-                  style={{ width: 200, marginRight: 40 }}
-                  //  optionFilterProp="children"
-                  //  filterOption={(input, option) =>
-                  //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  //  }
-                >
-                  {probygidOptions}
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          {keys.length > 1 ? (
-            <Icon
-              className="dynamic-delete-button"
-              type="minus-circle-o"
-              disabled={keys.length === 1}
-              onClick={() => this.projectRemove(k)}
-            />
-          ) : null}
-        </FormItem>
-      );
-    });
+
+    console.log("progroupOptions",gproline.progroupbylid)
+    console.log("probygidOptions",gproline.probygid)
+
+     return (
+       <FormItem label={index == 0 ? '产品线' : ''} key={k}>
+         <Col span={7}>
+           <FormItem>
+             {getFieldDecorator(`proline${k}`, {
+               rules: [
+                 {
+                   required: true,
+                   message: '请选择产品线!',
+                 },
+               ],
+             })(
+               <Select
+                 //showSearch
+                 style={{ width: 200, marginRight: 40 }}
+                 onChange={this.handleProjectLine}
+                //  optionFilterProp="children"
+                //  
+                //  filterOption={(input, option) =>
+                //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                //  }
+               >
+                 {prolineOptions}
+               </Select>
+             )}
+           </FormItem>
+         </Col>
+         <Col span={7}>
+           <FormItem>
+             {getFieldDecorator(`progroup${k}`, {
+               rules: [
+                 {
+                   required: true,
+                   message: '请选择项目组!',
+                 },
+               ],
+             })(
+               <Select
+                 //showSearch
+                 style={{ width: 200, marginRight: 40 }}
+                 onChange={this.handleProjectGroup}
+                //  optionFilterProp="children"
+                //  filterOption={(input, option) =>
+                //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                //  }
+               >
+                 {progroupOptions}
+               </Select>
+             )}
+           </FormItem>
+         </Col>
+         <Col span={7}>
+           <FormItem>
+             {getFieldDecorator(`project${k}`, {
+               rules: [
+                 {
+                   required: true,
+                   message: '请选择项目!',
+                 },
+               ],
+             })(
+               <Select
+            //    showSearch
+                 style={{ width: 200, marginRight: 40 }}
+                //  optionFilterProp="children"
+                //  filterOption={(input, option) =>
+                //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                //  }
+               >
+                 {probygidOptions}
+               </Select>
+             )}
+           </FormItem>
+         </Col>
+         {keys.length > 1 ? (
+           <Icon
+             className="dynamic-delete-button"
+             type="minus-circle-o"
+             disabled={keys.length === 1}
+             onClick={() => this.projectRemove(k)}
+           />
+         ) : null}
+       </FormItem>
+     );
+   });
 
     return (
       <Fragment>
         <Card bordered={false}>
-          <Form className="ant-advanced-search-form" onSubmit={this.handleAdd}>
+          <Form
+            className="ant-advanced-search-form"
+            onSubmit={this.handleAdd}
+          >
             <Row gutter={24}>
               <Col span={8}>
                 <span>网络信息</span>
@@ -506,6 +510,7 @@ export default class HostDetail extends Component {
                     ],
                   })(<Input placeholder="请输入" />)}
                 </FormItem>
+
               </Col>
               <Col span={8}>
                 <FormItem label="网卡2:" {...formItemLayout}>
@@ -530,6 +535,7 @@ export default class HostDetail extends Component {
                     ],
                   })(<Input placeholder="请输入" />)}
                 </FormItem>
+
               </Col>
             </Row>
             <Row gutter={24}>
@@ -557,9 +563,11 @@ export default class HostDetail extends Component {
                   {getFieldDecorator('mac')(<Input placeholder="请输入" />)}
                 </FormItem>
               </Col>
+
             </Row>
 
             <Divider style={{ marginBottom: 32 }} />
+
 
             <Row gutter={24}>
               <Col span={8}>
@@ -604,7 +612,9 @@ export default class HostDetail extends Component {
                   })(<DatePicker onChange={this.oldDateChange.bind(this)} />)}
                 </FormItem>
               </Col>
+
             </Row>
+
 
             <Row>
               <Col span={8}>
@@ -622,9 +632,11 @@ export default class HostDetail extends Component {
               <Col span={8}>
                 <FormItem label="CPU 参数" {...formItemLayout}>
                   {getFieldDecorator('cpu_model')(<Input placeholder="请输入" />)}
+
                 </FormItem>
               </Col>
             </Row>
+
 
             <Row>
               <Col span={8}>
@@ -635,9 +647,7 @@ export default class HostDetail extends Component {
 
               <Col span={8}>
                 <FormItem label="CPU核数" {...formItemLayout}>
-                  {getFieldDecorator('num_cpus')(
-                    <InputNumber style={{ marginRight: 150 }} min={1} max={100} />
-                  )}
+                  {getFieldDecorator('num_cpus')(<InputNumber style={{ marginRight: 150 }} min={1} max={100} />)}
                 </FormItem>
               </Col>
 
@@ -667,66 +677,74 @@ export default class HostDetail extends Component {
               </Col>
             </Row>
 
+
+
+
             <Row gutter={24}>
-              <Col span={8}>
+               <Col span={8}>
                 <FormItem label="机房选择" {...formItemLayout}>
-                  {getFieldDecorator(`idc_id`, {
-                    initialValue: '请选择',
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Please select Idc!',
-                      },
-                    ],
-                  })(
-                    <Select
-                      //   showSearch
-                      style={{ width: 200, marginRight: 40 }}
-                      onChange={this.handleIdcChange}
-                      // optionFilterProp="children"
-                      // filterOption={(input, option) =>
-                      //   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      // }
-                    >
-                      {idcOptions}
-                    </Select>
-                  )}
-                </FormItem>
-              </Col>
-              <Col span={8}>
-                <FormItem label="机柜选择" {...formItemLayout}>
-                  {getFieldDecorator(`cabinet_id`, {
-                    initialValue: '请选择',
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Please select Cabinet!',
-                      },
-                    ],
-                  })(
-                    <Select
-                      style={{ width: 200, marginRight: 40 }}
-                      onChange={this.handlecabinetChange}
-                    >
-                      {cabinetOptions}
-                    </Select>
-                  )}
-                </FormItem>
-              </Col>
-              <Col span={8}>
-                <FormItem label="机架选择" {...formItemLayout}>
-                  {getFieldDecorator(`bay_id`, {
-                    initialValue: '请选择',
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Please select Bays!',
-                      },
-                    ],
-                  })(<Select style={{ width: 200, marginRight: 40 }}>{baysOptions}</Select>)}
-                </FormItem>
-              </Col>
+                      {getFieldDecorator(`idc_id`, {
+                        initialValue:"请选择",
+                        rules: [
+                          {
+                            required: true,
+                            message: 'Please select Idc!',
+                          },
+                        ],
+                      })(
+                        <Select
+                         
+                       //   showSearch
+                          style={{ width: 200, marginRight: 40 }}
+                          onChange={this.handleIdcChange}
+                          // optionFilterProp="children"
+                          // filterOption={(input, option) =>
+                          //   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          // }
+                        >
+                          {idcOptions}
+                        </Select>
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={8}>
+                    <FormItem label="机柜选择" {...formItemLayout}>
+                      {getFieldDecorator(`cabinet_id`, {
+                        initialValue:"请选择",
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please select Cabinet!',
+                        },
+                      ],
+                    })(
+                      <Select
+                        style={{ width: 200, marginRight: 40 }}
+                        onChange={this.handlecabinetChange}
+                      
+                      >
+                        {cabinetOptions}
+                      </Select>
+                    )}
+                    </FormItem>
+                  </Col>
+                  <Col span={8}>
+                    <FormItem label="机架选择" {...formItemLayout}>
+                      {getFieldDecorator(`bay_id`, {
+                        initialValue:"请选择",
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please select Bays!',
+                        },
+                      ],
+                    })(<Select style={{ width: 200, marginRight: 40 }}>{baysOptions}</Select>)}
+                    </FormItem>
+                  </Col>
+              
             </Row>
+
+
 
             <Divider style={{ marginBottom: 32 }} />
             <Row gutter={24}>
@@ -736,57 +754,71 @@ export default class HostDetail extends Component {
             </Row>
             <Row>
               <Col span={8}>
-                <FormItem label="机器管理员" {...formItemLayout}>
-                  {getFieldDecorator(`user_id`, {
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Please select user!',
-                      },
-                    ],
-                  })(
-                    <Select
-                      style={{ width: 200 }}
-                      mode="multiple"
-                      size="default"
-                      placeholder="请选择管理员"
-                      // optionFilterProp="children"
-                      // filterOption={(input, option) =>
-                      //   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      // }
-                    >
-                      {userData}
-                    </Select>
-                  )}
-                </FormItem>
+              <FormItem label="机器管理员"  {...formItemLayout}>
+                {getFieldDecorator(`user_id`, {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Please select user!',
+                    },
+                  ],
+                })(
+                  <Select
+                    style={{ width: 200 }}
+                    mode="multiple"
+                    size='default'             
+                    placeholder="请选择管理员"
+                    // optionFilterProp="children"
+                    // filterOption={(input, option) =>
+                    //   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    // }
+                  >
+                    {userData}
+                  </Select>
+                )}
+              </FormItem>
               </Col>
               <Col span={8}>
-                <FormItem label="机器密码" {...formItemLayout}>
-                  {getFieldDecorator(`password`, {
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Please enter the machine password!',
-                      },
-                    ],
-                  })(<Input type="password" placeholder="请输入密码" onBlur={this.passwordBlur} />)}
-                </FormItem>
+                  <FormItem label="机器密码"  {...formItemLayout}>
+                    {getFieldDecorator(`password`, {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please enter the machine password!',
+                        },
+                      ],
+                    })(
+                      <Input
+                        type="password"
+                        placeholder="请输入密码"
+                        onBlur={this.passwordBlur}
+                      />
+                    )}
+                  </FormItem>
               </Col>
               <Col span={8}>
-                <FormItem label="确认密码" {...formItemLayout}>
-                  {getFieldDecorator(`surePwd`, {
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Please enter the confirmation machine password!',
-                      },
-                    ],
-                  })(<Input type="password" placeholder="请输入密码" onBlur={this.passwordBlur} />)}
-                </FormItem>
+              <FormItem label="确认密码"  {...formItemLayout}>
+                {getFieldDecorator(`surePwd`, {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Please enter the confirmation machine password!',
+                    },
+                  ],
+                })(
+                  <Input
+                    type="password"
+                    placeholder="请输入密码"
+                    onBlur={this.passwordBlur}
+                  />
+                )}
+              </FormItem>
               </Col>
+              
             </Row>
 
-            <Divider style={{ marginBottom: 32 }} />
+             <Divider style={{ marginBottom: 32 }} />
+
 
             <Row gutter={24}>
               <Col span={8}>
@@ -810,39 +842,44 @@ export default class HostDetail extends Component {
               <Col span={8}>
                 <FormItem label="bios版本" {...formItemLayout}>
                   {getFieldDecorator('biosversion')(<Input placeholder="请输入" />)}
+
                 </FormItem>
               </Col>
 
               <Col span={8}>
                 <FormItem label="agent版本" {...formItemLayout}>
                   {getFieldDecorator('agentversion')(<Input placeholder="请输入" />)}
+
                 </FormItem>
               </Col>
             </Row>
 
+
             <Row>
+
               <Col span={8}>
                 <FormItem label="套餐信息" {...formItemLayout}>
                   {getFieldDecorator('planversion')(
                     <Select placeholder="请选择" style={{ width: '100%' }}>
-                      {planData}
+                        {planData}
                     </Select>
                   )}
                 </FormItem>
               </Col>
             </Row>
 
+
             <Divider style={{ marginBottom: 32 }} />
             <div className={styles.title}>项目信息</div>
 
             <Row gutter={24}>
               <Col span={24} key={1} style={{ display: 'block' }}>
-                {formItems}
+              {formItems}
               </Col>
               <Col span={24} key={2} style={{ display: 'block' }}>
                 <Button type="dashed" onClick={this.addproject} style={{ width: '15%' }}>
                   <Icon type="plus" /> 添加项目
-                </Button>
+              </Button>
               </Col>
             </Row>
 
@@ -859,19 +896,22 @@ export default class HostDetail extends Component {
             </Row>
             <Row>
               <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" htmlType="submit">
-                  保存
-                </Button>
+                <Button type="primary" htmlType="submit">保存</Button>
                 <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
                   重置
-                </Button>
+            </Button>
               </Col>
             </Row>
+
           </Form>
         </Card>
       </Fragment>
-    );
-  };
+    )
+  }
+
+
+
+
 
   addproject = () => {
     const { form } = this.props;
@@ -883,23 +923,32 @@ export default class HostDetail extends Component {
     });
   };
 
-  onChange = activeKey => {
+   
+
+
+
+
+
+  onChange = (activeKey) => {
     this.setState({ activeKey });
-  };
+  }
   onEdit = (targetKey, action) => {
     this[action](targetKey);
-  };
+  }
+
 
   add = () => {
     const panes = this.state.panes;
     const activeKey = `newTab${newTabIndex++}`;
-    panes.push({ title: '新主机', content: this.tabcontent, key: activeKey });
+    panes.push({ title: '新主机',content: this.tabcontent, key: activeKey });
     this.setState({ panes, activeKey });
-  };
+  }
 
-  remove = targetKey => {
+
+  remove = (targetKey) => {
     let activeKey = this.state.activeKey;
     let lastIndex;
+
 
     this.state.panes.forEach((pane, i) => {
       if (pane.key === targetKey) {
@@ -907,18 +956,22 @@ export default class HostDetail extends Component {
       }
     });
 
+
     const panes = this.state.panes.filter(pane => pane.key !== targetKey);
     if (lastIndex >= 0 && activeKey === targetKey) {
-      console.log('panes[lastIndex].key', panes[lastIndex].key);
+      console.log("panes[lastIndex].key",panes[lastIndex].key)
       activeKey = panes[lastIndex].key;
     }
     this.setState({ panes, activeKey });
-  };
+
+  }
 
   render() {
     // debugger
 
     const { gdevice, loading } = this.props;
+
+    
 
     return (
       <Card bordered={false}>
@@ -933,11 +986,9 @@ export default class HostDetail extends Component {
           type="editable-card"
           onEdit={this.onEdit}
         >
-          {this.state.panes.map(pane => (
-            <TabPane tab={pane.title} key={pane.key}>
-              {pane.content()}
-            </TabPane>
-          ))}
+
+          {this.state.panes.map(pane => <TabPane tab={pane.title} key={pane.key}>{pane.content()}</TabPane>)}
+
         </Tabs>
       </Card>
     );

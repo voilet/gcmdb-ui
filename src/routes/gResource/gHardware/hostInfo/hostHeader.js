@@ -1,95 +1,118 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import { routerRedux, Route, Switch } from 'dva/router';
-import { connect } from 'dva';
-import { Select, Icon, Button, Dropdown, Menu } from 'antd';
+import {connect} from 'dva';
+import {
+  Select,
+  Icon,
+  Button,
+  Dropdown,
+  Menu,
+} from 'antd';
+
+
 
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
 import { getRoutes } from '../../../../utils/utils';
 
+
+
 import styles from './hostInfo.less';
 
-const { Option } = Select;
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
+const {Option} = Select;
+const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
-@connect(props => props)
+@connect((props) => (props))
+
+
+
+
 export default class HostHeader extends PureComponent {
   state = {
-    activekey: 'list',
-    title: '主机列表页',
+     activekey: "list",
+     title: "主机列表页"
   };
+
 
   componentWillReceiveProps = nextProps => {
-    const { location: { pathname } } = this.props;
-    const { location: { pathname: nextPathName } } = nextProps;
-    if (nextPathName === '/resource/hardware/host/detail' && nextPathName !== pathname) {
+    const { location: { pathname } } = this.props
+    const { location: { pathname: nextPathName } } = nextProps
+    if(nextPathName === '/resource/hardware/host/detail' && nextPathName !== pathname) {
       this.setState({
         activekey: 'detail',
-        title: '主机详情页',
-      });
+        title: "查看主机信息"
+      })
     }
 
-    if (nextPathName === '/resource/hardware/host/edit' && nextPathName !== pathname) {
+    if(nextPathName === '/resource/hardware/host/edit' && nextPathName !== pathname) {
       this.setState({
-        activekey: 'detail',
-        title: '主机详情页',
-      });
+        activekey: 'edit',
+        title: "编辑主机信息"
+      })
     }
 
-    if (nextPathName === '/resource/hardware/host/add' && nextPathName !== pathname) {
+    if(nextPathName === '/resource/hardware/host/add' && nextPathName !== pathname) {
       this.setState({
         activekey: 'add',
-        title: '添加主机',
-      });
+        title: "添加主机信息"
+      })
     }
-  };
+
+  }
 
   handleTabChange = key => {
-    const { dispatch, match } = this.props;
+    const { dispatch, match} = this.props;
     switch (key) {
       case 'list':
         dispatch(routerRedux.push(`${match.url}/list`));
         this.setState({
-          activekey: 'list',
-          title: '主机列表页',
-        });
+          activekey : "list",
+          title: "主机列表页"
+        })
         break;
       case 'detail':
         dispatch(routerRedux.push(`${match.url}/detail`));
         this.setState({
-          activekey: 'detail',
-          title: '主机详情页',
-        });
+          activekey : "detail",
+          title: "查询主机信息"
+        })
+        break;
+      case 'edit':
+        dispatch(routerRedux.push(`${match.url}/detail`));
+        this.setState({
+          activekey : "edit",
+          title: "编辑主机信息"
+        })
         break;
       case 'add':
         dispatch(routerRedux.push(`${match.url}/add`));
         this.setState({
-          activekey: 'add',
-          title: '添加主机',
-        });
+          activekey : "add",
+          title: "添加主机信息"
+        })
         break;
 
       case 'deleted':
-        dispatch(routerRedux.push(`${match.url}/deleted`));
-        this.setState({
-          activekey: 'deleted',
-          title: '已删除主机列表',
-        });
-        break;
+      dispatch(routerRedux.push(`${match.url}/deleted`));
+      this.setState({
+        activekey : "deleted",
+        title: "已删除主机列表"
+      })
+      break;
       default:
         break;
     }
-  };
+  }
 
   render() {
-    console.log('this.props', this.props);
-    const { activekey, title } = this.state;
-    const { match, routerData, location, loading } = this.props;
-
+    console.log("this.props",this.props)
+    const {activekey,title} = this.state;     
+    const { match, routerData, location,loading } = this.props;
+    
     const routes = getRoutes(match.path, routerData);
 
+    
+
+    
     const tabList = [
       {
         key: 'list',
@@ -97,17 +120,23 @@ export default class HostHeader extends PureComponent {
       },
       {
         key: 'detail',
-        tab: '主机详情',
+        tab: '查看主机信息',
       },
       {
         key: 'deleted',
         tab: '已删除主机',
       },
       {
+        key: 'edit',
+        tab: '编辑主机信息',
+      },
+      {
         key: 'add',
-        tab: '添加主机',
+        tab: '添加主机信息',
       },
     ];
+
+
 
     return (
       <PageHeaderLayout
