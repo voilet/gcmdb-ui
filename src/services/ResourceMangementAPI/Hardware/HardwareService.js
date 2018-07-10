@@ -177,10 +177,12 @@ export async function queryHosts(params) {
   return request(`/v1/assets/hardware/host/query/${params}`);
 }
 
+
 //按照条件查询主机列表
 export async function queryHostsByCondition(params) {
   return request(`/v1/assets/hardware/searchhosts/${params}`);
 }
+
 
 ///v1/assets/hardware/host/detail/query/1
 //查询主机详细表
@@ -222,8 +224,10 @@ export async function deleteHost(params) {
 }
 
 //修改主机
-export async function modifyHost(params) {
-  return request(`/v1/assets/hardware/host/modify/${params.ID}`, {
+export async function modifyHost(params,id) {
+  console.log("ididididididididididid",id)
+  console.log("paramsparamsparamsparams",params)
+  return request(`/v1/assets/hardware/host/modify/${id}`, {
     method: 'POST',
     body: {
       ...params,

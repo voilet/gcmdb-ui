@@ -102,6 +102,18 @@ class HostTable extends PureComponent {
   }
   
 
+  clean(key) {   
+    const { dispatch, match} = this.props; 
+    dispatch(
+        routerRedux.push(
+            {
+                pathname: '/resource/hardware/host/clean',
+                query:{id: key}
+            }
+    ));
+    
+  }
+
   save(key) {
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
@@ -369,7 +381,7 @@ class HostTable extends PureComponent {
             return <Badge status={HostStatusMap[val]} text={HostStatus[val]} />;
           },
     },{
-        title: 'agent状态',
+        title: 'agent',
         dataIndex: 'agent_survival',
         width: "120px",
         key: 'agent_survival',
@@ -401,26 +413,18 @@ class HostTable extends PureComponent {
             <Divider type="vertical" />
 
             {
-                <Popconfirm title="确定删除?" onConfirm={() => this.confirmdelete(record.ID)}>
-                <a>删除</a>
+                <Popconfirm title="确定下线?" onConfirm={() => this.confirmdelete(record.ID)}>
+                   <a>下线</a>
                  </Popconfirm>
             }
-               {
-                //  deleteable ?
-                //  <span>
-                //  <Popconfirm title="确定删除?" onConfirm={() => this.confirmdelete(record.ID)}>
-                //      <a>提交</a>
-                //  </Popconfirm>
-                //  <Divider type="vertical" />
-                //  <a onClick={() => this.canceldelete(record.ID)}>取消</a>
-                //  </span>
-                //   : 
-                //   <span style={{marginLeft: 10}}>
-                //   <a onClick={() => this.askdelete(record.ID)}>删除</a>
-                //   </span>
-                  }
                  <Divider type="vertical" />
-                 <a onClick={() => this.show(record.ID)}>详情</a>  
+                 <a onClick={() => this.show(record.ID)}>详情</a>
+
+                 <Divider type="vertical" />
+                 <a onClick={() => this.clean(record.ID)}>项目关系</a>  
+
+                 <Divider type="vertical" />
+                 <a onClick={() => this.show(record.ID)}>修改密码</a>
           </div>
           );
       },

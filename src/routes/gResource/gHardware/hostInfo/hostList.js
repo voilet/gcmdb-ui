@@ -1,6 +1,6 @@
 import { routerRedux, Route, Switch } from 'dva/router';
-import React, { PureComponent, Fragment } from 'react';
-import { connect } from 'dva';
+import React, {PureComponent,Fragment} from 'react';
+import {connect} from 'dva';
 import {
   Card,
   Form,
@@ -17,73 +17,83 @@ import {
   Select,
 } from 'antd';
 
+
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
 
-import HostTable from '../../../../components/Resource/HostTable';
 
-import HostHeader from './hostHeader';
-import AddHost from './addHost';
-import styles from './hostInfo.less';
+import HostTable from '../../../../components/Resource/HostTable'
+
+
+
+import HostHeader from './hostHeader'
+import AddHost  from './addHost'
+import styles from './hostInfo.less'
 
 const FormItem = Form.Item;
 
 const TabPane = Tabs.TabPane;
 
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
+const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+
 
 const formItemLayout = {
   labelCol: {
-    span: 6,
+    span: 6 ,
   },
   wrapperCol: {
-    span: 18,
+    span: 18 ,
   },
 };
 
-@connect(props => props)
+
+@connect((props) => (props))
+
 @Form.create()
+
 export default class HostList extends PureComponent {
   state = {
     selectedRows: [],
     expandForm: false,
     formValues: {},
-    numId: '1',
+    numId:'1'
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const {dispatch} = this.props;
     dispatch({
-      type: 'gproline/getProjectLine',
+      type: 'gproline/getProjectLine',  
     });
     dispatch({
-      type: 'gdevice/queryHost',
-      payload: `?currentPage=${1}&pageSize=${20}`,
+      type: 'gdevice/queryHost',  
+      payload:`?currentPage=${1}&pageSize=${20}`
     });
     dispatch({
       type: 'gidc/queryIdcRelation',
-      payload: `?tag=idc&id=1`,
+      payload: `?tag=idc&id=1`
     });
     dispatch({
-      type: 'ghardware/queryHardwarePlan',
-    });
+      type: 'ghardware/queryHardwarePlan'
+    })
     dispatch({
-      type: 'gdevice/queryUser',
-    });
+      type:'gdevice/queryUser'
+    })
     dispatch({
       type: 'gidc/queryIDC',
     });
   }
 
+  
+
+
+
+
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-    console.log(pagination, filtersArg, sorter);
+    const {dispatch} = this.props;
+    const {formValues} = this.state;
+    console.log(pagination, filtersArg, sorter)
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
+      const newObj = {...obj};
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
@@ -102,47 +112,116 @@ export default class HostList extends PureComponent {
     //   type: 'ghardware/queryHardwareComponents',
     //   payload:`cpu`
     // });
-  };
-
-  handleSelectRows = rows => {
+  }
+ 
+  handleSelectRows = (rows) => {
     this.setState({
       selectedRows: rows,
     });
-  };
+    
+  }
 
-  handleDeleteData = val => {
-    console.log(val);
-    const { ID } = val;
-    let ids = [];
-    ids.push(ID);
+  openNotificationWithIcon = (type,content) => {
+    notification[type]({
+      message: '通  知  栏',
+      description: content
+    });
+  };
+  
+
+
+  handleDeleteData = (val) => {
+    console.log(val)
+    const { ID } = val
+    let ids=[]
+    ids.push(ID)
     this.props.dispatch({
       type: 'gdevice/deleteHost',
       payload: {
-        tag: false,
-        infolist: JSON.stringify({ ids }),
-      },
+        tag:false,
+        infolist:JSON.stringify({ids})
+      }
     });
-  };
+  
+    const {gdevice} = this.props
+    if (gdevice.response.status == "200")
+    {
+      this.openNotificationWithIcon('success',gdevice.response.message)
+    }else {
+      this.openNotificationWithIcon('error',gdevice.response.message)
+    }
+  }
 
-  tabOnChange(id) {
+
+handleMenuClick = (e) => {
+  const {dispatch} = this.props;
+  const {selectedRows} = this.state;
+
+  if (!selectedRows) return;
+  console.log(selectedRows)
+  switch (e.key) {
+    case 'remove':
+      dispatch({
+        type: 'gproline/getProjectLine',
+        payload: {
+          ID: selectedRows.map(row => row.ID).join(','),
+        },
+        callback: () => {
+          this.setState({
+            selectedRows: [],
+          });
+        },
+      });
+      break;
+
+    case  'offline':
+        dispatch({
+          type: 'gproline/getProjectLine',
+          payload: {
+            ID: selectedRows.map(row => row.ID).join(','),
+          },
+          callback: () => {
+            this.setState({
+              selectedRows: [],
+            });
+          },
+        });
+    case  'stop':
+        dispatch({
+          type: 'gproline/getProjectLine',
+          payload: {
+            ID: selectedRows.map(row => row.ID).join(','),
+          },
+          callback: () => {
+            this.setState({
+              selectedRows: [],
+            });
+          },
+        });
+    default:
+      break;
+  }
+}
+
+  tabOnChange(id){
     this.setState({
-      numId: '2',
-    });
+      numId:'2'
+    })
     this.props.dispatch({
       type: 'gdevice/queryHostDetail',
-      payload: id,
-    });
+      payload: id
+    })
   }
-  tabClickFn(val) {
+  tabClickFn(val){
     this.setState({
-      numId: val,
-    });
+      numId:val
+    })
   }
-  passwordSeeFn(val) {
+  passwordSeeFn(val){
     this.props.dispatch({
       type: 'gdevice/queryHostPassword',
-      payload: val,
-    });
+      payload: val
+    })
   }
 
   toggleForm = () => {
@@ -151,49 +230,52 @@ export default class HostList extends PureComponent {
     });
   };
 
+ 
+  
   Add = () => {
-    const { dispatch, match } = this.props;
+    const { dispatch, match} = this.props; 
     dispatch(
-      routerRedux.push({
-        pathname: '/resource/hardware/host/add',
-      })
-    );
-  };
+        routerRedux.push(
+            {
+                pathname: '/resource/hardware/host/add',
+            }
+    ));
+  }
 
   renderSimpleForm() {
     const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch}>
-        <Row gutter={24}>
+        <Row  gutter={24}>
           <Col span={8}>
-            <FormItem label="主机ip" {...formItemLayout}>
+            <FormItem label="主机ip"  {...formItemLayout}>
               {getFieldDecorator('ipadds')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col span={8}>
-            <FormItem label="主机名" {...formItemLayout}>
-              {getFieldDecorator('fqdn')(<Input placeholder="请输入" />)}
-            </FormItem>
+              <FormItem label="主机名"  {...formItemLayout}>
+                {getFieldDecorator('fqdn')(<Input placeholder="请输入" />)}
+              </FormItem>
           </Col>
 
           <Col span={8}>
-            <FormItem label="主机状态" {...formItemLayout}>
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">已上线</Option>
-                  <Option value="1">已关机</Option>
-                  <Option value="2">运行中</Option>
-                  <Option value="3">已下线</Option>
-                  <Option value="4">异常</Option>
-                  <Option value="5">报废</Option>
-                  <Option value="6">装机中</Option>
-                </Select>
-              )}
-            </FormItem>
+            <FormItem label="主机状态"  {...formItemLayout} >
+                {getFieldDecorator('status')(
+                  <Select placeholder="请选择" style={{ width: '100%' }}>
+                    <Option value="0">已上线</Option>
+                    <Option value="1">已关机</Option>
+                    <Option value="2">运行中</Option>
+                    <Option value="3">已下线</Option>
+                    <Option value="4">异常</Option>
+                    <Option value="5">报废</Option>
+                    <Option value="6">装机中</Option>
+                  </Select>
+                )}
+              </FormItem>
           </Col>
         </Row>
-        <Row gutter={24}>
-          <Col span={24} style={{ textAlign: 'right' }}>
+        <Row  gutter={24}>
+            <Col span={24} style={{ textAlign: 'right' }}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
                 查询
@@ -205,7 +287,7 @@ export default class HostList extends PureComponent {
                 展开 <Icon type="down" />
               </a>
             </span>
-          </Col>
+        </Col>
         </Row>
       </Form>
     );
@@ -215,7 +297,7 @@ export default class HostList extends PureComponent {
     const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch}>
-        <Row>
+        <Row >
           <Col span={8}>
             <FormItem label="主机ip" {...formItemLayout}>
               {getFieldDecorator('ipadds')(<Input placeholder="请输入" />)}
@@ -223,7 +305,7 @@ export default class HostList extends PureComponent {
           </Col>
           <Col span={8}>
             <FormItem label="主机名" {...formItemLayout}>
-              {getFieldDecorator('fqdn')(<Input placeholder="请输入" />)}
+                {getFieldDecorator('fqdn')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col span={8}>
@@ -251,9 +333,9 @@ export default class HostList extends PureComponent {
             </FormItem>
           </Col>
           <Col span={8}>
-            <FormItem label="机房" {...formItemLayout}>
+              <FormItem label='机房' {...formItemLayout}>
               {getFieldDecorator('fqdn')(<Input placeholder="请输入" />)}
-              {/* {getFieldDecorator(`idc`)(
+                {/* {getFieldDecorator(`idc`)(
                   <Select
                   style={{ width: '100%' }}
                     placeholder="请选择"
@@ -266,19 +348,20 @@ export default class HostList extends PureComponent {
                     
                   </Select>
                 )} */}
-            </FormItem>
+              </FormItem>
           </Col>
           <Col span={8}>
-            <FormItem label="硬件类型" {...formItemLayout}>
-              {getFieldDecorator(`ventor_type`)(
-                <Select style={{ width: '100%' }} placeholder="请选择">
-                  <Option key="1" value="1">
-                    1
-                  </Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
+              <FormItem label='硬件类型' {...formItemLayout}>
+                {getFieldDecorator(`ventor_type`)(
+                  <Select
+                  style={{ width: '100%' }}
+                    placeholder="请选择"
+                  >
+                    <Option key='1' value='1'>1</Option>
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
         </Row>
 
         <Row>
@@ -297,16 +380,16 @@ export default class HostList extends PureComponent {
             </FormItem>
           </Col>
           <Col span={8}>
-            <FormItem label="操作系统类型" {...formItemLayout}>
-              {getFieldDecorator(`systemos`)(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="1">Centos6.9</Option>
-                  <Option value="2">Centos7.2</Option>
-                  <Option value="3">Windows2003</Option>
-                  <Option value="4">Windows2008</Option>
-                </Select>
-              )}
-            </FormItem>
+              <FormItem label='操作系统类型' {...formItemLayout}>
+                {getFieldDecorator(`systemos`)(
+                  <Select placeholder="请选择" style={{ width: '100%' }}>
+                      <Option value="1">Centos6.9</Option>
+                      <Option value="2">Centos7.2</Option>
+                      <Option value="3">Windows2003</Option>
+                      <Option value="4">Windows2008</Option>
+                  </Select>
+                )}
+              </FormItem>
           </Col>
         </Row>
 
@@ -331,9 +414,11 @@ export default class HostList extends PureComponent {
     return this.state.expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
   }
 
+
+
   render() {
     const { gproline, gdevice, gidc, ghardware } = this.props;
-    const { selectedRows } = this.state;
+    const {selectedRows} = this.state;
 
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -345,38 +430,43 @@ export default class HostList extends PureComponent {
 
     return (
       // <PageHeaderLayout title="查询主机(支持批量查询,数据请用逗号分开)" >
-      <Card bordered={false}>
-        <div className={styles.tableList}>
-          <div className={styles.tableListForm}>{this.renderForm()}</div>
-          <div className={styles.tableListOperator}>
-            {selectedRows.length > 0 && (
-              <span>
-                <Button>批量操作</Button>
-                <Dropdown overlay={menu}>
-                  <Button>
-                    更多操作 <Icon type="down" />
-                  </Button>
-                </Dropdown>
-              </span>
-            )}
-          </div>
+        <Card bordered={false}>
+          <div className={styles.tableList}>
+            <div className={styles.tableListForm}>{this.renderForm()}</div>
+            <div className={styles.tableListOperator}>
+          
+              {selectedRows.length > 0 && (
+                <span>
+                  <Button>批量操作</Button>
+                  <Dropdown overlay={menu}>
+                    <Button>
+                      更多操作 <Icon type="down" />
+                    </Button>
+                  </Dropdown>
+                </span>
+              )}
+            </div>
 
-          <Divider> 主机管理 </Divider>
-          {console.log('gdevice', gdevice)}
-          <HostTable
-            selectedRows={selectedRows}
-            // loading={loading}
-            gdevice={gdevice}
-            onRoute={this.onRoute}
-            onSelectRow={this.handleSelectRows}
-            onChange={this.handleStandardTableChange}
-            onEdit={this.handleEdit}
-            onShow={this.handleShow}
-            {...this.props}
-          />
-        </div>
-      </Card>
-      // </PageHeaderLayout>
+            <Divider>  主机管理  </Divider>
+             {console.log("gdevice",gdevice)}
+            <HostTable
+              selectedRows={selectedRows}
+             // loading={loading}
+              gdevice={gdevice}
+              onRoute={this.onRoute}
+              onSelectRow={this.handleSelectRows}
+              onChange={this.handleStandardTableChange}
+              onEdit = {this.handleEdit}
+              onShow = {this.handleShow}
+              handleDeleteData={this.handleDeleteData}
+              {...this.props}
+            />
+
+
+
+          </div>
+        </Card>
+        // </PageHeaderLayout>
     );
   }
 }

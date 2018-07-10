@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { routerRedux } from 'dva/router';
 import { connect } from 'dva';
-import { Card, Badge, Table, Divider, Tabs, Form, Row, Col, Input, Select, Button,DatePicker,InputNumber,Icon    } from 'antd';
+import { Card, Badge, Table, Divider, Tabs, Form, Row, Col, Input, Select, Button,DatePicker,InputNumber,Icon,message    } from 'antd';
 import DescriptionList from '../../../../components/DescriptionList';
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
 
@@ -26,50 +27,6 @@ const formItemLayout = {
 const dateFormat = 'YYYY/MM/DD';
 const monthFormat = 'YYYY/MM';
 
-
-
-
-const projectColumns = [
-  {
-    title: '项目路径',
-    dataIndex: 'title',
-    key: 'title',
-    // render: (text, record) => {
-    //     const dataText = text == undefined ? [] : text
-    //     return (
-    //       <Select 
-    //         showSearch
-    //         defaultValue={dataText[0]} 
-    //         style={{ width: 'auto' }} 
-    //         onChange={(e)=>{this.handSelectChange(e.target.value)}}
-    //         disabled={record.selectStatus}
-    //       >
-    //         {
-    //           dataText.map((item,ind)=>{
-    //             return (<Option label="projects" key={record.ID+ind} value={item}>{item}</Option>)
-    //           })
-    //         }
-    //       </Select>)
-    //   },
-  },
-  {
-    title: '项目状态',
-    dataIndex: 'status',
-    key: 'status',
-    render: text =>
-      text === 'true' ? (
-        <Badge status="success" text="运行中" />
-      ) : (
-          <Badge status="error" text="已下线" />
-        ),
-  },
-  {
-    title: '负责人',
-    dataIndex: 'user',
-    key: 'user',
-  },
-];
-
 let newTabIndex = 0
 
 let uuid = 10000;
@@ -83,7 +40,8 @@ export default class HostDetail extends Component {
     activeKey: '-1',
     title: "",
     panes: [],
-    headlist: []
+    headlist: [],
+    dateStatus: true
   };
 
 
@@ -220,6 +178,7 @@ export default class HostDetail extends Component {
       message.error('Please confirm that the maintenance time is greater than the purchase time!');
     }
   }
+  
   oldDateChange(date, dateString) {
     const { form } = this.props;
     const newDate = new Date(
@@ -238,10 +197,92 @@ export default class HostDetail extends Component {
     }
   }
 
-  tabcontent = (information, projectcolumns) => {
+  handleSave = e => {
+    e.preventDefault();
+    const form = this.props.form;
+    const { dateStatus } = this.state;
+
+    console.log("dateStatus",dateStatus)
+    form.validateFields((err, values) => {
+      if (!err) {
+        if (!dateStatus) {
+          message.error(
+            '维保时间必须大于购买时间'
+          );
+        } else if (dateStatus) {
+          const fields = {
+            sn: form.getFieldValue('serialnumber') ? form.getFieldValue('serialnumber') : '',
+            eth1: form.getFieldValue('eth1') ? form.getFieldValue('eth1') : '',
+            eth2: form.getFieldValue('eth2') ? form.getFieldValue('eth2') : '',
+            eth3: form.getFieldValue('eth3') ? form.getFieldValue('eth3') : '',
+            eth4: form.getFieldValue('eth4') ? form.getFieldValue('eth4') : '',
+            fqdn: form.getFieldValue('fqdn') ? form.getFieldValue('fqdn') : '',
+            internal_ip: form.getFieldValue('internal_ip') ? form.getFieldValue('internal_ip') : '',
+            mac: form.getFieldValue('mac') ? form.getFieldValue('mac') : '',
+            switch_port: form.getFieldValue('switch_port') ? form.getFieldValue('switch_port') : '',
+            start_guaratee: form.getFieldValue('start_guaratee')
+            ? form.getFieldValue('start_guaratee').format('YYYY-MM-DD HH:mm:ss')
+            : '',
+            stop_guaratee: form.getFieldValue('stop_guaratee')
+            ? form.getFieldValue('stop_guaratee').format('YYYY-MM-DD HH:mm:ss')
+            : '',
+            hardware_vendor: form.getFieldValue('hardware_vendor') ? form.getFieldValue('hardware_vendor') : '',
+            manufacturer: form.getFieldValue('manufacturer') ? form.getFieldValue('manufacturer') : '',
+            cpu_model: form.getFieldValue('cpu_model') ? form.getFieldValue('cpu_model') : '',
+            cpuarch: form.getFieldValue('cpuarch') ? form.getFieldValue('cpuarch') : '',
+            num_cpus: form.getFieldValue('num_cpus') ? form.getFieldValue('num_cpus') : '',
+            disk: form.getFieldValue('disk') ? form.getFieldValue('disk') : '',
+            assets_number: form.getFieldValue('assets_number') ? form.getFieldValue('assets_number') : '',
+            assets_number: form.getFieldValue('service_code') ? form.getFieldValue('service_code') : '',
+            assets_number: form.getFieldValue('memory') ? form.getFieldValue('memory') : '',
+
+            idc_id: form.getFieldValue('idc_id') ? form.getFieldValue('idc_id') : '',
+            cabinet_id: form.getFieldValue('cabinet_id') ? form.getFieldValue('cabinet_id') : '',
+            bay_id: form.getFieldValue('bay_id') ? form.getFieldValue('bay_id') : '',
+   
+            osversion: form.getFieldValue('osversion') ? form.getFieldValue('osversion') : '',
+            planversion: form.getFieldValue('planversion') ? form.getFieldValue('planversion') : '',
+          
+            
+   
+            user_id: form.getFieldValue('user_id') ? form.getFieldValue('user_id') : '',
+
+            remarks: form.getFieldValue('remarks') ? form.getFieldValue('remarks') : '',
+          };
+
+         // console.log("this.state.uuid ", this.state.panes.information )
+          let project = [];
+          for (let i = 0; i < this.state.panes[0].information[0].projectlists.length; i++) {
+            project.push(
+              form.getFieldValue(`project${i}`) ? form.getFieldValue(`project${i}`) : ''
+            );
+          }
+
+          fields.project = project;
+
+          this.props.dispatch({
+            type: 'gdevice/modifyHost',
+            payload: {
+              id: this.props.location.query.id,
+              description: fields,
+            },
+          });
+
+          message.success('修改成功');
+ 
+        }
+      }
+    });
+  }
+
+
+
+  tabcontent = (information) => {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { gidc, gproline,gdevice,ghardware} = this.props
     let cabinetOptions,cabinetValue
+
+    console.log("gidc",gidc)
 
     const idcOptions = this.props.gidc.idc.data.map(post => {
       return <Option key={post.ID} value={post.ID} >{post.title}</Option>
@@ -284,29 +325,31 @@ export default class HostDetail extends Component {
      ) 
   })
 
+
    let initValue = new Array()
 
    if (information.projectlists.length > 0 ) {
       for(let i=0; i < information.projectlists.length ;i++) {
          initValue.push(i)         
       }
+
    }
-   
+
     //添加
    getFieldDecorator('keys', { initialValue: initValue});
    
-   let keys = getFieldValue('keys');
+   const keys =  getFieldValue("keys")
 
+    console.log("formItems+++++++++++++++++++121231",information)
     //console.log("formItems+++++++++++++++++++",this.props)
    // console.log("formItems+++++++++++++++++++",information.stop_guaratee)
 
 
      const formItems = (keys,information) => {
-       
+      
       return  (
       keys.map((k, index) => { 
         //产品线列表
-        console.log("++++++++++++++",k)
         const prolineOptions = gproline.prolinedata.data.map(proline => (
           <Option key={proline.ID} value={proline.ID}>
             {proline.title}
@@ -326,12 +369,14 @@ export default class HostDetail extends Component {
             {probygidItem.title}
           </Option>
         ));
-  
+      
+
+
         return (
           <FormItem label={index == 0 ? '产品线' : ''} key={k}>
             <Col span={7}>
               <FormItem>
-                {getFieldDecorator(`proline${k}`,{initialValue: `${information[k].proline_title}`})(
+                {getFieldDecorator(`proline${k}`,{initialValue: `${information.hasOwnProperty(k)?information[k].proline_title:""}`})(
                   
                   <Select
                     //showSearch
@@ -350,7 +395,7 @@ export default class HostDetail extends Component {
             </Col>
             <Col span={7}>
               <FormItem>
-                {getFieldDecorator(`progroup${k}`,{initialValue: `${information[k].progroup_title}`})(
+                {getFieldDecorator(`progroup${k}`,{initialValue: `${information.hasOwnProperty(k)?information[k].progroup_title:""}`})(
                   <Select
                     //showSearch
                     style={{ width: 200, marginRight: 40 }}
@@ -367,7 +412,7 @@ export default class HostDetail extends Component {
             </Col>
             <Col span={7}>
               <FormItem>
-                {getFieldDecorator(`project${k}`,{initialValue: `${information[k].project_title}`})(
+                {getFieldDecorator(`project${k}`,{initialValue: `${information.hasOwnProperty(k)?information[k].project_title:""}`})(
                   <Select
                //    showSearch
                     style={{ width: 200, marginRight: 40 }}
@@ -399,8 +444,35 @@ export default class HostDetail extends Component {
       <Card bordered={false}>
         <Form
           className="ant-advanced-search-form"
-          onSubmit={this.handleSearch}
+          onSubmit={this.handleSave}
         >
+        <Row>
+            <Col span={8}>
+              <FormItem label="主机状态"  {...formItemLayout} >
+                {getFieldDecorator('statusid',
+                {
+                  initialValue: `${information.status_title}`,
+                  rules: [
+                    {
+                      required: true,
+                      message: '请 选择主机状态!',
+                    },
+                  ],
+                })(
+                  <Select placeholder="请选择" style={{ width: '100%' }}>
+                    <Option value="0">已上线</Option>
+                    <Option value="1">已关机</Option>
+                    <Option value="2">运行中</Option>
+                    <Option value="3">已下线</Option>
+                    <Option value="4">异常</Option>
+                    <Option value="5">报废</Option>
+                    <Option value="6">装机中</Option>
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <Divider style={{ marginBottom: 32 }} />
           <Row gutter={24}>
             <Col span={8}>
               <span>网络信息</span>
@@ -474,6 +546,12 @@ export default class HostDetail extends Component {
               <Col span={8}>
                 <FormItem label="MAC地址: " {...formItemLayout}>
                   {getFieldDecorator('mac',{ initialValue: `${information.mac}`})(<Input placeholder={information.mac} />)}
+                </FormItem>
+              </Col>
+
+              <Col span={8}>
+                <FormItem label="所在交换机端口: " {...formItemLayout}>
+                  {getFieldDecorator('switch_port',{ initialValue: `${information.switch_port}`})(<Input placeholder={information.switch_port} />)}
                 </FormItem>
               </Col>
 
@@ -642,7 +720,7 @@ export default class HostDetail extends Component {
           <Row>
             <Col span={8}>
               <FormItem label="操作系统版本" {...formItemLayout}>
-              {getFieldDecorator('os',{initialValue: `${information.osrelease }`})}
+              {getFieldDecorator('osversion',{initialValue: `${information.osrelease }`})}
               {information.osrelease}
               </FormItem>
             </Col>
@@ -742,16 +820,18 @@ export default class HostDetail extends Component {
             <Row gutter={24}>
               <Col>
                 <FormItem label="备注">
-                  {getFieldDecorator('remarks')(
+                  {getFieldDecorator('remarks',{ initialValue:`${information.remarks}`})(
                     <TextArea style={{ minHeight: 32 }} placeholder="备注描述" rows={4} />
                   )}
+
                 </FormItem>
               </Col>
             </Row>
             <Row>
               <Col span={24} style={{ textAlign: 'right' }}>
                 <Button type="primary" htmlType="submit">保存</Button>
-      
+                <Divider type="vertical" />
+                <Button onClick= {() => this.reback()}>返回</Button>
               </Col>
             </Row>
 
@@ -771,6 +851,20 @@ export default class HostDetail extends Component {
 
   onEdit = (targetKey, action) => {
     this[action](targetKey);
+  }
+
+  reback = () => {
+    const { dispatch, match} = this.props; 
+    let activeKey = this.state.activeKey;
+    const panes = this.state.panes.filter(pane => pane.key !== activeKey);
+    this.setState({ panes });
+
+    dispatch(
+        routerRedux.push(
+            {
+                pathname: '/resource/hardware/host/list',
+            }
+    ));
   }
 
   remove = (targetKey) => {
@@ -797,6 +891,9 @@ export default class HostDetail extends Component {
     form.setFieldsValue({
       keys: nextKeys,
     });
+    this.setState({
+      uuid:uuid
+    })
   };
 
 
@@ -827,7 +924,7 @@ export default class HostDetail extends Component {
         onEdit={this.onEdit}
       >
 
-        {this.state.panes.map(pane => <TabPane tab={pane.title} key={pane.key}>{this.tabcontent(pane.information[0], projectColumns)}</TabPane>)}
+        {this.state.panes.map(pane => <TabPane tab={pane.title} key={pane.key}>{this.tabcontent(pane.information[0])}</TabPane>)}
 
       </Tabs>
 

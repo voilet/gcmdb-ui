@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { routerRedux } from 'dva/router';
 import { connect } from 'dva';
 import { Card, Badge, Table, Divider, Tabs, Button, Form, Row, Col, Input, Select, InputNumber, DatePicker, Icon, message } from 'antd';
 import isEqual from 'lodash/isEqual';
@@ -26,30 +27,6 @@ const formItemLayout = {
 };
 
 
-const projectColumns = [
-  {
-    title: '项目路径',
-    dataIndex: 'title',
-    key: 'title',
-  },
-  {
-    title: '项目状态',
-    dataIndex: 'status',
-    key: 'status',
-    render: text =>
-      text === 'true' ? (
-        <Badge status="success" text="运行中" />
-      ) : (
-          <Badge status="error" text="已下线" />
-        ),
-  },
-  {
-    title: '负责人',
-    dataIndex: 'user',
-    key: 'user',
-  },
-];
-
 
 Array.prototype.indexOf = function (val) {
   for (var i = 0; i < this.length; i++) {
@@ -67,10 +44,6 @@ Array.prototype.remove = function (val) {
 
 //const panes = [];
 
-
-
-
-
 let newTabIndex = 0
 let uuid = 1;
 
@@ -87,7 +60,9 @@ export default class HostDetail extends Component {
     title: "",
     panes:[],
     headlist: [],
-    idcdata: []
+    idcdata: [],
+    confirmDirty: false,
+    autoCompleteResult: [],
    // idcdata:[{title:"请选择",ID:"-1"}],
   };
 
@@ -137,7 +112,7 @@ export default class HostDetail extends Component {
       this.setState({
         dateStatus: false,
       });
-      message.error('Please confirm that the maintenance time is greater than the purchase time!');
+      message.error('最后维保时间必须大于购买时间!');
     }
   }
 
@@ -155,25 +130,36 @@ export default class HostDetail extends Component {
       this.setState({
         dateStatus: false,
       });
-      message.error('Please confirm that the maintenance time is greater than the purchase time!');
+      message.error('最后维保时间必须大于购买时间');
     }
   }
 
+  handleConfirmBlur = (e) => {
+    const value = e.target.value;
+    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+  }
 
-  passwordBlur() {
-    const { form } = this.props;
-    const password = form.getFieldValue('password') ? form.getFieldValue('password') : '';
-    const surePwd = form.getFieldValue('surePwd') ? form.getFieldValue('surePwd') : '';
-    if (password != '' && password != surePwd && surePwd != '') {
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && value !== form.getFieldValue('password')) {
       this.setState({
         passwordStatus: false,
       });
-      message.error('The two input passwords do not match!');
+      callback('两次密码不一致,请检查!');
     } else {
       this.setState({
         passwordStatus: true,
       });
+      callback();
     }
+  }
+
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true });
+    }
+    callback();
   }
 
 
@@ -229,6 +215,22 @@ export default class HostDetail extends Component {
     });
   };
 
+
+  
+  reback = () => {
+    const { dispatch, match} = this.props; 
+    let activeKey = this.state.activeKey;
+    const panes = this.state.panes.filter(pane => pane.key !== activeKey);
+    this.setState({ panes });
+
+    dispatch(
+        routerRedux.push(
+            {
+                pathname: '/resource/hardware/host/list',
+            }
+    ));
+  }
+
   handleAdd = e => {
     e.preventDefault();
     const form = this.props.form;
@@ -252,11 +254,12 @@ export default class HostDetail extends Component {
             fqdn: form.getFieldValue('fqdn') ? form.getFieldValue('fqdn') : '',
             internal_ip: form.getFieldValue('internal_ip') ? form.getFieldValue('internal_ip') : '',
             mac: form.getFieldValue('mac') ? form.getFieldValue('mac') : '',
+            switch_port: form.getFieldValue('switch_port') ? form.getFieldValue('switch_port') : '',
             start_guaratee: form.getFieldValue('start_guaratee')
-            ? form.getFieldValue('start_guaratee')
+            ? form.getFieldValue('start_guaratee').format('YYYY-MM-DD HH:mm:ss')
             : '',
             stop_guaratee: form.getFieldValue('stop_guaratee')
-            ? form.getFieldValue('stop_guaratee')
+            ? form.getFieldValue('stop_guaratee').format('YYYY-MM-DD HH:mm:ss')
             : '',
             hardware_vendor: form.getFieldValue('hardware_vendor') ? form.getFieldValue('hardware_vendor') : '',
             manufacturer: form.getFieldValue('manufacturer') ? form.getFieldValue('manufacturer') : '',
@@ -265,8 +268,8 @@ export default class HostDetail extends Component {
             num_cpus: form.getFieldValue('num_cpus') ? form.getFieldValue('num_cpus') : '',
             disk: form.getFieldValue('disk') ? form.getFieldValue('disk') : '',
             assets_number: form.getFieldValue('assets_number') ? form.getFieldValue('assets_number') : '',
-            assets_number: form.getFieldValue('service_code') ? form.getFieldValue('service_code') : '',
-            assets_number: form.getFieldValue('memory') ? form.getFieldValue('memory') : '',
+            service_code: form.getFieldValue('service_code') ? form.getFieldValue('service_code') : '',
+            memory: form.getFieldValue('memory') ? form.getFieldValue('memory') : '',
 
             idc_id: form.getFieldValue('idc_id') ? form.getFieldValue('idc_id') : '',
             cabinet_id: form.getFieldValue('cabinet_id') ? form.getFieldValue('cabinet_id') : '',
@@ -276,10 +279,11 @@ export default class HostDetail extends Component {
             biosversion: form.getFieldValue('biosversion') ? form.getFieldValue('biosversion') : '',
             agentversion: form.getFieldValue('agentversion') ? form.getFieldValue('agentversion') : '',
 
+            planversion: form.getFieldValue('planversion') ? form.getFieldValue('planversion') : '',
             password: form.getFieldValue('password') ? form.getFieldValue('password') : '',
    
             user_id: form.getFieldValue('user_id') ? form.getFieldValue('user_id') : '',
-
+            statusid: form.getFieldValue('statusid') ? form.getFieldValue('statusid') : '',
             remarks: form.getFieldValue('remarks') ? form.getFieldValue('remarks') : '',
           };
 
@@ -289,6 +293,7 @@ export default class HostDetail extends Component {
               form.getFieldValue(`project${i}`) ? form.getFieldValue(`project${i}`) : ''
             );
           }
+          
           fields.project = project;
 
           this.props.dispatch({
@@ -366,7 +371,7 @@ export default class HostDetail extends Component {
   
 
     //添加
-   getFieldDecorator('keys', { initialValue: [0,1,2] });
+   getFieldDecorator('keys', { initialValue: [0] });
    
    let keys = getFieldValue('keys');
 
@@ -493,6 +498,82 @@ export default class HostDetail extends Component {
             className="ant-advanced-search-form"
             onSubmit={this.handleAdd}
           >
+                
+          <Row gutter={24}>
+            <Col span={8}>
+              <span>汇总信息</span>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={8}>
+              <FormItem label="主机状态"  {...formItemLayout} >
+                {getFieldDecorator('statusid',
+                {
+                  initialValue:"请选择",
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Please select statusid!',
+                    },
+                  ],
+                })(
+                  <Select placeholder="请选择" style={{ width: '100%' }}>
+                    <Option value="0">已上线</Option>
+                    <Option value="1">已关机</Option>
+                    <Option value="2">运行中</Option>
+                    <Option value="3">已下线</Option>
+                    <Option value="4">异常</Option>
+                    <Option value="5">报废</Option>
+                    <Option value="6">装机中</Option>
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem label="主机类型"  {...formItemLayout} >
+                {getFieldDecorator('hardware_type',
+                {
+                  initialValue:"请选择",
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择主机类型!',
+                    },
+                  ],
+                })(
+                  <Select placeholder="请选择" style={{ width: '100%' }}>
+                    <Option value="1">物理机</Option>
+                    <Option value="2">虚拟机</Option>
+                    <Option value="3">交换机</Option>
+                    <Option value="4">路由器</Option>
+                    <Option value="5">防火墙</Option>
+                    <Option value="6">存储</Option>
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem label="所属环境"  {...formItemLayout} >
+                {getFieldDecorator('env',
+                {
+                  initialValue:"请选择",
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择所属环境!',
+                    },
+                  ],
+                })(
+                  <Select placeholder="请选择" style={{ width: '100%' }}>
+                    <Option value="1">生产环境</Option>
+                    <Option value="2">仿真环境</Option>
+                    <Option value="3">测试环境</Option>
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+            <Divider style={{ marginBottom: 32 }} />
             <Row gutter={24}>
               <Col span={8}>
                 <span>网络信息</span>
@@ -564,6 +645,13 @@ export default class HostDetail extends Component {
                 </FormItem>
               </Col>
 
+             
+              <Col span={8}>
+                <FormItem label="所在交换机端口: " {...formItemLayout}>
+                  {getFieldDecorator('switch_port')(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+
             </Row>
 
             <Divider style={{ marginBottom: 32 }} />
@@ -576,7 +664,7 @@ export default class HostDetail extends Component {
             </Row>
             <Row>
               <Col span={8}>
-                <FormItem label="服务器序列号" {...formItemLayout}>
+                <FormItem label="序列号" {...formItemLayout}>
                   {getFieldDecorator('serialnumber', {
                     rules: [
                       {
@@ -615,72 +703,7 @@ export default class HostDetail extends Component {
 
             </Row>
 
-
-            <Row>
-              <Col span={8}>
-                <FormItem label="服务器生产商" {...formItemLayout}>
-                  {getFieldDecorator('hardware_vendor')(<Input placeholder="请输入" />)}
-                </FormItem>
-              </Col>
-
-              <Col span={8}>
-                <FormItem label="服务器型号" {...formItemLayout}>
-                  {getFieldDecorator('manufacturer')(<Input placeholder="请输入" />)}
-                </FormItem>
-              </Col>
-
-              <Col span={8}>
-                <FormItem label="CPU 参数" {...formItemLayout}>
-                  {getFieldDecorator('cpu_model')(<Input placeholder="请输入" />)}
-
-                </FormItem>
-              </Col>
-            </Row>
-
-
-            <Row>
-              <Col span={8}>
-                <FormItem label="CPU架构" {...formItemLayout}>
-                  {getFieldDecorator('cpuarch')(<Input placeholder="请输入" />)}
-                </FormItem>
-              </Col>
-
-              <Col span={8}>
-                <FormItem label="CPU核数" {...formItemLayout}>
-                  {getFieldDecorator('num_cpus')(<InputNumber style={{ marginRight: 150 }} min={1} max={100} />)}
-                </FormItem>
-              </Col>
-
-              <Col span={8}>
-                <FormItem label="硬盘详情" {...formItemLayout}>
-                  {getFieldDecorator('disk')(<Input placeholder="请输入" />)}
-                </FormItem>
-              </Col>
-            </Row>
-
-            <Row gutter={24}>
-              <Col span={8}>
-                <FormItem label="资产编号" {...formItemLayout}>
-                  {getFieldDecorator('assets_number')(<Input placeholder="请输入" />)}
-                </FormItem>
-              </Col>
-
-              <Col span={8}>
-                <FormItem label="快速服务码" {...formItemLayout}>
-                  {getFieldDecorator('service_code')(<Input placeholder="请输入" />)}
-                </FormItem>
-              </Col>
-              <Col span={8}>
-                <FormItem label="内存详情" {...formItemLayout}>
-                  {getFieldDecorator('memory')(<Input placeholder="请输入" />)}
-                </FormItem>
-              </Col>
-            </Row>
-
-
-
-
-            <Row gutter={24}>
+                   <Row gutter={24}>
                <Col span={8}>
                 <FormItem label="机房选择" {...formItemLayout}>
                       {getFieldDecorator(`idc_id`, {
@@ -746,6 +769,80 @@ export default class HostDetail extends Component {
 
 
 
+
+            <Row>
+              <Col span={8}>
+                <FormItem label="生产商" {...formItemLayout}>
+                  {getFieldDecorator('hardware_vendor')(
+                  <Select placeholder="请选择" style={{ width: '100%' }}>
+                    <Option value="1">Dell</Option>
+                    <Option value="2">Lenovo</Option>
+                    <Option value="3">HP</Option>
+                  </Select>
+                  )}
+                </FormItem>
+              </Col>
+
+              <Col span={8}>
+                <FormItem label="型号" {...formItemLayout}>
+                  {getFieldDecorator('manufacturer')(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+
+              <Col span={8}>
+                <FormItem label="CPU 参数" {...formItemLayout}>
+                  {getFieldDecorator('cpu_model')(<Input placeholder="请输入" />)}
+
+                </FormItem>
+              </Col>
+            </Row>
+
+
+            <Row>
+              <Col span={8}>
+                <FormItem label="CPU架构" {...formItemLayout}>
+                  {getFieldDecorator('cpuarch')(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+
+              <Col span={8}>
+                <FormItem label="CPU核数" {...formItemLayout}>
+                  {getFieldDecorator('num_cpus')(<InputNumber style={{ marginRight: 150 }} min={1} max={100} />)}
+                </FormItem>
+              </Col>
+
+              <Col span={8}>
+                <FormItem label="硬盘详情" {...formItemLayout}>
+                  {getFieldDecorator('disk')(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+            </Row>
+
+            <Row gutter={24}>
+              <Col span={8}>
+                <FormItem label="资产编号" {...formItemLayout}>
+                  {getFieldDecorator('assets_number')(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+
+              <Col span={8}>
+                <FormItem label="快速服务码" {...formItemLayout}>
+                  {getFieldDecorator('service_code')(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+              <Col span={8}>
+                <FormItem label="内存详情" {...formItemLayout}>
+                  {getFieldDecorator('memory')(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+            </Row>
+
+
+
+
+           
+
+
             <Divider style={{ marginBottom: 32 }} />
             <Row gutter={24}>
               <Col span={8}>
@@ -780,37 +877,40 @@ export default class HostDetail extends Component {
               </Col>
               <Col span={8}>
                   <FormItem label="机器密码"  {...formItemLayout}>
-                    {getFieldDecorator(`password`, {
-                      rules: [
-                        {
-                          required: true,
-                          message: 'Please enter the machine password!',
-                        },
-                      ],
+                    {getFieldDecorator('password',
+                    {
+                      rules: [{
+                        required: true, message: '请输入密码!~',
+                      }, {
+                        validator: this.validateToNextPassword,
+                      }],
                     })(
                       <Input
                         type="password"
                         placeholder="请输入密码"
-                        onBlur={this.passwordBlur}
                       />
                     )}
                   </FormItem>
               </Col>
               <Col span={8}>
               <FormItem label="确认密码"  {...formItemLayout}>
-                {getFieldDecorator(`surePwd`, {
+                {getFieldDecorator('confirm', {
                   rules: [
                     {
                       required: true,
-                      message: 'Please enter the confirmation machine password!',
+                      message: '请输入确认密码!',
                     },
+                    {
+                      validator: this.compareToFirstPassword,
+                    }
                   ],
                 })(
                   <Input
                     type="password"
                     placeholder="请输入密码"
-                    onBlur={this.passwordBlur}
+                    onBlur={this.handleConfirmBlur}
                   />
+             
                 )}
               </FormItem>
               </Col>
@@ -883,6 +983,7 @@ export default class HostDetail extends Component {
               </Col>
             </Row>
 
+
             <Divider style={{ marginBottom: 32 }} />
 
             <Row gutter={24}>
@@ -897,9 +998,8 @@ export default class HostDetail extends Component {
             <Row>
               <Col span={24} style={{ textAlign: 'right' }}>
                 <Button type="primary" htmlType="submit">保存</Button>
-                <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
-                  重置
-            </Button>
+                <Divider type="vertical" />
+                <Button onClick= {() => this.reback()}>返回</Button>
               </Col>
             </Row>
 

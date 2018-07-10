@@ -36,6 +36,14 @@ export default class HostHeader extends PureComponent {
   componentWillReceiveProps = nextProps => {
     const { location: { pathname } } = this.props
     const { location: { pathname: nextPathName } } = nextProps
+
+    if(nextPathName === '/resource/hardware/host/list' && nextPathName !== pathname) {
+      this.setState({
+        activekey: 'list',
+        title: "主机列表"
+      })
+    }
+
     if(nextPathName === '/resource/hardware/host/detail' && nextPathName !== pathname) {
       this.setState({
         activekey: 'detail',
@@ -57,6 +65,12 @@ export default class HostHeader extends PureComponent {
       })
     }
 
+    if(nextPathName === '/resource/hardware/host/clean' && nextPathName !== pathname) {
+      this.setState({
+        activekey: 'clean',
+        title: "主机项目关系列表"
+      })
+    }
   }
 
   handleTabChange = key => {
@@ -91,13 +105,22 @@ export default class HostHeader extends PureComponent {
         })
         break;
 
-      case 'deleted':
+      case 'offline':
       dispatch(routerRedux.push(`${match.url}/deleted`));
       this.setState({
-        activekey : "deleted",
-        title: "已删除主机列表"
+        activekey : "offline",
+        title: "已下线主机列表"
       })
       break;
+
+      case 'clean':
+      dispatch(routerRedux.push(`${match.url}/clean`));
+      this.setState({
+        activekey : "clean",
+        title: "主机项目关系列表"
+      })
+      break;
+
       default:
         break;
     }
@@ -124,7 +147,7 @@ export default class HostHeader extends PureComponent {
       },
       {
         key: 'deleted',
-        tab: '已删除主机',
+        tab: '已下线主机列表',
       },
       {
         key: 'edit',
@@ -133,6 +156,10 @@ export default class HostHeader extends PureComponent {
       {
         key: 'add',
         tab: '添加主机信息',
+      },
+      {
+        key: 'clean',
+        tab: '主机项目关系列表',
       },
     ];
 
