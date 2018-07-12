@@ -155,6 +155,7 @@ import {
           hostdetail: {
             ...action.payload,
             data: [ data ],
+            time4Update: new Date(),
           }
         };
       },

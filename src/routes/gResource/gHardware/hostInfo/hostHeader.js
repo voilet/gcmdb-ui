@@ -91,7 +91,7 @@ export default class HostHeader extends PureComponent {
         })
         break;
       case 'edit':
-        dispatch(routerRedux.push(`${match.url}/detail`));
+        dispatch(routerRedux.push(`${match.url}/edit`));
         this.setState({
           activekey : "edit",
           title: "编辑主机信息"

@@ -10,6 +10,7 @@ import styles from './hostDetail.less';
 const { Description } = DescriptionList;
 const TabPane = Tabs.TabPane;
 
+
 const projectColumns = [
   {
     title: '项目路径',
@@ -24,8 +25,8 @@ const projectColumns = [
       text === 'true' ? (
         <Badge status="success" text="运行中" />
       ) : (
-        <Badge status="error" text="已下线" />
-      ),
+          <Badge status="error" text="已下线" />
+        ),
   },
   {
     title: '负责人',
@@ -34,51 +35,57 @@ const projectColumns = [
   },
 ];
 
-Array.prototype.indexOf = function(val) {
+
+Array.prototype.indexOf = function (val) {
   for (var i = 0; i < this.length; i++) {
     if (this[i] == val) return i;
   }
   return -1;
-};
+}
 
-Array.prototype.remove = function(val) {
+Array.prototype.remove = function (val) {
   var index = this.indexOf(val);
   if (index > -1) {
     this.splice(index, 1);
   }
-};
+}
 
-let newTabIndex = 0;
 
-let panes = new Array();
-let headlist = new Array();
 
-@connect(props => props)
+let newTabIndex = 0
+
+let panes = new Array()
+let headlist = new Array()
+
+@connect((props) => (props))
+
 export default class HostDetail extends Component {
+
   state = {
     activeKey: '-1',
-    title: '',
+    title: "",
     addpanes: [],
     removepanes: [],
     headlist: [],
-    panes: [],
+    panes: []
   };
 
+
   componentDidMount() {
-    console.log(11111);
+    console.log(11111)
     //console.log("this.props.location.state+++++++++++",this.props.location.query.id)
     const { dispatch, location, gdevice } = this.props;
-    console.log(panes, 'panes');
-    if (panes && panes.length > 0) {
+    console.log(panes, 'panes')
+    if(panes && panes.length > 0) {
       this.setState({
         panes,
         activeKey: panes[0].key,
-      });
+      })
     }
     if (location.query !== undefined) {
       dispatch({
         type: 'gdevice/queryHostDetail',
-        payload: location.query.id,
+        payload: location.query.id
       });
     }
   }
@@ -86,26 +93,32 @@ export default class HostDetail extends Component {
   componentWillReceiveProps = nextProps => {
     const { gdevice } = nextProps;
 
-    if (!isEqual(nextProps.gdevice.hostdetail.data, this.props.gdevice.hostdetail.data)) {
+
+
+    if (!isEqual(nextProps.gdevice.hostdetail.time4Update, this.props.gdevice.hostdetail.time4Update)) {
+
       if (gdevice.hostdetail.data.length) {
-        const activeKey = `${gdevice.hostdetail.data[0].detail_id}`;
-        const title = gdevice.hostdetail.data[0].fqdn;
+
+        const activeKey = `${gdevice.hostdetail.data[0].detail_id}`
+        const title = gdevice.hostdetail.data[0].fqdn
+
 
         if (!this.isInArray(headlist, title)) {
-          headlist.push(title);
+          headlist.push(title)
           panes.push({ information: gdevice.hostdetail.data, key: `${activeKey}`, title: title });
         }
         this.setState({ panes, headlist, activeKey });
       }
     }
-  };
+  }
 
-  componentWillUnmount = () => {
+  componentWillUnmount = 　() => {
     const { dispatch } = this.props;
     dispatch({
       type: 'gdevice/empty',
     });
-  };
+  }
+
 
   isInArray = (arr, value) => {
     for (var i = 0; i < arr.length; i++) {
@@ -114,7 +127,7 @@ export default class HostDetail extends Component {
       }
     }
     return false;
-  };
+  }
 
   tabcontent = (information, projectcolumns) => {
     return (
@@ -127,7 +140,9 @@ export default class HostDetail extends Component {
           <Description term="主机名(fqdn)">{information.fqdn}</Description>
           <Description term="MAC地址">{information.mac}</Description>
           <Description term="远程控制卡IP">{information.internal_ip}</Description>
+
         </DescriptionList>
+
 
         <Divider style={{ marginBottom: 32 }} />
         <DescriptionList size="large" title="硬件信息" style={{ marginBottom: 32 }}>
@@ -155,6 +170,7 @@ export default class HostDetail extends Component {
         <Divider style={{ marginBottom: 32 }} />
         <div className={styles.title}>项目信息</div>
 
+
         <Table
           rowKey={information.detail_id}
           style={{ marginBottom: 24 }}
@@ -165,19 +181,22 @@ export default class HostDetail extends Component {
           rowKey="id"
         />
       </Fragment>
-    );
-  };
+    )
+  }
 
-  onChange = activeKey => {
+  onChange = (activeKey) => {
     this.setState({ activeKey });
-  };
+  }
   onEdit = (targetKey, action) => {
     this[action](targetKey);
-  };
+  }
 
-  remove = targetKey => {
+
+
+  remove = (targetKey) => {
     let activeKey = this.state.activeKey;
     let lastIndex;
+
 
     panes.forEach((pane, i) => {
       if (pane.key === targetKey) {
@@ -185,17 +204,17 @@ export default class HostDetail extends Component {
       }
     });
 
-    panes.map(function(value, index, array) {
+    panes.map(function (value, index, array) {
       if (value.key == targetKey) {
-        headlist.remove(value.information[0].fqdn);
+        headlist.remove(value.information[0].fqdn)
       }
-    });
+    })
 
     panes = panes.filter(pane => pane.key !== targetKey);
     // gdevice.panes =  panes
 
     //pane = panes.filter(pane => pane.key !== targetKey)
-    console.log('panespanespanespanespanes1', headlist);
+    console.log("panespanespanespanespanes1", headlist)
     //console.log("this.props.panespanespanespanespanes1",.panes)
 
     if (lastIndex >= 0 && activeKey === targetKey) {
@@ -203,12 +222,14 @@ export default class HostDetail extends Component {
     }
 
     this.setState({ panes, headlist, activeKey });
-  };
+
+  }
 
   render() {
     // debugger
 
     const { gdevice, loading } = this.props;
+
 
     return (
       <Card bordered={false}>
@@ -219,11 +240,9 @@ export default class HostDetail extends Component {
           type="editable-card"
           onEdit={this.onEdit}
         >
-          {this.state.panes.map(pane => (
-            <TabPane tab={pane.title} key={pane.key}>
-              {this.tabcontent(pane.information[0], projectColumns)}
-            </TabPane>
-          ))}
+
+          {this.state.panes.map(pane => <TabPane tab={pane.title} key={pane.key}>{this.tabcontent(pane.information[0], projectColumns)}</TabPane>)}
+
         </Tabs>
       </Card>
     );

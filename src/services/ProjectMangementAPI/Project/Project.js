@@ -2,7 +2,7 @@ import { stringify } from 'qs';
 import request from '../../../utils/request';
 
 //根据搜索条件查询产品列表
-export async function searchProject(params) {
+export async function  searchProject(params){
   return request('/v1/assets/project/search', {
     method: 'POST',
     body: {
@@ -107,6 +107,8 @@ export async function deleteProjectGroup(params) {
   });
 }
 
+
+
 //查询产品线列表
 export async function querProjectLine() {
   return request('/v1/assets/projectline/query');
@@ -141,6 +143,33 @@ export async function deleteProjectLine(params) {
     body: {
       ...params,
       method: 'post',
+    },
+  });
+}
+
+
+
+
+///assets/hardware/hostpro/modify/:id:int
+//修改项目主机关系
+export async function hostproModify(params,id) {
+  return request(`/v1/assets/hardware/hostpro/modify/${id}`, {
+    method: 'POST',
+    body: {
+      method: 'post',
+      ...params,
+    },
+  });
+}
+
+///assets/hardware/hostpro/delete//:id:int
+//解除项目主机关系
+export async function hostproDelete(params,id) {
+  return request(`/v1/assets/hardware/hostpro/delete/${id}`, {
+    method: 'POST',
+    body: {
+      method: 'post',
+      ...params,
     },
   });
 }

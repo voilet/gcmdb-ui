@@ -225,13 +225,36 @@ export async function deleteHost(params) {
 
 //修改主机
 export async function modifyHost(params,id) {
-  console.log("ididididididididididid",id)
-  console.log("paramsparamsparamsparams",params)
   return request(`/v1/assets/hardware/host/modify/${id}`, {
     method: 'POST',
     body: {
       ...params,
       method: 'post',
+    },
+  });
+}
+
+
+///assets/hardware/hostpro/modify/:id:int
+//修改项目主机关系
+export async function hostproModify(params,id) {
+  return request(`/v1/assets/hardware/hostpro/modify/${id}`, {
+    method: 'POST',
+    body: {
+      method: 'post',
+      ...params,
+    },
+  });
+}
+
+///assets/hardware/hostpro/delete//:id:int
+//解除项目主机关系
+export async function hostproDelete(params,id) {
+  return request(`/v1/assets/hardware/hostpro/delete/${id}`, {
+    method: 'POST',
+    body: {
+      method: 'post',
+      ...params,
     },
   });
 }

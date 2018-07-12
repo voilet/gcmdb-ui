@@ -24,6 +24,44 @@ const formItemLayout = {
   },
 };
 
+
+const projectColumns = [
+  {
+    title: '产品线',
+    dataIndex: 'proline_title',
+    key: 'proline_title',
+    width:'120px',
+  },
+  {
+    title: '项目组',
+    dataIndex: 'progroup_title',
+    key: 'progroup_title',
+    width:'120px',
+  },
+  {
+    title: '项目',
+    dataIndex: 'project_title',
+    key: 'project_title',
+    width:'120px',
+  },
+  {
+    title: '项目状态',
+    dataIndex: 'status',
+    key: 'status',
+    render: text =>
+      text === 'true' ? (
+        <Badge status="success" text="运行中" />
+      ) : (
+          <Badge status="error" text="已下线" />
+        ),
+  },
+  {
+    title: '负责人',
+    dataIndex: 'user',
+    key: 'user',
+  },
+];
+
 const dateFormat = 'YYYY/MM/DD';
 const monthFormat = 'YYYY/MM';
 
@@ -324,121 +362,6 @@ export default class HostDetail extends Component {
        </Option>
      ) 
   })
-
-
-   let initValue = new Array()
-
-   if (information.projectlists.length > 0 ) {
-      for(let i=0; i < information.projectlists.length ;i++) {
-         initValue.push(i)         
-      }
-
-   }
-
-    //添加
-   getFieldDecorator('keys', { initialValue: initValue});
-   
-   const keys =  getFieldValue("keys")
-
-    console.log("formItems+++++++++++++++++++121231",information)
-    //console.log("formItems+++++++++++++++++++",this.props)
-   // console.log("formItems+++++++++++++++++++",information.stop_guaratee)
-
-
-     const formItems = (keys,information) => {
-      
-      return  (
-      keys.map((k, index) => { 
-        //产品线列表
-        const prolineOptions = gproline.prolinedata.data.map(proline => (
-          <Option key={proline.ID} value={proline.ID}>
-            {proline.title}
-          </Option>
-        ));
-  
-        const progroupOptions = gproline.progroupbylid.map(item => (
-          <Option key={item.ID} value={item.ID}>
-            {item.title}
-          </Option>
-        ));
-  
-       // const probygidArr = probygid.map(obj => obj);
-  
-        const probygidOptions = gproline.probygid.map(probygidItem => (
-          <Option key={probygidItem.ID} value={probygidItem.ID}>
-            {probygidItem.title}
-          </Option>
-        ));
-      
-
-
-        return (
-          <FormItem label={index == 0 ? '产品线' : ''} key={k}>
-            <Col span={7}>
-              <FormItem>
-                {getFieldDecorator(`proline${k}`,{initialValue: `${information.hasOwnProperty(k)?information[k].proline_title:""}`})(
-                  
-                  <Select
-                    //showSearch
-                    style={{ width: 200, marginRight: 40 }}
-                    onChange={this.handleProjectLine}
-                   //  optionFilterProp="children"
-                   //  
-                   //  filterOption={(input, option) =>
-                   //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                   //  }
-                  >
-                    {prolineOptions}
-                  </Select>
-                )}
-              </FormItem>
-            </Col>
-            <Col span={7}>
-              <FormItem>
-                {getFieldDecorator(`progroup${k}`,{initialValue: `${information.hasOwnProperty(k)?information[k].progroup_title:""}`})(
-                  <Select
-                    //showSearch
-                    style={{ width: 200, marginRight: 40 }}
-                    onChange={this.handleProjectGroup}
-                   //  optionFilterProp="children"
-                   //  filterOption={(input, option) =>
-                   //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                   //  }
-                  >
-                    {progroupOptions}
-                  </Select>
-                )}
-              </FormItem>
-            </Col>
-            <Col span={7}>
-              <FormItem>
-                {getFieldDecorator(`project${k}`,{initialValue: `${information.hasOwnProperty(k)?information[k].project_title:""}`})(
-                  <Select
-               //    showSearch
-                    style={{ width: 200, marginRight: 40 }}
-                   //  optionFilterProp="children"
-                   //  filterOption={(input, option) =>
-                   //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                   //  }
-                  >
-                    {probygidOptions}
-                  </Select>
-                )}
-              </FormItem>
-            </Col>
-            {keys.length > 1 ? (
-              <Icon
-                className="dynamic-delete-button"
-                type="minus-circle-o"
-                disabled={keys.length === 1}
-                onClick={() => this.projectRemove(k)}
-              />
-            ) : null}
-          </FormItem>
-        );
-      }));
-      
-     } 
 
     return (
       <Card bordered={false}>
@@ -805,12 +728,18 @@ export default class HostDetail extends Component {
           <Divider style={{ marginBottom: 32 }} />
           <div className={styles.title}>项目信息</div>
           <Row gutter={24}>
-              <Col span={24} key={1} style={{ display: 'block' }}>
-              {formItems(keys,information.projectlists)}
-              </Col>
+              <Table
+              rowKey={information.detail_id}
+              style={{ marginBottom: 24 }}
+              pagination={false}
+              //loading={loading}
+              dataSource={information.projectlists}
+              columns={projectColumns}
+              rowKey="id"
+            />
               <Col span={24} key={2} style={{ display: 'block' }}>
-                <Button type="dashed" onClick={this.addproject} style={{ width: '15%' }}>
-                  <Icon type="plus" /> 添加项目
+                <Button type="Pri" onClick={this.modifyProject.bind(this, information.detail_id)} style={{ width: '15%' }}>
+                  <Icon type="plus" /> 修改项目关系
               </Button>
               </Col>
             </Row>
@@ -883,17 +812,15 @@ export default class HostDetail extends Component {
   }
 
 
-  addproject = () => {
-    const { form } = this.props;
-    const keys = form.getFieldValue('keys');
-    const nextKeys = keys.concat(uuid);
-    uuid++;
-    form.setFieldsValue({
-      keys: nextKeys,
-    });
-    this.setState({
-      uuid:uuid
-    })
+  modifyProject = (key) => {
+    const { dispatch, match} = this.props; 
+    dispatch(
+        routerRedux.push(
+            {
+                pathname: '/resource/hardware/host/clean',
+                query:{id: key}
+            }
+    ));
   };
 
 
