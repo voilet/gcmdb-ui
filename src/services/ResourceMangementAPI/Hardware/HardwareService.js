@@ -207,6 +207,20 @@ export async function queryHostPassword(params) {
   });
 }
 
+
+///v1/assets/hardware/host/password/modify/1
+//修改密码
+export async function modifyHostPassword(params) {
+  return request(`/v1/assets/hardware/host/password/modify/${params.id}`, {
+    method: 'POST',
+    body: {
+      method: 'post',
+      ...params,
+    },
+  });
+}
+
+
 //添加主机
 export async function addHost(params) {
   return request('/v1/assets/hardware/host/add', {

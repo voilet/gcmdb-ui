@@ -1,7 +1,8 @@
 import {
     queryHosts,queryHostsDetail,queryHostPassword,
     addHost,deleteHost,modifyHost,
-    queryUser,queryOfflineHosts
+    queryUser,queryOfflineHosts,
+    modifyHostPassword
     } from '../services/ResourceMangementAPI/Hardware/HardwareService'
   import {message} from 'antd'
   
@@ -29,7 +30,9 @@ import {
         data:[]
       },
       //主机密码
-      password:{},
+      password:{
+        data:[]
+      },
       loading: false,
       panes:[],
       headlist:[],
@@ -66,6 +69,14 @@ import {
             message.error(response.data)
         }
       },
+
+     //修改主机密码
+      *modifyHostPassword({ payload }, { call, put }) {
+        yield call(modifyHostPassword, payload) 
+        yield put({ type: 'reloadHost'})
+      },
+      
+
       //查询主机基础信息
       *queryHost({ payload }, { call, put }) {
         const response = yield call(queryHosts, payload) 

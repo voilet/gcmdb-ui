@@ -3,11 +3,12 @@ import { routerRedux } from 'dva/router';
 
 import moment from 'moment';
 import DescriptionList from '../../DescriptionList';
-import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select,Button,Modal  } from 'antd';
+import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select,Button,Modal,Form  } from 'antd';
 import styles from './index.less';
 //import HostDetail from './hostDetail'
 
 const {Option} = Select;
+const FormItem = Form.Item;
 const { Description } = DescriptionList;
 
 const HostStatusMap = ['online','poweroff','processing','offline','outdate', 'error','installing'];
@@ -17,7 +18,108 @@ const AgentStatusMap = ['processing','error'];
 const AgentStatus = ['运行中','异常'];
 
 
+const formItemLayout = {
+  labelCol: {
+    span: 6 ,
+  },
+  wrapperCol: {
+    span: 18 ,
+  },
+};
 
+
+const PasswordForm = Form.create()(
+  
+  (props) => {
+    console.log("props",props)
+    const { visible, onCancel, form,data,passwd } = props;
+    const { getFieldDecorator } = form;
+
+    return (
+      <Modal
+        visible={visible}
+        title="查看密码"
+        okText="确定"
+        cancelText="返回"
+        onCancel={onCancel}
+        onOk={onCancel}
+        maskClosable={false}
+      >
+        <Form layout="vertical">
+          <FormItem label="服务器IP地址">
+            {
+              data.ipsummary.split(',').map((i,index)=> <div style={{ color: 'red'}}> {i}</div>)
+            }
+             
+          </FormItem>
+          <FormItem label="服务器密码">
+             <font size="6" color="blue">{passwd.data ? passwd.data.password : "查询失败"} </font>
+          </FormItem>
+        </Form>
+      </Modal>
+    );
+  }
+);
+
+
+
+const ChangePassForm = Form.create()(
+  
+  (props) => {
+    console.log("props",props)
+    const { visible, onCancel, onSave,form,data,validateToNextPassword,compareToFirstPassword,handleConfirmBlur } = props;
+    const { getFieldDecorator } = form;
+
+    return (
+      <Modal
+        visible={visible}
+        title="修改密码"
+        okText="确定"
+        cancelText="返回"
+        onCancel={onCancel}
+        onOk={onSave}
+        maskClosable={false}
+      >
+        <Form layout="vertical">
+          <FormItem label="服务器IP地址">
+            {
+              data.ipsummary.split(',').map((i,index)=> <div style={{ color: 'red'}}> {i}</div>)
+            }
+             
+          </FormItem>
+          <FormItem
+          {...formItemLayout}
+          label="新密码:"
+        >
+          {getFieldDecorator('password', {
+            rules: [{
+              required: true, message: '请输入新密码',
+            }, {
+              validator: validateToNextPassword,
+            }],
+          })(
+            <Input type="password" />
+          )}
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label="确认新密码: "
+        >
+          {getFieldDecorator('confirm', {
+            rules: [{
+              required: true, message: '请输入新密码',
+            }, {
+              validator: compareToFirstPassword,
+            }],
+          })(
+            <Input type="password" onBlur={handleConfirmBlur} />
+          )}
+        </FormItem>
+        </Form>
+      </Modal>
+    );
+  }
+);
 
 class HostTable extends PureComponent {
   state = {
@@ -26,7 +128,8 @@ class HostTable extends PureComponent {
     data:[],
     status: false,
     disabled: true,
-    modalVisible: false
+    modalVisible: false,
+    confirmDirty: false,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -57,6 +160,29 @@ class HostTable extends PureComponent {
               }),
           })
       }
+  }
+
+
+  handleConfirmBlur = (e) => {
+    const value = e.target.value;
+    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+  }
+
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && value !== form.getFieldValue('password')) {
+      callback('两次输入的密码必须一致');
+    } else {
+      callback();
+    }
+  }
+
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true });
+    }
+    callback();
   }
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
@@ -262,28 +388,22 @@ class HostTable extends PureComponent {
       type: 'gdevice/queryHostPassword',
       payload: val
     })
-
-    return(
-      <Modal
-      title="机器密码"
-      visible={this.state.modalVisible}
-      onOk={this.handleModalVisible()}
-      width={600}
-      onCancel={() => this.handleModalVisible()
-      }
-      >
-    <DescriptionList size="large" title="密码信息" style={{ marginBottom: 32 }}>
-        <Description term="机器ip">{}</Description>
-      <Description term="机器密码">{password}</Description>
-    </DescriptionList>  
-    </Modal>
-    )
   }
 
   handleModalVisible = () => {
     this.setState({
       modalVisible: false
     })
+  }
+
+  onSave = (ID,passwd) => {
+
+  }
+  
+  ChangePassword = () => {
+     this.setState({
+      modalVisibleEdit: true
+     })
   }
   render() {
     
@@ -303,9 +423,9 @@ class HostTable extends PureComponent {
             var divStyle = {
                 color: 'blue',
               };
-            return <div style={divStyle}>
-                 {text.split(",")[0]},<br></br> {text.split(",")[1]}
-                </div>;
+            return(
+              text.split(',').map((i,index)=> <div style={{ color: 'blue'}}> {i}</div>) 
+            )
           }
       },
       {
@@ -357,13 +477,28 @@ class HostTable extends PureComponent {
         width: "120px",
         key: 'password',
         render: (text, record) => {
-          const { getFieldDecorator } = this.props.form;
-          const {password}  = this.props.gdevice.password
-          console.log("this.state.modalVisible",this.state.modalVisible)
+          const {password}  = this.props.gdevice
+          let  pass = password
+          console.log("this.props.gdevice.password",pass)
          // const {ipsummary}   =  this.props.gdevice.host.data.ipsummary
           return (
             <div>
-               <Button  icon="info-circle-o"  onClick={()=>{this.passwordClick(record.ID,password)}}>查看密码</Button>
+               <Button  icon="info-circle-o"  onClick={()=>{this.passwordClick(record.ID)}}>查看密码</Button>
+               <PasswordForm
+                ref={form=>{
+                  this.passwordForm = this.passwordForm || {};
+                  this.passwordForm[record.shiftId] = form;
+                }}
+                visible={this.state.modalVisible}
+                data = {record}
+                passwd = {pass}
+                onCancel={()=>{
+                let modalVisible = this.state.modalVisible;
+                modalVisible = false;
+                this.setState({modalVisible});
+               }} 
+               />
+             
             </div>
           )
         },
@@ -466,7 +601,24 @@ class HostTable extends PureComponent {
 
                  <Divider type="vertical" />
                  <a onClick={() => this.ChangePassword(record.ID)}>修改密码</a>
-                
+                 <ChangePassForm
+                  ref={form=>{
+                    this.changePassForm = this.changePassForm || {};
+                 //   this.changePassForm[record.shiftId] = form;
+                  }}
+
+                  visible={this.state.modalVisibleEdit}
+                  onCancel={()=>{
+                  let modalVisibleEdit = this.state.modalVisibleEdit;
+                  modalVisibleEdit = false;
+                  this.setState({modalVisibleEdit});
+                  }}
+                  onSave = {this.onSave} 
+                  data  = {record} 
+                  handleConfirmBlur = {this.handleConfirmBlur}
+                  compareToFirstPassword = {this.compareToFirstPassword}
+                  validateToNextPassword = {this.validateToNextPassword}
+                 />
           </div>
           );
       },
