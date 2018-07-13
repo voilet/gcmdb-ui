@@ -178,6 +178,12 @@ export async function queryHosts(params) {
 }
 
 
+//查询已下线主机列表
+export async function queryOfflineHosts(params) {
+  return request(`/v1/assets/hardware/host/offline/query/${params}`);
+}
+
+
 //按照条件查询主机列表
 export async function queryHostsByCondition(params) {
   return request(`/v1/assets/hardware/searchhosts/${params}`);
@@ -235,26 +241,3 @@ export async function modifyHost(params,id) {
 }
 
 
-///assets/hardware/hostpro/modify/:id:int
-//修改项目主机关系
-export async function hostproModify(params,id) {
-  return request(`/v1/assets/hardware/hostpro/modify/${id}`, {
-    method: 'POST',
-    body: {
-      method: 'post',
-      ...params,
-    },
-  });
-}
-
-///assets/hardware/hostpro/delete//:id:int
-//解除项目主机关系
-export async function hostproDelete(params,id) {
-  return request(`/v1/assets/hardware/hostpro/delete/${id}`, {
-    method: 'POST',
-    body: {
-      method: 'post',
-      ...params,
-    },
-  });
-}

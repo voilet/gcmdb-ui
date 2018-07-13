@@ -71,6 +71,13 @@ export default class HostHeader extends PureComponent {
         title: "主机项目关系列表"
       })
     }
+
+    if(nextPathName === '/resource/hardware/host/offline' && nextPathName !== pathname) {
+      this.setState({
+        activekey: 'offline',
+        title: "已下线主机列表"
+      })
+    }
   }
 
   handleTabChange = key => {
@@ -106,7 +113,7 @@ export default class HostHeader extends PureComponent {
         break;
 
       case 'offline':
-      dispatch(routerRedux.push(`${match.url}/deleted`));
+      dispatch(routerRedux.push(`${match.url}/offline`));
       this.setState({
         activekey : "offline",
         title: "已下线主机列表"
@@ -146,10 +153,6 @@ export default class HostHeader extends PureComponent {
         tab: '查看主机信息',
       },
       {
-        key: 'deleted',
-        tab: '已下线主机列表',
-      },
-      {
         key: 'edit',
         tab: '编辑主机信息',
       },
@@ -160,6 +163,10 @@ export default class HostHeader extends PureComponent {
       {
         key: 'clean',
         tab: '主机项目关系列表',
+      },
+      {
+        key: 'offline',
+        tab: '已下线主机列表',
       },
     ];
 

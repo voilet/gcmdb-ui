@@ -164,9 +164,9 @@ export const getRouterData = (app) => {
     },
 
     //主机详情列表
-    // '/resource/hardware/host/offline': {
-    //   component: dynamicWrapper(app, ['gdevice'], () => import('../routes/gResource/gHardware/hostInfo/offlineHost')),
-    // },
+    '/resource/hardware/host/offline': {
+      component: dynamicWrapper(app, ['gdevice'], () => import('../routes/gResource/gHardware/hostInfo/offlineHost')),
+    },
 
      //清理主机和项目的关系
      '/resource/hardware/host/clean': {

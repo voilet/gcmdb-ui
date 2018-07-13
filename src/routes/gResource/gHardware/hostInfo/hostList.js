@@ -420,32 +420,13 @@ handleMenuClick = (e) => {
     const { gproline, gdevice, gidc, ghardware } = this.props;
     const {selectedRows} = this.state;
 
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="poweroff">关机</Menu.Item>
-        <Menu.Item key="offline">下线</Menu.Item>
-      </Menu>
-    );
 
     return (
       // <PageHeaderLayout title="查询主机(支持批量查询,数据请用逗号分开)" >
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
-            <div className={styles.tableListOperator}>
           
-              {selectedRows.length > 0 && (
-                <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown>
-                </span>
-              )}
-            </div>
 
             <Divider>  主机管理  </Divider>
              {console.log("gdevice",gdevice)}

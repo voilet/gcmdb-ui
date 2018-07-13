@@ -1,7 +1,7 @@
 import {
     queryHosts,queryHostsDetail,queryHostPassword,
     addHost,deleteHost,modifyHost,
-    queryUser,
+    queryUser,queryOfflineHosts
     } from '../services/ResourceMangementAPI/Hardware/HardwareService'
   import {message} from 'antd'
   
@@ -12,6 +12,10 @@ import {
     state: {
       //主机信息
       host: {
+        data: [],
+        pagination: {}
+      },
+      offlinehost: {
         data: [],
         pagination: {}
       },
@@ -74,6 +78,7 @@ import {
             message.error(response.data)
         }
       },
+
   
       //添加主机基础信息
       *addHost({ payload }, { call,put }) {
@@ -113,6 +118,20 @@ import {
         yield put({ type: 'queryHost', payload: paginationStr} );
       },
   
+
+      //查询已下线主机基础信息
+      *queryOfflineHost({ payload }, { call, put }) {
+        const response = yield call(queryOfflineHosts, payload) 
+        if (response.status  == 200) {
+          yield put({
+            type: 'offlinehost',
+            payload: response,
+          });
+          } else {
+            message.error(response.data)
+        }
+      },
+
   
       //查询主机详细信息
       *queryHostDetail({ payload }, { call, put }) {
@@ -143,6 +162,13 @@ import {
     reducers: {
       
       hostinfo(state, action) {
+        return {
+          ...state,
+          host: action.payload,
+        };
+      },
+       
+      offlinehost(state, action) {
         return {
           ...state,
           host: action.payload,

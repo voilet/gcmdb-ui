@@ -2,13 +2,11 @@ import React, { PureComponent, Fragment } from 'react';
 import { routerRedux } from 'dva/router';
 
 import moment from 'moment';
-import DescriptionList from '../../DescriptionList';
-import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select,Button,Modal  } from 'antd';
+import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select } from 'antd';
 import styles from './index.less';
 //import HostDetail from './hostDetail'
 
 const {Option} = Select;
-const { Description } = DescriptionList;
 
 const HostStatusMap = ['online','poweroff','processing','offline','outdate', 'error','installing'];
 const HostStatus = ['已上线', '已关机','运行中','已下线','已过保', '异常','装机中'];
@@ -19,14 +17,14 @@ const AgentStatus = ['运行中','异常'];
 
 
 
-class HostTable extends PureComponent {
+
+class hostOffLine extends PureComponent {
   state = {
     selectedRowKeys: [],
     totalCallNo: 0,
     data:[],
     status: false,
-    disabled: true,
-    modalVisible: false
+    disabled: true
   };
 
   componentWillReceiveProps(nextProps) {
@@ -251,40 +249,6 @@ class HostTable extends PureComponent {
      return  value.map(i => <div>{i.title}<hr /></div>) 
   }
 
-
-  passwordClick = (val,password) => {
-
-    this.setState({
-      modalVisible: true
-    })
-
-    this.props.dispatch({
-      type: 'gdevice/queryHostPassword',
-      payload: val
-    })
-
-    return(
-      <Modal
-      title="机器密码"
-      visible={this.state.modalVisible}
-      onOk={this.handleModalVisible()}
-      width={600}
-      onCancel={() => this.handleModalVisible()
-      }
-      >
-    <DescriptionList size="large" title="密码信息" style={{ marginBottom: 32 }}>
-        <Description term="机器ip">{}</Description>
-      <Description term="机器密码">{password}</Description>
-    </DescriptionList>  
-    </Modal>
-    )
-  }
-
-  handleModalVisible = () => {
-    this.setState({
-      modalVisible: false
-    })
-  }
   render() {
     
 
@@ -357,13 +321,21 @@ class HostTable extends PureComponent {
         width: "120px",
         key: 'password',
         render: (text, record) => {
-          const { getFieldDecorator } = this.props.form;
-          const {password}  = this.props.gdevice.password
-          console.log("this.state.modalVisible",this.state.modalVisible)
-         // const {ipsummary}   =  this.props.gdevice.host.data.ipsummary
           return (
             <div>
-               <Button  icon="info-circle-o"  onClick={()=>{this.passwordClick(record.ID,password)}}>查看密码</Button>
+               {text} 
+            {/* {  
+                showPassword ? 
+                <Fragment>
+                <Button onClick={()=>{this.passwordClick(record.ID)}}> 隐藏密码 </Button> 
+                <span style={{marginRight:"10px"}}>{ text }</span>
+                </Fragment>
+                :
+                <Fragment> 
+                <Button onClick={()=>{this.passwordClick(record.ID)}}>查看密码</Button>
+                <span style={{marginRight:"10px"}}>{ text === true ? '******' : text }</span>
+                </Fragment>
+            }   */}
             </div>
           )
         },
@@ -450,23 +422,13 @@ class HostTable extends PureComponent {
           const { editable,deleteable } = record;
           return (
           <div className="editable-row-operations">
-            <a onClick={() => this.edit(record.ID)}>编辑</a>  
-   
-
             {
-                // <Popconfirm title="确定下线?" onConfirm={() => this.confirmdelete(record.ID)}>
-                //    <a>下线</a>
-                //  </Popconfirm>
+                <Popconfirm title="确定重装?">
+                   <a>重装系统</a>
+                 </Popconfirm>
             }
                  <Divider type="vertical" />
-                 <a onClick={() => this.show(record.ID)}>详情</a>
-
-                 <Divider type="vertical" />
-                 <a onClick={() => this.clean(record.ID)}>关系</a>  
-
-                 <Divider type="vertical" />
-                 <a onClick={() => this.ChangePassword(record.ID)}>修改密码</a>
-                
+                 <a onClick={() => this.show(record.ID)}>删除机器</a>
           </div>
           );
       },
@@ -493,6 +455,7 @@ class HostTable extends PureComponent {
     return (
       <div className={styles.standardTable}>
         <div className={styles.tableAlert}>
+     
           <Alert
             message={(
               <div>
@@ -504,7 +467,6 @@ class HostTable extends PureComponent {
             showIcon
           />
         </div>
-
         <Table
           //loading={loading}
           rowKey={record => record.ID}
@@ -519,4 +481,4 @@ class HostTable extends PureComponent {
   }
 }
 
-export default HostTable;
+export default hostOffLine;

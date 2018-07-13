@@ -60,9 +60,9 @@ export default class cleanHost extends Component {
      
     if (gdevice.hostdetail.data.length > 0 ) {
     //  console.log("!gdevice.hostdetail.data[0].projectlists ",!gdevice.hostdetail.data[0].projectlists )
-    console.log("x-x-x-x-x-x-",gdevice.hostdetail.data)
-    console.log("x-x-x-x-x-x-", (gdevice.hostdetail.data[0].projectlists)!="undefined" )
-    console.log("x-x-x-x-x-x-", (gdevice.hostdetail.data[0].projectlists === null ))
+    // console.log("x-x-x-x-x-x-",gdevice.hostdetail.data)
+    // console.log("x-x-x-x-x-x-", (gdevice.hostdetail.data[0].projectlists)!="undefined" )
+    // console.log("x-x-x-x-x-x-", (gdevice.hostdetail.data[0].projectlists === null ))
 
     this.setState(
       {
@@ -303,7 +303,7 @@ export default class cleanHost extends Component {
 
 
 handleSelectLineValue(value, key, column){
-  // console.log(value, key, column)
+   console.log("handleSelectLineValue",value, key, column)
    const newData = [...this.state.data];
    const target = newData.filter(item => key === item.ID)[0];
    
@@ -311,6 +311,7 @@ handleSelectLineValue(value, key, column){
      target[column] = value;
      target["progroup_title"] = undefined
      target["project_title"] = undefined
+
 
      this.props.dispatch({
        type: 'gproline/getProjectGroupbyId',
@@ -320,20 +321,24 @@ handleSelectLineValue(value, key, column){
      this.setState({ 
        data: newData,
        disabled:false,
-       selectedLine: true
      });
    }
  
  }
   
  handleGroupValue(value, key, column) {
-    
+  console.log("handleGroupValue",value, key, column)
   const newData = [...this.state.data];
   const target = newData.filter(item => key === item.ID)[0];
   
   if (target) {
-    target[column] = value.split(",")[0];
-    target["project_title"] = value.split(",")[1];
+    target[column] = value
+    target["project_title"] = undefined
+
+    this.props.dispatch({
+      type: 'gproline/getProjectbyId',
+      payload: value,
+    });
 
     this.setState({ 
       data: newData,
@@ -357,14 +362,13 @@ handleSelectLineValue(value, key, column){
       key:'proline_title',
       width:'120px',
       render: (text, record) =>{
-          
-        console.log('text',text)
-        console.log('record',record)
-        const prolineOptions = gproline.prolinedata.data.map(post => {
-              return <Option key={post.ID} value={post.ID} >{post.title}</Option>
-              })
-       
-
+        let prolineOptions
+        console.log("prolinedata",gproline.prolinedata)
+        if (gproline.prolinedata.data) {
+           prolineOptions = gproline.prolinedata.data.map(post => {
+            return <Option key={post.ID} value={post.ID} >{post.title}</Option>
+            })
+        }
         return(
           <Select 
           defaultValue = {text} 
@@ -384,17 +388,18 @@ handleSelectLineValue(value, key, column){
        
 
         let  progroupOptions
-
-        if (gproline.progroupbylid.length > 0 ) {
+        console.log("prolinedata",gproline.progroupbylid)
+        if (gproline.progroupbylid ) {
            progroupOptions = gproline.progroupbylid.map(post =>
-            <Option key={post.ID} value={post.ID+","+post.title} >{post.title}</Option>
+            <Option key={post.ID} value={post.ID} >{post.title}</Option>
           )
         }
         
         return(
           
           <Select 
-            value={record.title?record.title:record.progroup_title} 
+           defaultValue = {text} 
+            //value={record.progroup_title} 
             disabled={record.selectStatus} 
             style={{ width: '150px' }}
             placeholder="请选择"
@@ -410,23 +415,23 @@ handleSelectLineValue(value, key, column){
       width:'120px',
       render: (text, record) =>{
       
-        let  progroupOptions
+        let  projectOptions
 
-        if (gproline.progroupbylid.length > 0 ) {
-           progroupOptions = gproline.progroupbylid.map(post =>
+        if (gproline.probygid ) {
+          projectOptions = gproline.probygid.map(post =>
             <Option key={post.ID} value={post.ID+","+post.title} >{post.title}</Option>
           )
         }
         
         return(
           <Select 
-            value={record.title?record.title:record.project_title} 
+            defaultValue = {text} 
+            //value={record.title?record.title:record.project_title} 
             disabled={record.selectStatus} 
             style={{ width: '150px' }} 
             placeholder="请选择"
-            onChange={(value)=>{this.handleGroupValue(value,record.ID,'group_id')}}
           >
-            { progroupOptions }
+            { projectOptions }
           </Select>)
       },
     },{
@@ -468,7 +473,7 @@ handleSelectLineValue(value, key, column){
                   </span>
                   : 
                   <span style={{marginLeft: 20}}>
-                  <a onClick={() => this.edit(record.ID)}>编辑</a>
+                  <a onClick={() => this.edit(record.ID)}><Button  >编辑</Button></a>
                   </span>)
               }
                
@@ -483,7 +488,7 @@ handleSelectLineValue(value, key, column){
                   </span>
                   : 
                   <span >
-                  <a style={{marginLeft: 50}} onClick={() => this.askdelete(record.ID)}><Button type="danger">解除</Button></a>
+                  <a style={{marginLeft: 50}} onClick={() => this.askdelete(record.ID)}><Button type="danger">下线</Button></a>
                   </span>)
               }
           </div>
