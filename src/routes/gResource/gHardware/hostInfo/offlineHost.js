@@ -15,14 +15,15 @@ import {
   Row,
   Col,
   Select,
-  Alert 
+  Alert, 
+  notification,
 } from 'antd';
 
 
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
 
 
-import HostTable from '../../../../components/Resource/HostTable/hostOffLine'
+import OffLineTable from '../../../../components/Resource/HostTable/hostOffLine'
 
 
 
@@ -136,19 +137,26 @@ export default class offlineHost extends PureComponent {
 
 
   handleDeleteData = (val) => {
-    console.log(val)
-    const { ID } = val
+    console.log("val",val)
     let ids=[]
-    ids.push(ID)
+
+    if (Object.prototype.toString.call(val) =='[object Array]') {
+        ids  = val
+    } else {
+      const { ID } = val
+      ids.push(ID)
+    }
+    
     this.props.dispatch({
       type: 'gdevice/deleteHost',
       payload: {
-        tag:false,
+        tag:true,
         infolist:JSON.stringify({ids})
       }
     });
   
     const {gdevice} = this.props
+    console.log(" this.props", this.props)
     if (gdevice.response.status == "200")
     {
       this.openNotificationWithIcon('success',gdevice.response.message)
@@ -166,43 +174,16 @@ handleMenuClick = (e) => {
   console.log(selectedRows)
   switch (e.key) {
     case 'remove':
-      dispatch({
-        type: 'gproline/getProjectLine',
-        payload: {
-          ID: selectedRows.map(row => row.ID).join(','),
-        },
-        callback: () => {
-          this.setState({
-            selectedRows: [],
-          });
-        },
+      this.handleDeleteData(selectedRows.map(row => row.ID))
+      this.setState({
+        selectedRows: [],
       });
       break;
 
-    case  '':
-        dispatch({
-          type: 'gproline/getProjectLine',
-          payload: {
-            ID: selectedRows.map(row => row.ID).join(','),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
-    case  'stop':
-        dispatch({
-          type: 'gproline/getProjectLine',
-          payload: {
-            ID: selectedRows.map(row => row.ID).join(','),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
+    case  'poweroff':
+        break
+    case  'reinstall':
+        break
     default:
       break;
   }
@@ -381,7 +362,7 @@ handleMenuClick = (e) => {
           <Col span={8}>
             <FormItem label="容灾块" {...formItemLayout}>
               {getFieldDecorator('guard')(
-                <DatePicker style={{ width: '100%' }} placeholder="请输入" />
+                <DatePicker style={{ width: '100%' }} plasceholder="请输入" />
               )}
             </FormItem>
           </Col>
@@ -464,7 +445,7 @@ handleMenuClick = (e) => {
 
             <Divider>  已下线主机  </Divider>
              {console.log("gdevice",gdevice)}
-            <HostTable
+            <OffLineTable
               selectedRows={selectedRows}
              // loading={loading}
               gdevice={gdevice}

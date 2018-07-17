@@ -6,6 +6,7 @@ import DescriptionList from '../../DescriptionList';
 import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select,Button,Modal,Form  } from 'antd';
 import styles from './index.less';
 //import HostDetail from './hostDetail'
+import ModifyPw from './ModifyPw'
 
 const {Option} = Select;
 const FormItem = Form.Item;
@@ -169,6 +170,8 @@ class HostTable extends PureComponent {
   }
 
   compareToFirstPassword = (rule, value, callback) => {
+    const currentPw = this.props.form.getFieldValue('password')
+    debugger
     const form = this.props.form;
     if (value && value !== form.getFieldValue('password')) {
       callback('两次输入的密码必须一致');
@@ -397,7 +400,10 @@ class HostTable extends PureComponent {
   }
 
   onSave = (ID,passwd) => {
-
+    this.props.dispatch({
+      type: 'gdevice/modifyHostPassword',
+      payload: { id: ID, passwd: passwd}
+    })    
   }
   
   ChangePassword = () => {
@@ -600,7 +606,10 @@ class HostTable extends PureComponent {
                  <a onClick={() => this.clean(record.ID)}>关系</a>  
 
                  <Divider type="vertical" />
-                 <a onClick={() => this.ChangePassword(record.ID)}>修改密码</a>
+                 {/* <a onClick={() => this.ChangePassword(record.ID)}>修改密码</a> */}
+                 <ModifyPw
+                  data={record}
+                 />
                  <ChangePassForm
                   ref={form=>{
                     this.changePassForm = this.changePassForm || {};

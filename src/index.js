@@ -8,11 +8,24 @@ import createHistory from 'history/createHashHistory';
 import createLoading from 'dva-loading';
 import 'moment/locale/zh-cn';
 import './rollbar';
+import { routerRedux } from 'dva/router';
+import { notification } from 'antd';
 
 import './index.less';
 // 1. Initialize
 const app = dva({
   history: createHistory(),
+  // onError(err, dispatch) {
+  //   const { response, message } = err;
+  //   const { status, url } = response;
+  //   notification.error({
+  //     message: `请求错误 ${status}: ${url}`,
+  //     description: message,
+  //   });
+  //   if (status === 401) {
+  //     dispatch(routerRedux.push('/user/login'));
+  //   }
+  // },
 });
 
 // 2. Plugins

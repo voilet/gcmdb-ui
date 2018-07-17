@@ -81,9 +81,9 @@ export const getRouterData = (app) => {
 
 
     //套餐列表
-    '/resource/hardware/deviceplan/compose_plan': {
-      component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/plan/ListPlan')),
-    },
+    // '/resource/hardware/deviceplan/compose_plan': {
+    //   component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/plan/ListPlan')),
+    // },
 
     //机房列表
     '/resource/idc/idclist': {

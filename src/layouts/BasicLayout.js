@@ -84,6 +84,11 @@ enquireScreen(b => {
   isMobile = b;
 });
 
+
+// @connect(({ login }) => ({
+//   login,
+// }))
+
 class BasicLayout extends React.PureComponent {
   static childContextTypes = {
     location: PropTypes.object,
@@ -115,7 +120,7 @@ class BasicLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = 'Ant Design Pro';
+    let title = 'GCMB-SUNLANDS';
     let currRouterData = null;
     // match params path
     Object.keys(routerData).forEach(key => {
@@ -124,16 +129,18 @@ class BasicLayout extends React.PureComponent {
       }
     });
     if (currRouterData && currRouterData.name) {
-      title = `${currRouterData.name} - Ant Design Pro`;
+      title = `${currRouterData.name} - GCMB`;
     }
     return title;
   }
+
   getBashRedirect = () => {
     // According to the url parameter to redirect
     // 这里是重定向的,重定向到 url 的 redirect 参数所示地址
     const urlParams = new URL(window.location.href);
 
     const redirect = urlParams.searchParams.get('redirect');
+
     // Remove the parameters in the url
     if (redirect) {
       urlParams.searchParams.delete('redirect');
@@ -148,6 +155,8 @@ class BasicLayout extends React.PureComponent {
     }
     return redirect;
   };
+
+
   handleMenuCollapse = collapsed => {
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
@@ -189,7 +198,10 @@ class BasicLayout extends React.PureComponent {
       match,
       location,
     } = this.props;
+    console.log('in baseiclayout', this.props)
+
     const bashRedirect = this.getBashRedirect();
+    
     const layout = (
       <Layout>
         <SiderMenu
@@ -272,18 +284,40 @@ class BasicLayout extends React.PureComponent {
     );
 
     return (
-      <DocumentTitle title={this.getPageTitle()}>
-        <ContainerQuery query={query}>
-          {params => <div className={classNames(params)}>{layout}</div>}
-        </ContainerQuery>
-      </DocumentTitle>
+      
+      <Route
+          {...this.props}
+          render={() => {
+            // 根据用户权限，结合即将要访问的页面，判断是否渲染
+            const { pathname } = this.props.location;
+            console.log("props+++",this.props.login.status)
+            if (pathname === '/exception/500') {
+              // 这里，用户永远无法访问500页面
+              return <Redirect to="/exception/403" />; 
+            }
+            // 在此可以检验登录状态，强制要求用户先登录
+            return (this.props.login && this.props.login.status === "200")
+              ?   
+              <DocumentTitle title={this.getPageTitle()}>
+              <ContainerQuery query={query}>
+               { params => <div className={classNames(params)}> {layout} </div> }
+              </ContainerQuery>
+               </DocumentTitle>
+              : <Redirect to="/user/login" />;
+          }}
+       />
+      
+
+    
+    
     );
   }
 }
 
-export default connect(({ user, global, loading }) => ({
+export default connect(({ user, global, loading,login }) => ({
   currentUser: user.currentUser,
   collapsed: global.collapsed,
   fetchingNotices: loading.effects['global/fetchNotices'],
   notices: global.notices,
+  login
 }))(BasicLayout);

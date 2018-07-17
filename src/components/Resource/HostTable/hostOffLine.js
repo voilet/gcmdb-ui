@@ -2,11 +2,14 @@ import React, { PureComponent, Fragment } from 'react';
 import { routerRedux } from 'dva/router';
 
 import moment from 'moment';
-import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select } from 'antd';
+import DescriptionList from '../../DescriptionList';
+import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select,Button,Modal,Form  } from 'antd';
 import styles from './index.less';
 //import HostDetail from './hostDetail'
 
 const {Option} = Select;
+const FormItem = Form.Item;
+const { Description } = DescriptionList;
 
 const HostStatusMap = ['online','poweroff','processing','offline','outdate', 'error','installing'];
 const HostStatus = ['已上线', '已关机','运行中','已下线','已过保', '异常','装机中'];
@@ -15,16 +18,118 @@ const AgentStatusMap = ['processing','error'];
 const AgentStatus = ['运行中','异常'];
 
 
+const formItemLayout = {
+  labelCol: {
+    span: 6 ,
+  },
+  wrapperCol: {
+    span: 18 ,
+  },
+};
+
+
+const PasswordForm = Form.create()(
+  
+  (props) => {
+    console.log("props",props)
+    const { visible, onCancel, form,data,passwd } = props;
+    const { getFieldDecorator } = form;
+
+    return (
+      <Modal
+        visible={visible}
+        title="查看密码"
+        okText="确定"
+        cancelText="返回"
+        onCancel={onCancel}
+        onOk={onCancel}
+        maskClosable={false}
+      >
+        <Form layout="vertical">
+          <FormItem label="服务器IP地址">
+            {
+              data.ipsummary.split(',').map((i,index)=> <div style={{ color: 'red'}}> {i}</div>)
+            }
+             
+          </FormItem>
+          <FormItem label="服务器密码">
+             <font size="6" color="blue">{passwd.data ? passwd.data.password : "查询失败"} </font>
+          </FormItem>
+        </Form>
+      </Modal>
+    );
+  }
+);
 
 
 
-class hostOffLine extends PureComponent {
+const ChangePassForm = Form.create()(
+  
+  (props) => {
+    console.log("props",props)
+    const { visible, onCancel, onSave,form,data,validateToNextPassword,compareToFirstPassword,handleConfirmBlur } = props;
+    const { getFieldDecorator } = form;
+
+    return (
+      <Modal
+        visible={visible}
+        title="修改密码"
+        okText="确定"
+        cancelText="返回"
+        onCancel={onCancel}
+        onOk={onSave}
+        maskClosable={false}
+      >
+        <Form layout="vertical">
+          <FormItem label="服务器IP地址">
+            {
+              data.ipsummary.split(',').map((i,index)=> <div style={{ color: 'red'}}> {i}</div>)
+            }
+             
+          </FormItem>
+          <FormItem
+          {...formItemLayout}
+          label="新密码:"
+        >
+          {getFieldDecorator('password', {
+            rules: [{
+              required: true, message: '请输入新密码',
+            }, {
+              validator: validateToNextPassword,
+            }],
+          })(
+            <Input type="password" />
+          )}
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label="确认新密码: "
+        >
+          {getFieldDecorator('confirm', {
+            rules: [{
+              required: true, message: '请输入新密码',
+            }, {
+              validator: compareToFirstPassword,
+            }],
+          })(
+            <Input type="password" onBlur={handleConfirmBlur} />
+          )}
+        </FormItem>
+        </Form>
+      </Modal>
+    );
+  }
+);
+
+class OffLineTable extends PureComponent {
   state = {
     selectedRowKeys: [],
     totalCallNo: 0,
     data:[],
     status: false,
-    disabled: true
+    disabled: true,
+    modalVisible: false,
+    confirmDirty: false,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -39,22 +144,37 @@ class hostOffLine extends PureComponent {
     if (nextProps.gdevice.host.data) {
           
         let content = '',id = '';
-        if(nextProps.gdevice.password.data){
-          content=nextProps.gdevice.password.data.password
-          id=nextProps.gdevice.password.data.ID
-        }
+ 
           this.setState({
               data: nextProps.gdevice.host.data.map((obj)=>{
-                let pwd = true
-                if( obj.ID == id ){
-                  pwd=content
-                }
-                obj.password = pwd
                 obj.selectStatus = true
                 return obj;
               }),
           })
       }
+  }
+
+
+  handleConfirmBlur = (e) => {
+    const value = e.target.value;
+    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+  }
+
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && value !== form.getFieldValue('password')) {
+      callback('两次输入的密码必须一致');
+    } else {
+      callback();
+    }
+  }
+
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true });
+    }
+    callback();
   }
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
@@ -79,6 +199,7 @@ class hostOffLine extends PureComponent {
 
 
   edit(key) {    
+
     const { dispatch, match} = this.props; 
     dispatch(
         routerRedux.push(
@@ -89,31 +210,7 @@ class hostOffLine extends PureComponent {
     ));
   }
 
-  show(key) {   
-    const { dispatch, match} = this.props; 
-    dispatch(
-        routerRedux.push(
-            {
-                pathname: '/resource/hardware/host/detail',
-                query:{id: key}
-            }
-    ));
-    
-  }
   
-
-  clean(key) {   
-    const { dispatch, match} = this.props; 
-    dispatch(
-        routerRedux.push(
-            {
-                pathname: '/resource/hardware/host/clean',
-                query:{id: key}
-            }
-    ));
-    
-  }
-
   save(key) {
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
@@ -196,45 +293,7 @@ class hostOffLine extends PureComponent {
   }
 
 
-  handleGroupValue(value, key, column) {
-    
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    
-    if (target) {
-      target[column] = value.split(",")[0];
-      target["group_title"] = value.split(",")[1];
 
-      this.setState({ 
-        data: newData,
-        disabled:false
-      });
-    }
-  }
-
-  handleSelectLineValue(value, key, column){
-   // console.log(value, key, column)
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    
-    if (target) {
-      target[column] = value;
-      target["group_title"] = "请选择"
-      target["group_id"] = "-1"
-
-      this.props.dispatch({
-        type: 'gproline/getProjectGroupbyId',
-        payload: value
-      });
-
-      this.setState({ 
-        data: newData,
-        disabled:false,
-        selectedLine: true
-      });
-    }
-  
-  }
   canceldelete(key) {
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
@@ -249,6 +308,37 @@ class hostOffLine extends PureComponent {
      return  value.map(i => <div>{i.title}<hr /></div>) 
   }
 
+
+  passwordClick = (val,password) => {
+
+    this.setState({
+      modalVisible: true
+    })
+
+    this.props.dispatch({
+      type: 'gdevice/queryHostPassword',
+      payload: val
+    })
+  }
+
+  handleModalVisible = () => {
+    this.setState({
+      modalVisible: false
+    })
+  }
+
+  onSave = (ID,passwd) => {
+    this.props.dispatch({
+      type: 'gdevice/modifyHostPassword',
+      payload: { id: ID, passwd: passwd}
+    })    
+  }
+  
+  ChangePassword = () => {
+     this.setState({
+      modalVisibleEdit: true
+     })
+  }
   render() {
     
 
@@ -267,9 +357,9 @@ class hostOffLine extends PureComponent {
             var divStyle = {
                 color: 'blue',
               };
-            return <div style={divStyle}>
-                 {text.split(",")[0]},<br></br> {text.split(",")[1]}
-                </div>;
+            return(
+              text.split(',').map((i,index)=> <div style={{ color: 'blue'}}> {i}</div>) 
+            )
           }
       },
       {
@@ -321,21 +411,28 @@ class hostOffLine extends PureComponent {
         width: "120px",
         key: 'password',
         render: (text, record) => {
+          const {password}  = this.props.gdevice
+          let  pass = password
+          console.log("this.props.gdevice.password",pass)
+         // const {ipsummary}   =  this.props.gdevice.host.data.ipsummary
           return (
             <div>
-               {text} 
-            {/* {  
-                showPassword ? 
-                <Fragment>
-                <Button onClick={()=>{this.passwordClick(record.ID)}}> 隐藏密码 </Button> 
-                <span style={{marginRight:"10px"}}>{ text }</span>
-                </Fragment>
-                :
-                <Fragment> 
-                <Button onClick={()=>{this.passwordClick(record.ID)}}>查看密码</Button>
-                <span style={{marginRight:"10px"}}>{ text === true ? '******' : text }</span>
-                </Fragment>
-            }   */}
+               <Button  icon="info-circle-o"  onClick={()=>{this.passwordClick(record.ID)}}>查看密码</Button>
+               <PasswordForm
+                ref={form=>{
+                  this.passwordForm = this.passwordForm || {};
+                  this.passwordForm[record.shiftId] = form;
+                }}
+                visible={this.state.modalVisible}
+                data = {record}
+                passwd = {pass}
+                onCancel={()=>{
+                let modalVisible = this.state.modalVisible;
+                modalVisible = false;
+                this.setState({modalVisible});
+               }} 
+               />
+             
             </div>
           )
         },
@@ -361,31 +458,31 @@ class hostOffLine extends PureComponent {
         key: 'status',
         filters: [
             {
-              text: HostStatusMap[0],
+              text: HostStatus[0],
               value: 0,
             },
             {
-              text: HostStatusMap[1],
+              text: HostStatus[1],
               value: 1,
             },
             {
-              text: HostStatusMap[2],
+              text: HostStatus[2],
               value: 2,
             },
             {
-              text: HostStatusMap[3],
+              text: HostStatus[3],
               value: 3,
             },
             {
-                text: HostStatusMap[4],
+                text: HostStatus[4],
                 value: 4,
             },
             {
-                text: HostStatusMap[5],
+                text: HostStatus[5],
                 value: 5,
             },
             {
-                text: HostStatusMap[6],
+                text: HostStatus[6],
                 value: 6,
             },
           ],
@@ -422,13 +519,39 @@ class hostOffLine extends PureComponent {
           const { editable,deleteable } = record;
           return (
           <div className="editable-row-operations">
+          
             {
                 <Popconfirm title="确定重装?">
                    <a>重装系统</a>
                  </Popconfirm>
             }
+              <Divider type="vertical" />
+            {
+                <Popconfirm title="确定删除?" onConfirm={() => this.confirmdelete(record.ID)}>
+                   <a>删除机器</a>
+                 </Popconfirm>
+            }
                  <Divider type="vertical" />
-                 <a onClick={() => this.show(record.ID)}>删除机器</a>
+               
+                 <a onClick={() => this.ChangePassword(record.ID)}>修改密码</a>
+                 <ChangePassForm
+                  ref={form=>{
+                    this.changePassForm = this.changePassForm || {};
+                 //   this.changePassForm[record.shiftId] = form;
+                  }}
+
+                  visible={this.state.modalVisibleEdit}
+                  onCancel={()=>{
+                  let modalVisibleEdit = this.state.modalVisibleEdit;
+                  modalVisibleEdit = false;
+                  this.setState({modalVisibleEdit});
+                  }}
+                  onSave = {this.onSave} 
+                  data  = {record} 
+                  handleConfirmBlur = {this.handleConfirmBlur}
+                  compareToFirstPassword = {this.compareToFirstPassword}
+                  validateToNextPassword = {this.validateToNextPassword}
+                 />
           </div>
           );
       },
@@ -455,7 +578,6 @@ class hostOffLine extends PureComponent {
     return (
       <div className={styles.standardTable}>
         <div className={styles.tableAlert}>
-     
           <Alert
             message={(
               <div>
@@ -467,6 +589,7 @@ class hostOffLine extends PureComponent {
             showIcon
           />
         </div>
+
         <Table
           //loading={loading}
           rowKey={record => record.ID}
@@ -481,4 +604,4 @@ class hostOffLine extends PureComponent {
   }
 }
 
-export default hostOffLine;
+export default OffLineTable;

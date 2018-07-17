@@ -55,8 +55,10 @@ export default function request(url, options) {
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
         ...newOptions.headers,
       }
-     
+
+      //newOptions.headers.Authorization = buildAuthorization(); // 增加的代码
       const searchParams = Object.keys(options.body).map((key) => {return encodeURIComponent(key) + '=' + encodeURIComponent(options.body[key]);}).join('&');
+      
       // Object.keys(options.body).map((key) => {
       //   console.log('key',key)
       //   console.log('value',options.body[key])
@@ -66,33 +68,72 @@ export default function request(url, options) {
       
       newOptions.body = searchParams;
   }
+  // return fetch(url, newOptions)
+  //   .then(checkStatus)
+  //   .then((response) => {
+  //     if (newOptions.method === 'DELETE' || response.status === 204) {
+  //       return response.text();
+  //     }
+  //     return response.json();
+  //   }).
+  //   then((response) => {
+  //     console.log('util response', response)
+  //     // const { status } = response
+  //     // if(status == '10003') {
+  //     //   dispatch(routerRedux.push('/user/login'));
+  //     //   throw new Error()
+  //     // }
+  //     // return response
+  //   })
+  //   .catch((e) => {
+  //     const { dispatch } = store;
+  //     const status = e.name;
+  //     if (status === 401) {
+  //       dispatch({
+  //         type: 'login/logout',
+  //       });
+  //       return;
+  //     }
+  //     if (status === 403) {
+  //       dispatch(routerRedux.push('/exception/403'));
+  //       return;
+  //     }
+  //     if (status <= 504 && status >= 500) {
+  //       dispatch(routerRedux.push('/exception/500'));
+  //       return;
+  //     }
+  //     if (status >= 404 && status < 422) {
+  //       dispatch(routerRedux.push('/exception/404'));
+  //     }
+  //   });
   return fetch(url, newOptions)
-    .then(checkStatus)
-    .then((response) => {
-      if (newOptions.method === 'DELETE' || response.status === 204) {
-        return response.text();
-      }
-      return response.json();
-    })
-    .catch((e) => {
-      const { dispatch } = store;
-      const status = e.name;
-      if (status === 401) {
-        dispatch({
-          type: 'login/logout',
-        });
-        return;
-      }
-      if (status === 403) {
-        dispatch(routerRedux.push('/exception/403'));
-        return;
-      }
-      if (status <= 504 && status >= 500) {
-        dispatch(routerRedux.push('/exception/500'));
-        return;
-      }
-      if (status >= 404 && status < 422) {
-        dispatch(routerRedux.push('/exception/404'));
-      }
-    });
+  .then(checkStatus)
+  .then(response => {
+    if (newOptions.method === 'DELETE' || response.status === 204) {
+      return response.text();
+    }
+    return response.json();
+  })
+  .catch(e => {
+    const { dispatch } = store;
+    const status = e.name;
+   
+    if (status === 401) {
+      dispatch({
+        type: 'login/logout',
+      });
+      return;
+    }
+    if (status === 403) {
+      dispatch(routerRedux.push('/exception/403'));
+      return;
+    }
+    if (status <= 504 && status >= 500) {
+      dispatch(routerRedux.push('/exception/500'));
+      return;
+    }
+    if (status >= 404 && status < 422) {
+      dispatch(routerRedux.push('/exception/404'));
+    }
+  });
 }

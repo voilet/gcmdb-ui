@@ -113,8 +113,9 @@ import {
   
         //删除主机基础信息
       *deleteHost({ payload }, { call,put }) {
-           yield call(deleteHost, payload);
-           yield put({
+        const response = yield call(deleteHost, payload);
+        console.log("response",response)
+        yield put({
             type: 'saveResponse',
             payload: response,
           });
