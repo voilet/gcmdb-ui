@@ -212,7 +212,7 @@ export default class PageHeader extends PureComponent {
               onChange={this.onChange}
               tabBarExtraContent={tabBarExtraContent}
             >
-              {tabList.map(item => <TabPane tab={item.tab} key={item.key} />)}
+              {tabList.map(item => <TabPane tab={item.tab} disabled={item.disabled} key={item.key} />)}
             </Tabs>
           )}
       </div>

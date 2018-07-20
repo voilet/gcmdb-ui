@@ -89,7 +89,7 @@ export default {
     //通过line id 获取项目组列表
     *getProjectGroupbyId({ payload }, { call, put }) {
       const response = yield call(querGroupbyLId, payload)
-      console.log("getProjectGroupbyId",response)
+    
       yield put({
         type: 'progroupbyLidSave',
         payload: response.data || [],
@@ -302,6 +302,7 @@ export default {
     },
 
     projectSave(state, action) {
+      
       return {
         ...state,
         projectdata: action.payload,

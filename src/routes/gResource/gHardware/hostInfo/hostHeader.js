@@ -108,7 +108,7 @@ export default class HostHeader extends PureComponent {
         dispatch(routerRedux.push(`${match.url}/add`));
         this.setState({
           activekey : "add",
-          title: "添加主机信息"
+          title: "添加主机"
         })
         break;
 
@@ -149,24 +149,27 @@ export default class HostHeader extends PureComponent {
         tab: '主机列表',
       },
       {
-        key: 'detail',
-        tab: '查看主机信息',
-      },
-      {
-        key: 'edit',
-        tab: '编辑主机信息',
-      },
-      {
         key: 'add',
-        tab: '添加主机信息',
-      },
-      {
-        key: 'clean',
-        tab: '主机项目关系列表',
+        tab: '添加主机',
       },
       {
         key: 'offline',
         tab: '已下线主机列表',
+      },
+      {
+        key: 'clean',
+        tab: '主机项目关系',
+        disabled: true,
+      },
+      {
+        key: 'detail',
+        tab: '查看主机信息',
+        disabled: true,
+      },
+      {
+        key: 'edit',
+        tab: '编辑主机信息',
+        disabled: true,
       },
     ];
 

@@ -59,32 +59,11 @@ export default class cleanHost extends Component {
     }
      
     if (gdevice.hostdetail.data.length > 0 ) {
-    //  console.log("!gdevice.hostdetail.data[0].projectlists ",!gdevice.hostdetail.data[0].projectlists )
-    // console.log("x-x-x-x-x-x-",gdevice.hostdetail.data)
-    // console.log("x-x-x-x-x-x-", (gdevice.hostdetail.data[0].projectlists)!="undefined" )
-    // console.log("x-x-x-x-x-x-", (gdevice.hostdetail.data[0].projectlists === null ))
+    if (gdevice.hostdetail.data[0].projectlists && gdevice.hostdetail.data[0].projectlists.length > 0) {
 
-    this.setState(
-      {
-        data: gdevice.hostdetail.data[0].projectlists }
-      )
-      // if ( (gdevice.hostdetail.data[0].projectlists !== null) && typeof(gdevice.hostdetail.data[0].projectlists)!="undefined") {
-      //   console.log("xxxxxx",gdevice)
-        
-      // }
-    }
 
-    
- //   console.log("xxxxxx",gdevice.hostdetail.data[0].projectlists)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    console.log("nextProps",nextProps)
-    // clean state
-
-    if(nextProps.gdevice.hostdetail.data.length > 0 ){
       this.setState({
-        data:(nextProps.gdevice.hostdetail.data[0].projectlists || []).map((obj)=>{
+        data:(gdevice.hostdetail.data[0].projectlists || []).map((obj)=>{
           if(obj.selectStatus == undefined){
             obj.selectStatus=true
           }
@@ -92,8 +71,29 @@ export default class cleanHost extends Component {
           return obj;
         })
       })
+
+
     }
+    }
+
   }
+
+  // componentWillReceiveProps(nextProps) {
+   
+  //   // clean state
+
+  //   if(nextProps.gdevice.hostdetail.data.length > 0 ){
+  //     this.setState({
+  //       data:(nextProps.gdevice.hostdetail.data[0].projectlists || []).map((obj)=>{
+  //         if(obj.selectStatus == undefined){
+  //           obj.selectStatus=true
+  //         }
+          
+  //         return obj;
+  //       })
+  //     })
+  //   }
+  // }
 
   
   handleProjectLine = value => {
@@ -199,10 +199,33 @@ export default class cleanHost extends Component {
   }
 
   save(key) {
+    console.log("savekey",key)
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
+
     if (target) {
       delete target.editable;
+      target.selectStatus = true
+      this.setState({ 
+        data: newData 
+      })      
+      this.handleSaveData(target)
+    }
+  }
+
+  savenew(key) {
+   
+
+    const newData = [...this.state.data];
+    const target = newData.filter(item => key === item.ID)[0];
+
+    console.log("target",target)
+
+    if (target) {
+      delete target.editable;
+      if (this.state.project_id) {
+        target.ID =  this.state.project_id
+      }
       target.selectStatus = true
       this.setState({ 
         data: newData 
@@ -233,6 +256,8 @@ export default class cleanHost extends Component {
     }
   }
 
+
+
   confirmdelete(key) {
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
@@ -251,6 +276,22 @@ export default class cleanHost extends Component {
    
   }
 
+
+  canclesave(key) {
+    const newData = [...this.state.data];
+    const target = newData.filter(item => key === item.ID)[0];
+    if (target) {
+        const index = newData.indexOf(target)
+        if (index > -1) {
+        newData.splice(index, 1);
+        }
+    
+    target.tag = false;
+    this.setState({ data: newData });
+    }
+   
+  }
+
   canceldelete(key) {
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
@@ -263,15 +304,18 @@ export default class cleanHost extends Component {
   handleAdd = () => {
     const { count, data } = this.state;
     const newData = {
+      "ID": uuid++,
       "proline_title": "",
       "progroup_title": "",
       "project_title": "",
       "status": "new",
-      "user": "未知"
+      "user": "未知",
+      "addable": true
     }
     this.setState({
       data: [...data, newData],
     });
+
   }
 
   handleSaveData = (val) => { 
@@ -299,11 +343,17 @@ export default class cleanHost extends Component {
         id: this.props.location.query.id,
       }
     });
+
+   
+    this.props.dispatch({
+      type: 'gdevice/queryHostDetail',
+      payload: this.props.location.query.id
+    });
 }
 
 
 handleSelectLineValue(value, key, column){
-   console.log("handleSelectLineValue",value, key, column)
+   
    const newData = [...this.state.data];
    const target = newData.filter(item => key === item.ID)[0];
    
@@ -327,7 +377,7 @@ handleSelectLineValue(value, key, column){
  }
   
  handleGroupValue(value, key, column) {
-  console.log("handleGroupValue",value, key, column)
+  
   const newData = [...this.state.data];
   const target = newData.filter(item => key === item.ID)[0];
   
@@ -347,6 +397,17 @@ handleSelectLineValue(value, key, column){
   }
 }
 
+handleProjectValue(value, key, column) {
+
+  const newData = [...this.state.data];
+  const target = newData.filter(item => key === item.ID)[0];
+  
+  if (target) {  
+    this.setState({ 
+      project_id: value
+    });
+  }
+}
   
   render() {
     // debugger
@@ -419,7 +480,7 @@ handleSelectLineValue(value, key, column){
 
         if (gproline.probygid ) {
           projectOptions = gproline.probygid.map(post =>
-            <Option key={post.ID} value={post.ID+","+post.title} >{post.title}</Option>
+            <Option key={post.ID} value={post.ID} >{post.title}</Option>
           )
         }
         
@@ -429,6 +490,7 @@ handleSelectLineValue(value, key, column){
             //value={record.title?record.title:record.project_title} 
             disabled={record.selectStatus} 
             style={{ width: '150px' }} 
+            onChange={(value)=>{this.handleProjectValue(value,record.ID,'project_id')}}
             placeholder="请选择"
           >
             { projectOptions }
@@ -454,7 +516,7 @@ handleSelectLineValue(value, key, column){
         key: 'ID',
         width:'200px',
         render: (text, record) => {
-          const { editable,deleteable } = record;
+          const { editable,deleteable,addable } = record;
           console.log("record+++",record)
           return (
           <div className="editable-row-operations">
@@ -473,7 +535,7 @@ handleSelectLineValue(value, key, column){
                   </span>
                   : 
                   <span style={{marginLeft: 20}}>
-                  <a onClick={() => this.edit(record.ID)}><Button  >编辑</Button></a>
+                    {addable ?<a onClick={() => this.savenew(record.ID)}><Button  >保存</Button></a>:<a onClick={() => this.edit(record.ID)}><Button  >编辑</Button></a>}
                   </span>)
               }
                
@@ -488,7 +550,9 @@ handleSelectLineValue(value, key, column){
                   </span>
                   : 
                   <span >
-                  <a style={{marginLeft: 50}} onClick={() => this.askdelete(record.ID)}><Button type="danger">下线</Button></a>
+                     {addable ?<a style={{marginLeft: 50}} onClick={() => this.canclesave(record.ID)}><Button type="danger">取消</Button></a>:
+                     <a style={{marginLeft: 50}} onClick={() => this.askdelete(record.ID)}><Button type="danger">下线</Button></a>}
+                  
                   </span>)
               }
           </div>

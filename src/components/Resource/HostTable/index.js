@@ -377,7 +377,7 @@ class HostTable extends PureComponent {
   }
 
   handleProlist = (value) => {
-     return  value.map(i => <div>{i.title}<hr /></div>) 
+     return  value.map(i => <div>{i.proline_title}->{i.progroup_title}->{i.project_title}<hr /></div>) 
   }
 
 
@@ -436,13 +436,13 @@ class HostTable extends PureComponent {
       },
       {
         title: '所在产品线',
-        dataIndex: 'projects',
-        key:'projects',
+        dataIndex: 'projectlists',
+        key:'projectlists',
         width:'150px',
         sorter: true,
 
         render: (text, record) => {
-          console.log("record",record)
+          console.log("所在产品线所在产品线",record)
           var divStyle = {
               color: 'blue',
             };
@@ -628,6 +628,10 @@ class HostTable extends PureComponent {
                   compareToFirstPassword = {this.compareToFirstPassword}
                   validateToNextPassword = {this.validateToNextPassword}
                  />
+
+                <Divider type="vertical" />
+                 <a onClick={() => this.deleteHost(record.ID)}>删除</a>  
+
           </div>
           );
       },

@@ -2,6 +2,7 @@ import { routerRedux } from 'dva/router';
 import { fakeAccountLogin } from '../services/api';
 import { setAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
+import globalLogin from '../utils/global';
 
 export default {
   namespace: 'login',
@@ -20,6 +21,8 @@ export default {
       });
       // Login successfully
       if (response.status === '200') {
+        console.log(globalLogin, 'globalLogin')
+        globalLogin.setCookie('isLogin', true);
         reloadAuthorized();
         yield put(routerRedux.push('/'));
       }
@@ -41,6 +44,7 @@ export default {
           },
         });
         reloadAuthorized();
+        globalLogin.setCookie('isLogin', false);
         yield put(routerRedux.push('/user/login'));
       }
     },

@@ -14,6 +14,7 @@ import SiderMenu from '../components/SiderMenu';
 import NotFound from '../routes/Exception/404';
 import { getRoutes } from '../utils/utils';
 import Authorized from '../utils/Authorized';
+import globalLogin from '../utils/global';
 import { getMenuData } from '../common/gmenu';
 import logo from '../assets/logo.svg';
 
@@ -188,6 +189,7 @@ class BasicLayout extends React.PureComponent {
       });
     }
   };
+
   render() {
     const {
       currentUser,
@@ -199,6 +201,7 @@ class BasicLayout extends React.PureComponent {
       location,
     } = this.props;
     console.log('in baseiclayout', this.props)
+    console.log('global', globalLogin)
 
     const bashRedirect = this.getBashRedirect();
     
@@ -283,20 +286,24 @@ class BasicLayout extends React.PureComponent {
       </Layout>
     );
 
+
+
+  
     return (
-      
+      <Fragment>
+        
       <Route
+          
           {...this.props}
           render={() => {
             // 根据用户权限，结合即将要访问的页面，判断是否渲染
             const { pathname } = this.props.location;
-            console.log("props+++",this.props.login.status)
             if (pathname === '/exception/500') {
               // 这里，用户永远无法访问500页面
               return <Redirect to="/exception/403" />; 
             }
             // 在此可以检验登录状态，强制要求用户先登录
-            return (this.props.login && this.props.login.status === "200")
+            return globalLogin.getCookie('isLogin')
               ?   
               <DocumentTitle title={this.getPageTitle()}>
               <ContainerQuery query={query}>
@@ -306,10 +313,7 @@ class BasicLayout extends React.PureComponent {
               : <Redirect to="/user/login" />;
           }}
        />
-      
-
-    
-    
+       </Fragment>
     );
   }
 }
