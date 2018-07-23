@@ -57,7 +57,6 @@ export default class GlobalHeader extends PureComponent {
   }
   render() {
     const {
-      currentUser = {},
       collapsed,
       fetchingNotices,
       isMobile,
@@ -65,7 +64,10 @@ export default class GlobalHeader extends PureComponent {
       onNoticeVisibleChange,
       onMenuClick,
       onNoticeClear,
+      currentUser
     } = this.props;
+    // let { currentUser } = this.props
+    // currentUser = currentUser || {}
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         <Menu.Item disabled>

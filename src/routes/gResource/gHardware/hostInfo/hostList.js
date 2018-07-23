@@ -237,6 +237,9 @@ handleMenuClick = (e) => {
     ));
   }
 
+  handleSearch = () => {
+    
+  }
  
 
   renderSimpleForm() {
@@ -290,7 +293,7 @@ handleMenuClick = (e) => {
 
   renderAdvancedForm() {
     const { getFieldDecorator } = this.props.form;
-    console.log("this.props.gidc.idc.data",this.props.gidc.idc.data)
+   // console.log("this.props.gidc.idc.data",this.props.gidc.idc.data)
     
     const idcOptions = this.props.gidc.idc.data.map(post => {
       return <Option key={post.ID} value={post.idc_name} >{post.idc_name}</Option>

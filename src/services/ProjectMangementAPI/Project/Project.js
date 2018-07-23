@@ -71,7 +71,7 @@ export async function querProjectbyGId(id) {
 
 // 查询项目组列表
 export async function querProjectGroup() {
-  return request('/v1/assets/pro/groups/query');
+  return request('/v1/assets/pro/groups/queryall');
 }
 
 //添加项目组列表

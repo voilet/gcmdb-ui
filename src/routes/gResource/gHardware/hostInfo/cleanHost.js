@@ -59,11 +59,11 @@ export default class cleanHost extends Component {
     }
      
     if (gdevice.hostdetail.data.length > 0 ) {
-    if (gdevice.hostdetail.data[0].projectlists && gdevice.hostdetail.data[0].projectlists.length > 0) {
+    if (gdevice.hostdetail.data[0].projectlists ) {
 
 
       this.setState({
-        data:(gdevice.hostdetail.data[0].projectlists || []).map((obj)=>{
+        data:(gdevice.hostdetail.data[0].projectlists).map((obj)=>{
           if(obj.selectStatus == undefined){
             obj.selectStatus=true
           }

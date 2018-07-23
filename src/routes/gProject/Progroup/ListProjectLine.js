@@ -182,8 +182,8 @@ export default class ProGroupList extends PureComponent {
             <div className={styles.tableListOperator}>
               <Row gutter={16}>
                <Col span={2}>  
-               <AddProGroup 
-                  />
+               <AddProline 
+                /> 
                 </Col>
                 <Col span={2}>
                 </Col>
@@ -191,13 +191,13 @@ export default class ProGroupList extends PureComponent {
 
             </div>
             <Divider> 项目组列表 </Divider>
-            <ProGroup
+            <ProjectLine
               selectedRows={selectedRows}
               // loading={loading}
               dispatch = {dispatch}
               handleSaveData={this.handleSaveData}
               handleDeleteData={this.handleDeleteData}
-              progroupdata = {gproline.progroupdata}
+              prolinedata = {gproline.prolinedata}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />

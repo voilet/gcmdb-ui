@@ -31,6 +31,9 @@ export default class LoginPage extends Component {
           type,
         },
       });
+      this.props.dispatch({
+        type: 'user/fetchCurrent',
+      });
     }
   };
 

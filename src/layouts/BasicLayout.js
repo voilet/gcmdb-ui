@@ -115,6 +115,17 @@ class BasicLayout extends React.PureComponent {
       type: 'user/fetchCurrent',
     });
   }
+
+  // componentWillReceiveProps(nextProps) {
+  //   if (globalLogin.getCookie('isLogin')) {
+  //     this.props.dispatch({
+  //       type: 'user/fetchCurrent',
+  //     });
+  //   }
+  // }
+
+
+
   componentWillUnmount() {
     unenquireScreen(this.enquireHandler);
   }
@@ -200,6 +211,7 @@ class BasicLayout extends React.PureComponent {
       match,
       location,
     } = this.props;
+
     console.log('in baseiclayout', this.props)
     console.log('global', globalLogin)
 
@@ -288,13 +300,18 @@ class BasicLayout extends React.PureComponent {
 
 
 
-  
+    {console.log("globalLogin.getCookie('isLogin')",globalLogin.getCookie('isLogin'))}
+
+ 
+    
     return (
+      
       <Fragment>
         
       <Route
           
           {...this.props}
+        
           render={() => {
             // 根据用户权限，结合即将要访问的页面，判断是否渲染
             const { pathname } = this.props.location;

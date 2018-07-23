@@ -3,7 +3,7 @@ import { routerRedux } from 'dva/router';
 
 import moment from 'moment';
 import DescriptionList from '../../DescriptionList';
-import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select,Button,Modal,Form  } from 'antd';
+import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select,Button,Modal,Form,notification  } from 'antd';
 import styles from './index.less';
 //import HostDetail from './hostDetail'
 import ModifyPw from './ModifyPw'
@@ -26,6 +26,13 @@ const formItemLayout = {
   wrapperCol: {
     span: 18 ,
   },
+};
+
+const openNotificationWithIcon = (type) => {
+  notification[type]({
+    message: '错误提示:',
+    description: '存在未解除的项目关系,请先解除项目关系',
+  });
 };
 
 
@@ -411,6 +418,48 @@ class HostTable extends PureComponent {
       modalVisibleEdit: true
      })
   }
+
+
+
+  deleteHost = (hostid) => {
+    let ids = new Array()
+    ids.push(hostid)
+    
+    this.props.dispatch({
+      type: 'gdevice/deleteHost',
+      payload: {
+        tag:true,
+        infolist:JSON.stringify({ ids })
+      }
+    });
+
+    console.log("deleteHost id",ids)
+    //console.log("this.props.repsonse",this.props)
+
+    let response = this.props.gdevice.response
+
+    if(response.status == "200") {
+      const newData = [...this.state.data];
+
+      const target = newData.filter(item => ids === item.ID)[0];
+      
+      console.log("deleteHost target",target)
+      
+      if (target) {
+          const index = newData.indexOf(target)
+          if (index > -1) {
+          newData.splice(index, 1);
+          }
+      
+      console.log("deleteHost data",newData)
+      this.setState({ data: newData });
+  
+      //this.cacheData = newData.map(item => ({ ...item }));  
+    }} else {
+      openNotificationWithIcon('error')
+    }
+  }
+
   render() {
     
 
@@ -594,11 +643,7 @@ class HostTable extends PureComponent {
             <a onClick={() => this.edit(record.ID)}>编辑</a>  
    
 
-            {
-                // <Popconfirm title="确定下线?" onConfirm={() => this.confirmdelete(record.ID)}>
-                //    <a>下线</a>
-                //  </Popconfirm>
-            }
+          
                  <Divider type="vertical" />
                  <a onClick={() => this.show(record.ID)}>详情</a>
 
@@ -630,7 +675,13 @@ class HostTable extends PureComponent {
                  />
 
                 <Divider type="vertical" />
-                 <a onClick={() => this.deleteHost(record.ID)}>删除</a>  
+
+                {
+                <Popconfirm title="确定删除?" onConfirm={() => this.deleteHost(record.ID)}>
+                  <a>删除</a>  
+                 </Popconfirm>
+                }
+                
 
           </div>
           );

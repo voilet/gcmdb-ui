@@ -37,9 +37,6 @@ import {
       panes:[],
       headlist:[],
       response: {
-        status: "",
-        msg:"",
-        data:[]
       }
     },
   
@@ -100,6 +97,7 @@ import {
         });
         yield put({ type: 'reloadHost'})
       },
+
   
       //修改主机基础信息
       *modifyHost({ payload }, { call,put }) {
@@ -119,7 +117,7 @@ import {
             type: 'saveResponse',
             payload: response,
           });
-           yield put({ type: 'reloadHost'})
+       //   yield put({ type: 'reloadHost'})
   
         },
   
