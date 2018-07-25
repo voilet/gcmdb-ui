@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import { Card, Badge, Table, Divider, Tabs, Form, Row, Col, Input, Select, Button,Popconfirm ,Icon,message    } from 'antd';
 import DescriptionList from '../../../../components/DescriptionList';
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
+import isEqual from 'lodash/isEqual';
 
 import styles from './cleanHost.less';
 import moment from 'moment';
@@ -40,7 +41,8 @@ export default class cleanHost extends Component {
     totalCallNo: 0,
     data:[],
     selectedLine:false,
-    dataSource:[]
+    dataSource:[],
+    hasAdd: false
   };
 
 
@@ -58,43 +60,52 @@ export default class cleanHost extends Component {
       })
     }
      
-    if (gdevice.hostdetail.data.length > 0 ) {
-    if (gdevice.hostdetail.data[0].projectlists ) {
+  //  if (gdevice.hostdetail.data.length > 0 ) {
+  //  if (gdevice.hostdetail.data[0].projectlists ) {
 
 
-      this.setState({
-        data:(gdevice.hostdetail.data[0].projectlists).map((obj)=>{
-          if(obj.selectStatus == undefined){
-            obj.selectStatus=true
-          }
-          
-          return obj;
-        })
-      })
-
-
-    }
-    }
+  //     this.setState({
+  //       data:(gdevice.hostdetail.data[0].projectlists).map((obj)=>{
+  //         if(obj.selectStatus == undefined){
+  //           obj.selectStatus=true
+  //         }
+  //         return obj;
+  //       })
+  //     })
+  //  }
+  //  }
 
   }
 
   // componentWillReceiveProps(nextProps) {
-   
-  //   // clean state
-
-  //   if(nextProps.gdevice.hostdetail.data.length > 0 ){
-  //     this.setState({
-  //       data:(nextProps.gdevice.hostdetail.data[0].projectlists || []).map((obj)=>{
-  //         if(obj.selectStatus == undefined){
-  //           obj.selectStatus=true
-  //         }
-          
-  //         return obj;
+  //   if(!this.state.hasAdd) {
+  //     console.log("componentWillReceiveProps++++++++++",nextProps.gdevice.hostdetail.data)
+  //     if(nextProps.gdevice.hostdetail.data.length > 0 ){
+     
+  //     } else {
+  //       this.setState({
+  //         data: []
   //       })
-  //     })
+  //     }
   //   }
   // }
 
+  componentWillReceiveProps = nextProps => {
+    const { gdevice } = nextProps;
+
+    if (!isEqual(nextProps.gdevice.hostdetail.time4Update, this.props.gdevice.hostdetail.time4Update)) {
+      if (gdevice.hostdetail.data.length) {
+        this.setState({
+          data:(nextProps.gdevice.hostdetail.data[0].projectlists || []).map((obj)=>{          
+            if(obj.selectStatus == undefined){
+              obj.selectStatus=true
+            }
+            return obj;
+          })
+        })
+      }
+    }
+  }
   
   handleProjectLine = value => {
     this.props.dispatch({
@@ -314,6 +325,7 @@ export default class cleanHost extends Component {
     }
     this.setState({
       data: [...data, newData],
+      hasAdd: true
     });
 
   }

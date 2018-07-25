@@ -20,7 +20,8 @@ import {
   deleteProject,
   searchProject,
   hostproModify,
-  hostproDelete
+  hostproDelete,
+  updateprojectTree
 } from '../services/ProjectMangementAPI/Project/Project'
 
 import { message } from 'antd'
@@ -241,6 +242,12 @@ export default {
           payload: response,
         });
       }
+    },
+
+    //更新树
+    *updateTree({ payload }, { call, put }) {
+      yield call(updateprojectTree, payload);
+      yield put({ type: 'getTree' })
     },
 
   },

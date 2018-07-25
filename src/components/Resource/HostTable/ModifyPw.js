@@ -1,5 +1,7 @@
 import { Form, Modal, Input } from 'antd'
 import React, { PureComponent, Fragment } from 'react';
+import {connect} from 'dva';
+
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -11,7 +13,7 @@ const formItemLayout = {
   },
 };
 
-
+@connect((props) => (props))
 class ModifyPw extends PureComponent {
     state = {
       visible: false,
@@ -32,6 +34,7 @@ class ModifyPw extends PureComponent {
     }
 
     onSave = (ID,passwd) => {
+      
       this.props.dispatch({
         type: 'gdevice/modifyHostPassword',
         payload: { id: ID, passwd: passwd}

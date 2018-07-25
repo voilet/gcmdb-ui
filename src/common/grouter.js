@@ -133,7 +133,7 @@ export const getRouterData = (app) => {
     
      //产品树
     '/project/treelist': {
-      component: dynamicWrapper(app, ['gproline'], () => import('../routes/gProject/ProTree/ListProjectTree')),
+      component: dynamicWrapper(app, ['gappmanage'], () => import('../routes/gProject/ProTree/ListProjectTree')),
     },
 
    
@@ -163,7 +163,7 @@ export const getRouterData = (app) => {
       component: dynamicWrapper(app, ['gdevice'], () => import('../routes/gResource/gHardware/hostInfo/addHost')),
     },
 
-    //主机详情列表
+    //主机
     '/resource/hardware/host/offline': {
       component: dynamicWrapper(app, ['gdevice'], () => import('../routes/gResource/gHardware/hostInfo/offlineHost')),
     },

@@ -1,12 +1,16 @@
 import React, { PureComponent } from 'react';
-import { Menu, Icon, Spin, Tag, Dropdown, Avatar, Divider, Tooltip } from 'antd';
+import { Menu, Icon, Spin, Tag, Dropdown, Avatar, Divider, Tooltip,Button } from 'antd';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import Debounce from 'lodash-decorators/debounce';
 import { Link } from 'dva/router';
 import NoticeIcon from '../NoticeIcon';
 import HeaderSearch from '../HeaderSearch';
+import UpdateTree  from '../ProjectTable/updateTree'
+import {connect} from 'dva'
+
 import styles from './index.less';
+@connect((props) => (props))
 
 export default class GlobalHeader extends PureComponent {
   componentWillUnmount() {
@@ -43,11 +47,15 @@ export default class GlobalHeader extends PureComponent {
     });
     return groupBy(newNotices, 'type');
   }
+
   toggle = () => {
     const { collapsed, onCollapse } = this.props;
     onCollapse(!collapsed);
     this.triggerResizeEvent();
   };
+
+
+
   /* eslint-disable*/
   @Debounce(600)
   triggerResizeEvent() {
@@ -111,6 +119,7 @@ export default class GlobalHeader extends PureComponent {
               console.log('enter', value); // eslint-disable-line
             }}
           />
+          <UpdateTree />
           <Tooltip title="使用文档">
             <a
               target="_blank"

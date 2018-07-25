@@ -7,6 +7,7 @@ import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select,Button,Mo
 import styles from './index.less';
 //import HostDetail from './hostDetail'
 import ModifyPw from './ModifyPw'
+import ShowPw from './ShowPw'
 
 const {Option} = Select;
 const FormItem = Form.Item;
@@ -69,65 +70,6 @@ const PasswordForm = Form.create()(
   }
 );
 
-
-
-const ChangePassForm = Form.create()(
-  
-  (props) => {
-    console.log("props",props)
-    const { visible, onCancel, onSave,form,data,validateToNextPassword,compareToFirstPassword,handleConfirmBlur } = props;
-    const { getFieldDecorator } = form;
-
-    return (
-      <Modal
-        visible={visible}
-        title="修改密码"
-        okText="确定"
-        cancelText="返回"
-        onCancel={onCancel}
-        onOk={onSave}
-        maskClosable={false}
-      >
-        <Form layout="vertical">
-          <FormItem label="服务器IP地址">
-            {
-              data.ipsummary.split(',').map((i,index)=> <div style={{ color: 'red'}}> {i}</div>)
-            }
-             
-          </FormItem>
-          <FormItem
-          {...formItemLayout}
-          label="新密码:"
-        >
-          {getFieldDecorator('password', {
-            rules: [{
-              required: true, message: '请输入新密码',
-            }, {
-              validator: validateToNextPassword,
-            }],
-          })(
-            <Input type="password" />
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="确认新密码: "
-        >
-          {getFieldDecorator('confirm', {
-            rules: [{
-              required: true, message: '请输入新密码',
-            }, {
-              validator: compareToFirstPassword,
-            }],
-          })(
-            <Input type="password" onBlur={handleConfirmBlur} />
-          )}
-        </FormItem>
-        </Form>
-      </Modal>
-    );
-  }
-);
 
 class HostTable extends PureComponent {
   state = {
@@ -424,7 +366,7 @@ class HostTable extends PureComponent {
   deleteHost = (hostid) => {
     let ids = new Array()
     ids.push(hostid)
-    
+
     this.props.dispatch({
       type: 'gdevice/deleteHost',
       payload: {
@@ -538,8 +480,11 @@ class HostTable extends PureComponent {
          // const {ipsummary}   =  this.props.gdevice.host.data.ipsummary
           return (
             <div>
-               <Button  icon="info-circle-o"  onClick={()=>{this.passwordClick(record.ID)}}>查看密码</Button>
-               <PasswordForm
+               <ShowPw
+                  data={record}
+                />
+                 
+               {/* <PasswordForm
                 ref={form=>{
                   this.passwordForm = this.passwordForm || {};
                   this.passwordForm[record.shiftId] = form;
@@ -552,7 +497,7 @@ class HostTable extends PureComponent {
                 modalVisible = false;
                 this.setState({modalVisible});
                }} 
-               />
+               /> */}
              
             </div>
           )
@@ -655,24 +600,6 @@ class HostTable extends PureComponent {
                  <ModifyPw
                   data={record}
                  />
-                 <ChangePassForm
-                  ref={form=>{
-                    this.changePassForm = this.changePassForm || {};
-                 //   this.changePassForm[record.shiftId] = form;
-                  }}
-
-                  visible={this.state.modalVisibleEdit}
-                  onCancel={()=>{
-                  let modalVisibleEdit = this.state.modalVisibleEdit;
-                  modalVisibleEdit = false;
-                  this.setState({modalVisibleEdit});
-                  }}
-                  onSave = {this.onSave} 
-                  data  = {record} 
-                  handleConfirmBlur = {this.handleConfirmBlur}
-                  compareToFirstPassword = {this.compareToFirstPassword}
-                  validateToNextPassword = {this.validateToNextPassword}
-                 />
 
                 <Divider type="vertical" />
 
@@ -704,7 +631,7 @@ class HostTable extends PureComponent {
 
     
     this.cacheData =  this.state.data.map(item => ({ ...item }));     
-   console.log('data+++', data)
+  
 
     return (
       <div className={styles.standardTable}>

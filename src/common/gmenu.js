@@ -52,15 +52,12 @@ const menuData = [{
             name: '主机列表',
             path: 'list',
           },{
-            name: '主机详情',
-            path: 'detail',
-          },{
             name: '添加主机',
             path: 'add',
           }
           ,{
             name: '下线列表',
-            path: 'deleted',
+            path: 'offline',
           }
         ]
       },{

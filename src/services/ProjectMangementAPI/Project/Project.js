@@ -59,6 +59,19 @@ export async function deleteProject(params) {
   });
 }
 
+
+
+//通过pro id 查询机器列表
+export async function queryHostbyPid(id) {
+  return request(`/v1/assets/appmange/querytree/`,{
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    }
+  });
+}
+
 //通过line id 查询项目组列表
 export async function querGroupbyLId(id) {
   return request(`/v1/assets/pro/groups/${id}`);
@@ -172,4 +185,10 @@ export async function hostproDelete(params,id) {
       ...params,
     },
   });
+}
+
+
+//更新树
+export async function updateprojectTree() {
+  return request(`/v1/assets/tree?active=update`);
 }
