@@ -3,13 +3,13 @@ import moment from 'moment';
 import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select, Switch } from 'antd';
 import styles from './index.less';
 
-
 const EditableCell = ({ editable, value, onChange }) => (
   <div>
-    {editable
-      ? <Input style={{ margin: '-5px 0' }} value={value} onChange={e => onChange(e.target.value)} />
-      : value
-    }
+    {editable ? (
+      <Input style={{ margin: '-5px 0' }} value={value} onChange={e => onChange(e.target.value)} />
+    ) : (
+      value
+    )}
   </div>
 );
 
@@ -17,7 +17,7 @@ class proGroupTable extends PureComponent {
   state = {
     selectedRowKeys: [],
     totalCallNo: 0,
-    data:[]
+    data: [],
   };
 
   componentWillReceiveProps(nextProps) {
@@ -28,17 +28,16 @@ class proGroupTable extends PureComponent {
         totalCallNo: 0,
       });
     }
-   
-   console.log("nextProps.prolinedata.data",nextProps.progroupdata)
+
+    console.log('nextProps.prolinedata.data', nextProps.progroupdata);
     this.setState({
-      data: nextProps.progroupdata.data.map((obj)=>{
-        if(obj.selectStatus == undefined){
-          obj.selectStatus=true
+      data: nextProps.progroupdata.data.map(obj => {
+        if (obj.selectStatus == undefined) {
+          obj.selectStatus = true;
         }
         return obj;
-      })
-    })
-    
+      }),
+    });
   }
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
@@ -51,17 +50,17 @@ class proGroupTable extends PureComponent {
     }
 
     this.setState({ selectedRowKeys, totalCallNo });
-  }
+  };
 
   handleTableChange = (pagination, filters, sorter) => {
     this.props.onChange(pagination, filters, sorter);
-  }
+  };
 
   cleanSelectedKeys = () => {
     this.handleRowSelectChange([], []);
-  }
+  };
 
-  renderColumns(text, record, column){
+  renderColumns(text, record, column) {
     return (
       <EditableCell
         editable={record.editable}
@@ -71,21 +70,21 @@ class proGroupTable extends PureComponent {
     );
   }
 
-  edit(key) {    
+  edit(key) {
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
 
     if (target) {
       target.editable = true;
-      this.setState({ 
-          data: newData.map((obj)=>{
-            if(key == obj.ID){
-              obj.selectStatus=false
-            }
-            return obj;
-          }),
-          disabled: false
-         });
+      this.setState({
+        data: newData.map(obj => {
+          if (key == obj.ID) {
+            obj.selectStatus = false;
+          }
+          return obj;
+        }),
+        disabled: false,
+      });
     }
   }
 
@@ -94,37 +93,37 @@ class proGroupTable extends PureComponent {
     const target = newData.filter(item => key === item.ID)[0];
     if (target) {
       delete target.editable;
-      target.enable = this.state.status
-      this.setState({ 
-        data: newData.map((obj)=>{
-          if(key == obj.ID){
-            obj.selectStatus=true
+      target.enable = this.state.status;
+      this.setState({
+        data: newData.map(obj => {
+          if (key == obj.ID) {
+            obj.selectStatus = true;
           }
           return obj;
         }),
-          disabled: true
-         });
+        disabled: true,
+      });
       this.cacheData = newData.map(item => ({ ...item }));
-      console.log('target',target)
-      this.props.handleSaveData(target)
+      console.log('target', target);
+      this.props.handleSaveData(target);
     }
   }
-  
+
   cancel(key) {
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
     if (target) {
       Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
       delete target.editable;
-      this.setState({ 
-        data: newData.map((obj)=>{
-          if(key == obj.ID){
-            obj.selectStatus=true
+      this.setState({
+        data: newData.map(obj => {
+          if (key == obj.ID) {
+            obj.selectStatus = true;
           }
           return obj;
         }),
-        disabled: true
-     });
+        disabled: true,
+      });
     }
   }
 
@@ -142,52 +141,50 @@ class proGroupTable extends PureComponent {
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
     if (target) {
-        const index = newData.indexOf(target)
-        if (index > -1) {
+      const index = newData.indexOf(target);
+      if (index > -1) {
         newData.splice(index, 1);
-        }
-    
-    target.tag = false;
-    this.setState({ data: newData });
+      }
 
-    this.cacheData = newData.map(item => ({ ...item }));   
-    this.props.handleDeleteData(target)
+      target.tag = false;
+      this.setState({ data: newData });
+
+      this.cacheData = newData.map(item => ({ ...item }));
+      this.props.handleDeleteData(target);
     }
-   
   }
 
   handleChange(value, key, column) {
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
-    
+
     if (target) {
       target[column] = value;
-      this.setState({ 
+      this.setState({
         data: newData,
-        disabled:false
+        disabled: false,
       });
     }
 
-    console.log('handleChange',value,key,column)
+    console.log('handleChange', value, key, column);
   }
 
-  handleSelectLineValue(value, key, column){
-    console.log(value, key, column)
+  handleSelectLineValue(value, key, column) {
+    console.log(value, key, column);
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
-    
+
     if (target) {
       target[column] = value;
-      this.setState({ 
+      this.setState({
         data: newData,
-        disabled:false
+        disabled: false,
       });
       this.props.dispatch({
         type: 'gproline/getProjectGroupbyId',
-        payload: value
+        payload: value,
       });
     }
-  
   }
   canceldelete(key) {
     const newData = [...this.state.data];
@@ -199,28 +196,25 @@ class proGroupTable extends PureComponent {
     }
   }
 
-
   render() {
-    
-
-    const { selectedRowKeys, totalCallNo, data} = this.state;
-    const { loading, progroupdata  } = this.props;
-    console.log("progroupdata",progroupdata)
+    const { selectedRowKeys, totalCallNo, data } = this.state;
+    const { loading, progroupdata } = this.props;
+    console.log('progroupdata', progroupdata);
     //debugger
-    console.log("this.state",this.state)
+    console.log('this.state', this.state);
     const columns = [
       {
         title: '产品线别名(英文)',
         dataIndex: 'alias',
-        key:'alias',
-        width:'120px',
+        key: 'alias',
+        width: '120px',
         render: (text, record) => this.renderColumns(text, record, 'alias'),
       },
       {
         title: '产品线名称(中文)',
         dataIndex: 'title',
-        key:'title',
-        width:'200px',
+        key: 'title',
+        width: '200px',
         render: (text, record) => this.renderColumns(text, record, 'title'),
       },
       {
@@ -232,7 +226,7 @@ class proGroupTable extends PureComponent {
           var divStyle = {
             color: 'red',
           };
-          return <div style={divStyle}>{created_at.substr(0,10)}</div>;
+          return <div style={divStyle}>{created_at.substr(0, 10)}</div>;
         },
       },
       {
@@ -244,14 +238,14 @@ class proGroupTable extends PureComponent {
           var divStyle = {
             color: 'red',
           };
-          return <div style={divStyle}>{updated_at.substr(0,10)}</div>;
+          return <div style={divStyle}>{updated_at.substr(0, 10)}</div>;
         },
       },
       {
         title: '简要说明',
         dataIndex: 'remarks',
-        key:'remarks',
-        width:'200px',
+        key: 'remarks',
+        width: '200px',
         render: (text, record) => this.renderColumns(text, record, 'remarks'),
       },
 
@@ -259,48 +253,49 @@ class proGroupTable extends PureComponent {
         title: '操作',
         dataIndex: 'ID',
         key: 'ID',
-        width:'200px',
+        width: '200px',
         render: (text, record) => {
-          const { editable,deleteable } = record;
+          const { editable, deleteable } = record;
           return (
-          <div className="editable-row-operations">
-              {
-              !deleteable && (editable ?
+            <div className="editable-row-operations">
+              {!deleteable &&
+                (editable ? (
                   <span>
-                  <a onClick={() => this.save(record.ID)}>保存</a>
-                  <Divider type="vertical" />
-                  <Popconfirm title="确定取消?" onConfirm={() => this.cancel(record.ID)}>
+                    <a onClick={() => this.save(record.ID)}>保存</a>
+                    <Divider type="vertical" />
+                    <Popconfirm title="确定取消?" onConfirm={() => this.cancel(record.ID)}>
                       <a>取消</a>
-                  </Popconfirm>
+                    </Popconfirm>
                   </span>
-                  : 
+                ) : (
                   <span>
-                  <a onClick={() => this.edit(record.ID)}>编辑</a>
-                  </span>)
-              }
-               {
-               !editable && (deleteable ?
+                    <a onClick={() => this.edit(record.ID)}>编辑</a>
+                  </span>
+                ))}
+              {!editable &&
+                (deleteable ? (
                   <span>
-                  <Popconfirm title="确定删除?" onConfirm={() => this.confirmdelete(record.ID)}>
+                    <Popconfirm title="确定删除?" onConfirm={() => this.confirmdelete(record.ID)}>
                       <a>提交</a>
-                  </Popconfirm>
-                  <Divider type="vertical" />
-                  <a onClick={() => this.canceldelete(record.ID)}>取消</a>
+                    </Popconfirm>
+                    <Divider type="vertical" />
+                    <a onClick={() => this.canceldelete(record.ID)}>取消</a>
                   </span>
-                  : 
-                  <span style={{marginLeft: 10}}>
-                  <a onClick={() => this.askdelete(record.ID)}>删除</a>
-                  </span>)
-              }
-          </div>
+                ) : (
+                  <span style={{ marginLeft: 10 }}>
+                    <a onClick={() => this.askdelete(record.ID)}>删除</a>
+                  </span>
+                ))}
+            </div>
           );
+        },
       },
-    }];
+    ];
 
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
-    //  ...progroupdata.pagination,
+      //  ...progroupdata.pagination,
     };
 
     const rowSelection = {
@@ -311,19 +306,20 @@ class proGroupTable extends PureComponent {
       }),
     };
 
-    
-    this.cacheData =  this.state.data.map(item => ({ ...item }));     
-   // console.log('loading', loading)
+    this.cacheData = this.state.data.map(item => ({ ...item }));
+    // console.log('loading', loading)
     return (
       <div className={styles.standardTable}>
         <div className={styles.tableAlert}>
           <Alert
-            message={(
+            message={
               <div>
                 已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 个项目&nbsp;
-                <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>取消勾选</a>
+                <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>
+                  取消勾选
+                </a>
               </div>
-            )}
+            }
             type="info"
             showIcon
           />
