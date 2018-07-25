@@ -1,5 +1,5 @@
-import React, {PureComponent} from 'react';
-import {connect} from 'dva';
+import React, { PureComponent } from 'react';
+import { connect } from 'dva';
 import {
   Row,
   Col,
@@ -20,19 +20,16 @@ import ProGroup from '../../../components/ProjectTable/proGroup';
 import PageHeaderLayout from '../../../layouts/PageHeaderLayout';
 
 import styles from './projectgroup.less';
-import AddProGroup from  './addProGroup'
+import AddProGroup from './addProGroup';
 
-
-
-const {Option} = Select;
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+const { Option } = Select;
+const getValue = obj =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
 const { TextArea } = Input;
 
-
-
-@connect((props) => (props))
-
-
+@connect(props => props)
 export default class ProGroupList extends PureComponent {
   state = {
     expandForm: false,
@@ -40,22 +37,19 @@ export default class ProGroupList extends PureComponent {
     formValues: {},
   };
 
-
-
   componentDidMount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'gproline/getProjectGroup',
     });
   }
 
-
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = {...obj};
+      const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
@@ -73,18 +67,17 @@ export default class ProGroupList extends PureComponent {
     dispatch({
       type: 'gproline/getProjectGroup',
     });
-  }
-
+  };
 
   toggleForm = () => {
     this.setState({
       expandForm: !this.state.expandForm,
     });
-  }
+  };
 
-  handleMenuClick = (e) => {
-    const {dispatch} = this.props;
-    const {selectedRows} = this.state;
+  handleMenuClick = e => {
+    const { dispatch } = this.props;
+    const { selectedRows } = this.state;
 
     if (!selectedRows) return;
 
@@ -105,67 +98,66 @@ export default class ProGroupList extends PureComponent {
       default:
         break;
     }
-  }
+  };
 
-  handleSelectRows = (rows) => {
+  handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
     });
-  }
+  };
 
   //保存
-  handleSaveData = (val) => {
-    const { ID, title,alias,remarks,enable} = val
+  handleSaveData = val => {
+    const { ID, title, alias, remarks, enable } = val;
     const params = {
       ID,
-      title:title,
+      title: title,
       alias: alias,
-      remarks:remarks,
-    }
-
+      remarks: remarks,
+    };
 
     this.props.dispatch({
       type: 'gproline/modifyProjectgroup',
-      payload: params 
+      payload: params,
     });
-  }
+  };
 
-  handleDeleteData = (val) => {
-    console.log(val)
-    const { ID } = val
+  handleDeleteData = val => {
+    console.log(val);
+    const { ID } = val;
     //false是逻辑删除  true是物理删除
     // infolist:{"componentname": "cpu", "ids": [1, 2]}
-    let obj = {},ids=[]
-    ids.push(ID)
-    obj.ids=ids
+    let obj = {},
+      ids = [];
+    ids.push(ID);
+    obj.ids = ids;
     this.props.dispatch({
       type: 'gproline/deleteProjectgroup',
       payload: {
-        tag:false,
-        infolist:JSON.stringify(obj)
-      }
+        tag: false,
+        infolist: JSON.stringify(obj),
+      },
     });
-}
+  };
 
+  render() {
+    const { selectedRows, modalVisible, addInputValue } = this.state;
 
-  render() {  
-    const {selectedRows, modalVisible, addInputValue} = this.state;
-  
     //const { submitting } = this.props;
-  
-    const { gproline,loading,submitting,dispatch } = this.props;
-    
+
+    const { gproline, loading, submitting, dispatch } = this.props;
+
     //console.log('gproline.prolinedata', gproline.prolinedata)
-    
+
     const formItemLayout = {
       labelCol: {
-        xs: {span: 24},
-        sm: {span: 7},
+        xs: { span: 24 },
+        sm: { span: 7 },
       },
       wrapperCol: {
-        xs: {span: 24},
-        sm: {span: 12},
-        md: {span: 10},
+        xs: { span: 24 },
+        sm: { span: 12 },
+        md: { span: 10 },
       },
     };
     const submitFormLayout = {
@@ -174,36 +166,31 @@ export default class ProGroupList extends PureComponent {
         sm: { span: 10, offset: 7 },
       },
     };
-    
-    return (
-   
-        <Card bordered={false}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              <Row gutter={16}>
-               <Col span={2}>  
-               <AddProline 
-                /> 
-                </Col>
-                <Col span={2}>
-                </Col>
-              </Row>
 
-            </div>
-            <Divider> 项目组列表 </Divider>
-            <ProjectLine
-              selectedRows={selectedRows}
-              // loading={loading}
-              dispatch = {dispatch}
-              handleSaveData={this.handleSaveData}
-              handleDeleteData={this.handleDeleteData}
-              prolinedata = {gproline.prolinedata}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-            />
+    return (
+      <Card bordered={false}>
+        <div className={styles.tableList}>
+          <div className={styles.tableListOperator}>
+            <Row gutter={16}>
+              <Col span={2}>
+                <AddProline />
+              </Col>
+              <Col span={2} />
+            </Row>
           </div>
-        </Card>
-      
+          <Divider> 项目组列表 </Divider>
+          <ProjectLine
+            selectedRows={selectedRows}
+            // loading={loading}
+            dispatch={dispatch}
+            handleSaveData={this.handleSaveData}
+            handleDeleteData={this.handleDeleteData}
+            prolinedata={gproline.prolinedata}
+            onSelectRow={this.handleSelectRows}
+            onChange={this.handleStandardTableChange}
+          />
+        </div>
+      </Card>
     );
   }
 }

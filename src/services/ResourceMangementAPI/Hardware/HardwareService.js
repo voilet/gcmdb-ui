@@ -177,18 +177,15 @@ export async function queryHosts(params) {
   return request(`/v1/assets/hardware/host/query/${params}`);
 }
 
-
 //查询已下线主机列表
 export async function queryOfflineHosts(params) {
   return request(`/v1/assets/hardware/host/offline/query/${params}`);
 }
 
-
 //按照条件查询主机列表
 export async function queryHostsByCondition(params) {
   return request(`/v1/assets/hardware/searchhosts/${params}`);
 }
-
 
 ///v1/assets/hardware/host/detail/query/1
 //查询主机详细表
@@ -207,7 +204,6 @@ export async function queryHostPassword(params) {
   });
 }
 
-
 ///v1/assets/hardware/host/password/modify/1
 //修改密码
 export async function modifyHostPassword(params) {
@@ -219,7 +215,6 @@ export async function modifyHostPassword(params) {
     },
   });
 }
-
 
 //添加主机
 export async function addHost(params) {
@@ -244,7 +239,7 @@ export async function deleteHost(params) {
 }
 
 //修改主机
-export async function modifyHost(params,id) {
+export async function modifyHost(params, id) {
   return request(`/v1/assets/hardware/host/modify/${id}`, {
     method: 'POST',
     body: {
@@ -253,5 +248,3 @@ export async function modifyHost(params,id) {
     },
   });
 }
-
-
