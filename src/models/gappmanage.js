@@ -4,7 +4,8 @@
 import {
     queryTree,
     updateprojectTree,
-    queryHostbyPid
+    queryHostbyPid,
+    queryAllTree
   } from '../services/ProjectMangementAPI/Appmanage/Appmanage'
   
   import { message } from 'antd'
@@ -49,6 +50,17 @@ import {
         }
       },
   
+       //获取所有树节点
+       *getAllTree({ payload }, { call, put }) {
+        const response = yield call(queryAllTree, payload);
+        if (response.status == 200) {
+          yield put({
+            type: 'probyidSave',
+            payload: response,
+          });
+        }
+      },
+
       //更新树
       *updateTree({ payload }, { call, put }) {
         yield call(updateprojectTree, payload);

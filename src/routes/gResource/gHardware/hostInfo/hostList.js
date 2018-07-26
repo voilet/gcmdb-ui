@@ -20,7 +20,7 @@ import {
 
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
 
-
+import isEqual from 'lodash/isEqual';
 import HostTable from '../../../../components/Resource/HostTable'
 
 
@@ -61,12 +61,9 @@ export default class HostList extends PureComponent {
 
   componentDidMount() {
     const {dispatch} = this.props;
+
     dispatch({
       type: 'gproline/getProjectLine',  
-    });
-    dispatch({
-      type: 'gdevice/queryHost',  
-      payload:`?currentPage=${1}&pageSize=${20}`
     });
     dispatch({
       type: 'gidc/queryIdcRelation',
@@ -81,8 +78,33 @@ export default class HostList extends PureComponent {
     dispatch({
       type: 'gidc/queryIDC',
     });
+
+  
+    if (location.query && location.query.projectid) {
+
+    } else {
+      dispatch({
+        type: 'gdevice/queryHost',  
+        payload:`?currentPage=${1}&pageSize=${40}`
+      });
+    }
   }
 
+  componentWillReceiveProps = nextProps => {
+    const { gdevice } = nextProps;
+
+    if (!isEqual(nextProps.gdevice.host.time4Update, this.props.gdevice.host.time4Update)) {
+
+      if (gdevice.host.data.length) {
+        if (location.query && location.query.projectid) {
+          dispatch({
+            type: 'gdevice/queryHostsByPid',  
+            payload:`?currentPage=${1}&pageSize=${40}&projectid=${location.query.projectid}`
+          });
+        }
+      }
+    }
+  }
   
 
 
@@ -238,7 +260,43 @@ handleMenuClick = (e) => {
   }
 
   handleSearch = () => {
-    
+    const fields = {
+      sn: form.getFieldValue('serialnumber') ? form.getFieldValue('serialnumber') : '',
+      eth1: form.getFieldValue('ipadds') ? form.getFieldValue('ipadds') : '',
+      eth2: form.getFieldValue('eth2') ? form.getFieldValue('eth2') : '',
+      eth3: form.getFieldValue('eth3') ? form.getFieldValue('eth3') : '',
+      eth4: form.getFieldValue('eth4') ? form.getFieldValue('eth4') : '',
+      fqdn: form.getFieldValue('fqdn') ? form.getFieldValue('fqdn') : '',
+      internal_ip: form.getFieldValue('internal_ip') ? form.getFieldValue('internal_ip') : '',
+      mac: form.getFieldValue('mac') ? form.getFieldValue('mac') : '',
+      switch_port: form.getFieldValue('switch_port') ? form.getFieldValue('switch_port') : '',
+      start_guaratee: form.getFieldValue('start_guaratee')
+      ? form.getFieldValue('start_guaratee').format('YYYY-MM-DD HH:mm:ss')
+      : '',
+      stop_guaratee: form.getFieldValue('stop_guaratee')
+      ? form.getFieldValue('stop_guaratee').format('YYYY-MM-DD HH:mm:ss')
+      : '',
+      hardware_vendor: form.getFieldValue('hardware_vendor') ? form.getFieldValue('hardware_vendor') : '',
+      manufacturer: form.getFieldValue('manufacturer') ? form.getFieldValue('manufacturer') : '',
+      cpu_model: form.getFieldValue('cpu_model') ? form.getFieldValue('cpu_model') : '',
+      cpuarch: form.getFieldValue('cpuarch') ? form.getFieldValue('cpuarch') : '',
+      num_cpus: form.getFieldValue('num_cpus') ? form.getFieldValue('num_cpus') : '',
+      disk: form.getFieldValue('disk') ? form.getFieldValue('disk') : '',
+      assets_number: form.getFieldValue('assets_number') ? form.getFieldValue('assets_number') : '',
+      service_code: form.getFieldValue('service_code') ? form.getFieldValue('service_code') : '',
+      memory: form.getFieldValue('memory') ? form.getFieldValue('memory') : '',
+
+      idc_id: form.getFieldValue('idc_id') ? form.getFieldValue('idc_id') : '',
+      cabinet_id: form.getFieldValue('cabinet_id') ? form.getFieldValue('cabinet_id') : '',
+      bay_id: form.getFieldValue('bay_id') ? form.getFieldValue('bay_id') : '',
+
+      osversion: form.getFieldValue('osversion') ? form.getFieldValue('osversion') : '',
+      biosversion: form.getFieldValue('biosversion') ? form.getFieldValue('biosversion') : '',
+      agentversion: form.getFieldValue('agentversion') ? form.getFieldValue('agentversion') : '',
+
+      planversion: form.getFieldValue('planversion') ? form.getFieldValue('planversion') : '',
+
+    };
   }
  
 
@@ -423,10 +481,12 @@ handleMenuClick = (e) => {
     const { gproline, gdevice, gidc, ghardware } = this.props;
     const {selectedRows} = this.state;
 
+    console.log("this.props",this.props)
 
     return (
       // <PageHeaderLayout title="查询主机(支持批量查询,数据请用逗号分开)" >
         <Card bordered={false}>
+          
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
           

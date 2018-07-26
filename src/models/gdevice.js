@@ -2,7 +2,8 @@ import {
     queryHosts,queryHostsDetail,queryHostPassword,
     addHost,deleteHost,modifyHost,
     queryUser,queryOfflineHosts,
-    modifyHostPassword
+    modifyHostPassword,
+    queryHostsByPid,
     } from '../services/ResourceMangementAPI/Hardware/HardwareService'
   import {message} from 'antd'
   
@@ -87,7 +88,19 @@ import {
         }
       },
 
-  
+      *queryHostsByPid({ payload }, { call, put }) {
+        const response = yield call(queryHostsByPid, payload) 
+        if (response.status  == 200) {
+          yield put({
+            type: 'hostinfo',
+            payload: response,
+          });
+          } else {
+            message.error(response.data)
+        }
+      },
+    
+
       //添加主机基础信息
       *addHost({ payload }, { call,put }) {
         const response = yield call(addHost, payload.description);
@@ -175,6 +188,7 @@ import {
         return {
           ...state,
           host: action.payload,
+          time4Update: new Date(),
         };
       },
        

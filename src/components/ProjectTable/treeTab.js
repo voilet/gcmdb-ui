@@ -1,4 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
+import { routerRedux } from 'dva/router';
+
+
 import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select, Switch } from 'antd';
 import styles from './index.less';
 
@@ -199,6 +202,18 @@ class TreeTab extends PureComponent {
     }
   }
 
+  ToHostTable(pid) {
+    console.log("ToHostTable", this.props)
+    const { dispatch, match} = this.props; 
+    dispatch(
+        routerRedux.push(
+            {
+                pathname: '/resource/hardware/host/list',
+                query:{projectid: pid}
+            }
+    ));
+  }
+
 
   render() {
     
@@ -230,25 +245,29 @@ class TreeTab extends PureComponent {
         width:'120px',
       },
       {
-        title: '节点数',
-        dataIndex: 'host_nodes',
-        key:'host_nodes',
-        width:'120px',
-        render: (text, record) => this.renderColumns(text, record, 'host_nodes'),
-      },
-      {
         title: 'IP地址',
         dataIndex: 'hostsip',
         key:'hostsip',
         width:'200px',
-        render: (text, record) => this.renderColumns(text, record, 'hostsip'),
-      },
-      {
-        title: '服务状态',
-        dataIndex: 'status',
-        key:'status',
-        width:'150px',
-        render: (text, record) => this.renderColumns(text, record, 'status'),
+        render: (text, record) => {
+          console.log("host ip record",record)
+          const divStyle = {
+            color: 'red',
+            cursor: 'pointer',
+            fontFamily: 'Verdana',
+            WebkitTransition: 'all', // note the capital 'W' here
+            msTransition: 'all' // 'ms' is the only lowercase vendor prefix
+          };
+
+          return(
+            <span onClick={() => this.ToHostTable(record.project_id)} style={divStyle }>
+             {  record.hostsip.map(ip=>{
+              return <div> {ip} </div>
+            })}
+            </span>
+            
+          )
+        },
       },
       {
         title: '运行模式',
