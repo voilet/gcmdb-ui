@@ -20,7 +20,7 @@ import {
 import styles from './index.less';
 //import HostDetail from './hostDetail'
 import ModifyPw from './ModifyPw';
-import ShowPw from './ShowPw';
+import ShowPw from './showPw';
 
 const { Option } = Select;
 const FormItem = Form.Item;

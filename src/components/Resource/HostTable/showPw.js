@@ -1,5 +1,6 @@
-import { Form, Modal, Input } from 'antd';
+import { Form, Modal, Input, Button } from 'antd';
 import React, { PureComponent, Fragment } from 'react';
+import { connect } from 'dva';
 
 const FormItem = Form.Item;
 const formItemLayout = {
@@ -11,13 +12,23 @@ const formItemLayout = {
   },
 };
 
-class showPw extends PureComponent {
+@connect(props => props)
+class ShowPw extends PureComponent {
   state = {
     visible: false,
     confirmDirty: false,
   };
 
-  showModal = _ => {
+  showModal = id => {
+    {
+      console.log('xxxx', this.props);
+    }
+
+    this.props.dispatch({
+      type: 'gdevice/queryHostPassword',
+      payload: id,
+    });
+
     this.setState({
       visible: true,
     });
@@ -38,12 +49,12 @@ class showPw extends PureComponent {
   };
 
   render() {
-    console.log('showPw', this.props.data);
+    console.log('ShowPw', this.props.data);
     const { visible } = this.state;
     const { form: { getFieldDecorator }, data } = this.props;
     return (
       <span>
-        <a onClick={this.showModal}>查看密码</a>
+        <Button onClick={() => this.showModal(data.ID)}>查看密码 </Button>
         <Modal
           visible={visible}
           title="查看密码"
@@ -61,7 +72,7 @@ class showPw extends PureComponent {
             </FormItem>
             <FormItem {...formItemLayout} label="密码:">
               <font size="6" color="blue">
-                {passwd.data ? passwd.data.password : '查询失败'}{' '}
+                {data.password ? data.password : '查询失败'}{' '}
               </font>
             </FormItem>
           </Form>
@@ -71,4 +82,4 @@ class showPw extends PureComponent {
   }
 }
 
-export default Form.create()(showPw);
+export default Form.create()(ShowPw);
