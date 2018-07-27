@@ -47,14 +47,30 @@ export default class TableTree extends PureComponent {
     });
   }
   
+   getParentKey = (key, tree) => {
+    let parentKey;
+    for (let i = 0; i < tree.length; i++) {
+      const node = tree[i];
+      if (node.children) {
+        if (node.children.some(item => item.key === key)) {
+          parentKey = node.key;
+        } else if (this.getParentKey(key, node.children)) {
+          parentKey = this.getParentKey(key, node.children);
+        }
+      }
+    }
+    return parentKey;
+  };
+
   onChange = (e) => {
     const value = e.target.value;
-    const expandedKeys = dataList.map((item) => {
+    const expandedKeys = this.props.gappmanage.treedata.data.map((item) => {
       if (item.key.indexOf(value) > -1) {
-        return getParentKey(item.key, gData);
+        return this.getParentKey(item.key, this.props.gappmanage.treedata.data);
       }
       return null;
     }).filter((item, i, self) => item && self.indexOf(item) === i);
+    
     this.setState({
       expandedKeys,
       searchValue: value,
@@ -120,6 +136,7 @@ export default class TableTree extends PureComponent {
 
 
     const loop = data => data.map((item) => {
+
       const index = item.title.indexOf(searchValue);
       const beforeStr = item.title.substr(0, index);
       const afterStr = item.title.substr(index + searchValue.length);

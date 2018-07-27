@@ -598,7 +598,6 @@ export default class HostDetail extends Component {
                   {getFieldDecorator('eth2', {
                     rules: [
                       {
-                        required: true,
                         message: '请输入ip地址!',
                       },
                     ],

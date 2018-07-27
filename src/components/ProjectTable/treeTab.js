@@ -34,12 +34,7 @@ class TreeTab extends PureComponent {
     console.log("nextProps.treeTabdata.data",nextProps.treeTabdata.data)
 
     this.setState({
-      data: nextProps.treeTabdata.data.map((obj)=>{
-        if(obj.selectStatus == undefined){
-          obj.selectStatus=true
-        }
-        return obj;
-      })
+      data: nextProps.treeTabdata.data
     })
     
   }

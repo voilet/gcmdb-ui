@@ -113,7 +113,7 @@ export default class HostList extends PureComponent {
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const {dispatch} = this.props;
     const {formValues} = this.state;
-    console.log(pagination, filtersArg, sorter)
+     
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = {...obj};
@@ -131,10 +131,12 @@ export default class HostList extends PureComponent {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
 
-    // dispatch({
-    //   type: 'ghardware/queryHardwareComponents',
-    //   payload:`cpu`
-    // });
+     dispatch({
+        type: 'gdevice/queryHost',  
+        payload: params
+      });
+
+  
   }
  
   handleSelectRows = (rows) => {
@@ -181,7 +183,7 @@ handleMenuClick = (e) => {
   const {selectedRows} = this.state;
 
   if (!selectedRows) return;
-  console.log(selectedRows)
+ 
   switch (e.key) {
     case 'remove':
       dispatch({
