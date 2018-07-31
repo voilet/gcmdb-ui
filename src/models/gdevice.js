@@ -4,10 +4,18 @@ import {
     queryUser,queryOfflineHosts,
     modifyHostPassword,
     queryHostsByPid,
+    searchOnlineHost,
+    searchOfflineHost
     } from '../services/ResourceMangementAPI/Hardware/HardwareService'
-  import {message} from 'antd'
+  import {notification} from 'antd'
   
-  
+  const openNotificationWithIcon = (type,data) => {
+    notification[type]({
+      message: 'Notification Title',
+      description: data,
+    });
+  };
+
   export default {
     namespace: 'gdevice',
   
@@ -52,7 +60,7 @@ import {
             payload: response,
           });
           } else {
-            message.error(response.data)
+            openNotificationWithIcon('error',response.msg)
         }
       },
       //查询用户密码queryHostPassword
@@ -64,7 +72,7 @@ import {
             payload: response,
           });
           } else {
-            message.error(response.data)
+            openNotificationWithIcon('error',response.msg)
         }
       },
 
@@ -84,7 +92,7 @@ import {
             payload: response,
           });
           } else {
-            message.error(response.data)
+            openNotificationWithIcon('error',response.msg)
         }
       },
 
@@ -96,7 +104,7 @@ import {
             payload: response,
           });
           } else {
-            message.error(response.data)
+            openNotificationWithIcon('error',response.msg)
         }
       },
     
@@ -151,9 +159,35 @@ import {
             payload: response,
           });
           } else {
-            message.error(response.data)
+            openNotificationWithIcon('error',response.msg)
         }
       },
+      //搜索主机
+      *searchOnlineHost({ payload }, { call, put }) {
+        const response = yield call(searchOnlineHost, payload) 
+        if (response.status  == 200) {
+          yield put({
+            type: 'hostinfo',
+            payload: response,
+          });
+          } else {
+            openNotificationWithIcon('error',response.msg)
+        }
+      },
+
+    //搜索线下主机
+      *searchOfflineHost({ payload }, { call, put }) {
+      const response = yield call(searchOfflineHost, payload) 
+      if (response.status  == 200) {
+        yield put({
+          type: 'offlinehost',
+          payload: response,
+        });
+        } else {
+          openNotificationWithIcon('error',response.msg)
+      }
+    },
+  
 
   
       //查询主机详细信息
@@ -165,9 +199,10 @@ import {
             payload: response,
           });
           } else {
-            message.error(response.data)
+            openNotificationWithIcon('error',response.msg)
         }
       },
+
       *holdPanes({ payload }, { put }) {
         yield put({
           type: 'holdPanes',

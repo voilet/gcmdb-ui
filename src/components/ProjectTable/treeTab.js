@@ -288,34 +288,7 @@ class TreeTab extends PureComponent {
           const { editable,deleteable } = record;
           return (
           <div className="editable-row-operations">
-              {
-              !deleteable && (editable ?
-                  <span>
-                  <a onClick={() => this.save(record.ID)}>保存</a>
-                  <Divider type="vertical" />
-                  <Popconfirm title="确定取消?" onConfirm={() => this.cancel(record.ID)}>
-                      <a>取消</a>
-                  </Popconfirm>
-                  </span>
-                  : 
-                  <span>
-                  <a onClick={() => this.edit(record.ID)}>编辑</a>
-                  </span>)
-              }
-               {
-               !editable && (deleteable ?
-                  <span>
-                  <Popconfirm title="确定删除?" onConfirm={() => this.confirmdelete(record.ID)}>
-                      <a>提交</a>
-                  </Popconfirm>
-                  <Divider type="vertical" />
-                  <a onClick={() => this.canceldelete(record.ID)}>取消</a>
-                  </span>
-                  : 
-                  <span style={{marginLeft: 10}}>
-                  <a onClick={() => this.askdelete(record.ID)}>删除</a>
-                  </span>)
-              }
+             
           </div>
           );
       },

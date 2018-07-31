@@ -267,3 +267,26 @@ export async function modifyHost(params,id) {
 }
 
 
+
+//搜索线上主机
+export async function searchOnlineHost(params) {
+  return request(`/v1/assets/hardware/host/searchbycondition/`, {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
+
+//搜索已下线主机
+export async function searchOfflineHost(params) {
+  return request(`/v1/assets/hardware/host/searchbycondition/`, {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}

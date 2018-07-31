@@ -229,8 +229,35 @@ handleMenuClick = (e) => {
     ));
   }
 
+
+  handleSearch = () => {
+    const form = this.props.form;
+    form.validateFields((err, values) => {
+      if (!err) {
+        const fields = {
+          ipadds: form.getFieldValue('ipadds') ? form.getFieldValue('ipadds') : '',
+          fqdn: form.getFieldValue('fqdn') ? form.getFieldValue('fqdn') : '',
+          status: form.getFieldValue('status') ? form.getFieldValue('status') : '',
+          sn: form.getFieldValue('serialnumber') ? form.getFieldValue('serialnumber') : '',
+          idctitle:form.getFieldValue('idc') ? form.getFieldValue('idc') : '',
+          equipment_type: form.getFieldValue('equipment_type') ? form.getFieldValue('equipment_type') : '',
+          assets_number: form.getFieldValue('assets_number') ? form.getFieldValue('assets_number') : '',
+          osversion: form.getFieldValue('osversion') ? form.getFieldValue('osversion') : '',
+          search_target: '1'
+        }
+  
+        this.props.dispatch({
+          type: 'gdevice/searchOfflineHost',
+          payload:  fields,
+        }); 
+  
+      }
+    })
+  }
+
   renderSimpleForm() {
     const { getFieldDecorator } = this.props.form;
+
     return (
       <Form onSubmit={this.handleSearch}>
         <Row  gutter={24}>
@@ -249,13 +276,9 @@ handleMenuClick = (e) => {
             <FormItem label="主机状态"  {...formItemLayout} >
                 {getFieldDecorator('status')(
                   <Select placeholder="请选择" style={{ width: '100%' }}>
-                    <Option value="0">已上线</Option>
+                    <Option value="0">运行中</Option>
                     <Option value="1">已关机</Option>
-                    <Option value="2">运行中</Option>
-                    <Option value="3">已下线</Option>
-                    <Option value="4">异常</Option>
-                    <Option value="5">报废</Option>
-                    <Option value="6">装机中</Option>
+                    <Option value="3">异常中</Option>
                   </Select>
                 )}
               </FormItem>
@@ -282,6 +305,11 @@ handleMenuClick = (e) => {
 
   renderAdvancedForm() {
     const { getFieldDecorator } = this.props.form;
+   // console.log("this.props.gidc.idc.data",this.props.gidc.idc.data)
+    
+    const idcOptions = this.props.gidc.idc.data.map(post => {
+      return <Option key={post.ID} value={post.idc_name} >{post.idc_name}</Option>
+    })
     return (
       <Form onSubmit={this.handleSearch}>
         <Row >
@@ -299,13 +327,10 @@ handleMenuClick = (e) => {
             <FormItem label="主机状态" {...formItemLayout}>
               {getFieldDecorator('status')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">已上线</Option>
-                  <Option value="1">已关机</Option>
-                  <Option value="2">运行中</Option>
-                  <Option value="3">已下线</Option>
-                  <Option value="4">异常</Option>
-                  <Option value="5">已过保</Option>
-                  <Option value="6">装机中</Option>
+                    <Option value="0">运行中</Option>
+                    <Option value="1">已关机</Option>
+                    <Option value="3">异常中</Option>
+                    <Option value="4">已过保</Option>
                 </Select>
               )}
             </FormItem>
@@ -314,37 +339,40 @@ handleMenuClick = (e) => {
         <Row>
           <Col span={8}>
             <FormItem label="序列号" {...formItemLayout}>
-              {getFieldDecorator('sn')(
-                <DatePicker style={{ width: '100%' }} placeholder="请输入" />
+              {getFieldDecorator('serialnumber')(
+                <Input placeholder="请输入" />
               )}
             </FormItem>
           </Col>
           <Col span={8}>
               <FormItem label='机房' {...formItemLayout}>
-              {getFieldDecorator('fqdn')(<Input placeholder="请输入" />)}
-                {/* {getFieldDecorator(`idc`)(
+                {getFieldDecorator(`idc`)(
                   <Select
+                  mode="tags"
                   style={{ width: '100%' }}
-                    placeholder="请选择"
+                  placeholder="请选择"
                   >
                     {
-                      idcData.map((item)=>{
-                        return (<Option key={item.ID} value={item.ID}>{item.idc_name}</Option>)
-                      })
+                      idcOptions
                     }
                     
                   </Select>
-                )} */}
+                )}
               </FormItem>
           </Col>
           <Col span={8}>
               <FormItem label='硬件类型' {...formItemLayout}>
-                {getFieldDecorator(`ventor_type`)(
+                {getFieldDecorator(`equipment_type`)(
                   <Select
                   style={{ width: '100%' }}
                     placeholder="请选择"
                   >
-                    <Option key='1' value='1'>1</Option>
+                    <Option  value='1'>物理机</Option>
+                    <Option  value='2'>虚拟机</Option>
+                    <Option  value='3'>交换机</Option>
+                    <Option  value='4'>路由器</Option>
+                    <Option  value='5'>防火墙</Option>
+                    <Option  value='6'>存储</Option>
                   </Select>
                 )}
               </FormItem>
@@ -354,21 +382,21 @@ handleMenuClick = (e) => {
         <Row>
           <Col span={8}>
             <FormItem label="资产编号" {...formItemLayout}>
-              {getFieldDecorator('asset_sn')(
-                <DatePicker style={{ width: '100%' }} placeholder="请输入" />
+              {getFieldDecorator('assets_number')(
+                 <Input placeholder="请输入" />
               )}
             </FormItem>
           </Col>
           <Col span={8}>
             <FormItem label="容灾块" {...formItemLayout}>
               {getFieldDecorator('guard')(
-                <DatePicker style={{ width: '100%' }} plasceholder="请输入" />
+                <Input placeholder="请输入" />
               )}
             </FormItem>
           </Col>
           <Col span={8}>
               <FormItem label='操作系统类型' {...formItemLayout}>
-                {getFieldDecorator(`systemos`)(
+                {getFieldDecorator(`osversion`)(
                   <Select placeholder="请选择" style={{ width: '100%' }}>
                       <Option value="1">Centos6.9</Option>
                       <Option value="2">Centos7.2</Option>

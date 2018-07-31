@@ -64,12 +64,15 @@ export default class TableTree extends PureComponent {
 
   onChange = (e) => {
     const value = e.target.value;
-    const expandedKeys = this.props.gappmanage.treedata.data.map((item) => {
-      if (item.key.indexOf(value) > -1) {
-        return this.getParentKey(item.key, this.props.gappmanage.treedata.data);
+    const treedata = this.props.gappmanage.treedata.data
+    const expandedKeys = treedata.map((item) => {
+      if (item.title.indexOf(value) > -1) {
+        // return this.getParentKey(item.title, this.props.gappmanage.treedata.data);
+        return item.key
       }
       return null;
     }).filter((item, i, self) => item && self.indexOf(item) === i);
+    console.log(expandedKeys, 'expandedKeys')
     
     this.setState({
       expandedKeys,

@@ -40,6 +40,13 @@ export default class CabinetList extends PureComponent {
     });
   }
 
+  componentWillUnmount(){
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'gidc/empty',
+    });
+  }
+
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const {dispatch} = this.props;
     const {formValues} = this.state;

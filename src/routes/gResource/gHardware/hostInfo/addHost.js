@@ -261,7 +261,9 @@ export default class HostDetail extends Component {
             stop_guaratee: form.getFieldValue('stop_guaratee')
             ? form.getFieldValue('stop_guaratee').format('YYYY-MM-DD HH:mm:ss')
             : '',
+            hardware_type: form.getFieldValue('hardware_type') ? form.getFieldValue('hardware_type') : '',
             hardware_vendor: form.getFieldValue('hardware_vendor') ? form.getFieldValue('hardware_vendor') : '',
+            
             manufacturer: form.getFieldValue('manufacturer') ? form.getFieldValue('manufacturer') : '',
             cpu_model: form.getFieldValue('cpu_model') ? form.getFieldValue('cpu_model') : '',
             cpuarch: form.getFieldValue('cpuarch') ? form.getFieldValue('cpuarch') : '',
@@ -301,7 +303,7 @@ export default class HostDetail extends Component {
             payload: {
               description: fields,
             },
-          });
+          }); 
 
           message.success('添加成功');
 
@@ -412,7 +414,7 @@ export default class HostDetail extends Component {
              {getFieldDecorator(`proline${k}`, {
                rules: [
                  {
-                   required: true,
+                   requirerequired: true,
                    message: '请选择产品线!',
                  },
                ],

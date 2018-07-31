@@ -79,7 +79,10 @@ export default class HostDetail extends Component {
     title: "",
     panes: [],
     headlist: [],
-    dateStatus: true
+    dateStatus: true,
+    cabinetData:[],
+    idcData:[],
+    BaysData:[],
   };
 
 
@@ -114,19 +117,13 @@ export default class HostDetail extends Component {
   componentWillReceiveProps = nextProps => {
     const { gdevice } = this.props;
     const { panes, headlist } = this.state;
-
-
-
-    console.log('gdevice.hostdetail.props', this.props)
-
-    console.log('gdevice.hostdetail.nextProps', nextProps)
+    console.log("edit componentWillReceiveProps",nextProps)
+   
 
     if (gdevice.hostdetail.data.length) {
 
       const activeKey = `${gdevice.hostdetail.data[0].detail_id}`
       const title = gdevice.hostdetail.data[0].fqdn
-
-      console.log("headlist++++++++++++", headlist)
 
       if (!this.isInArray(headlist, title)) {
         headlist.push(title)
@@ -142,6 +139,7 @@ export default class HostDetail extends Component {
       payload: `?tag=cabinet&id=${value}`,
     });
 
+    console.log("handleIdcChange",this.props.gidc.cabinet)
     this.props.form.setFieldsValue({
       cabinet_id : this.props.gidc.cabinet.data.map(post => {
         return post.title 
@@ -333,7 +331,7 @@ export default class HostDetail extends Component {
       })
       cabinetValue = "请选择"
     } else {
-      cabinetOptions = gidc.cabinet.data.map(post => {
+      cabinetOptions = (gidc.cabinet.data || []).map(post => {
         return <Option key={post.ID} value={post.ID} >{post.title}</Option>
       })
       
@@ -383,13 +381,13 @@ export default class HostDetail extends Component {
                   ],
                 })(
                   <Select placeholder="请选择" style={{ width: '100%' }}>
-                    <Option value="0">已上线</Option>
-                    <Option value="1">已关机</Option>
-                    <Option value="2">运行中</Option>
-                    <Option value="3">已下线</Option>
-                    <Option value="4">异常</Option>
-                    <Option value="5">报废</Option>
-                    <Option value="6">装机中</Option>
+                    <Option key="0" value="0">已上线</Option>
+                    <Option key="1" value="1">已关机</Option>
+                    <Option key="2"  value="2">运行中</Option>
+                    <Option key="3" value="3">已下线</Option>
+                    <Option key="4" value="4">异常</Option>
+                    <Option key="5" value="5">报废</Option>
+                    <Option key="6" value="6">装机中</Option>
                   </Select>
                 )}
               </FormItem>
@@ -690,18 +688,6 @@ export default class HostDetail extends Component {
             <Row>
             <Col span={8}>
               <FormItem label="机器管理员"  {...formItemLayout}>
-                {/* {getFieldDecorator(`user_manger`, {
-                    initialValue:`${information.user}`
-                  })(
-                    
-                    <Select
-                      style={{ width: 200 }}
-                      mode="multiple"
-                      size='default'            
-                    >
-                      {userData}
-                    </Select>
-                  )} */}
                      {getFieldDecorator(`user_manger`,{ initialValue:`${information.user}`})(
                         <Select
                           style={{ width: 200, marginRight: 40 }}

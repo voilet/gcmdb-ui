@@ -59,40 +59,10 @@ export default class cleanHost extends Component {
         type: 'gproline/getProjectLine',
       })
     }
-     
-  //  if (gdevice.hostdetail.data.length > 0 ) {
-  //  if (gdevice.hostdetail.data[0].projectlists ) {
-
-
-  //     this.setState({
-  //       data:(gdevice.hostdetail.data[0].projectlists).map((obj)=>{
-  //         if(obj.selectStatus == undefined){
-  //           obj.selectStatus=true
-  //         }
-  //         return obj;
-  //       })
-  //     })
-  //  }
-  //  }
-
   }
-
-  // componentWillReceiveProps(nextProps) {
-  //   if(!this.state.hasAdd) {
-  //     console.log("componentWillReceiveProps++++++++++",nextProps.gdevice.hostdetail.data)
-  //     if(nextProps.gdevice.hostdetail.data.length > 0 ){
-     
-  //     } else {
-  //       this.setState({
-  //         data: []
-  //       })
-  //     }
-  //   }
-  // }
 
   componentWillReceiveProps = nextProps => {
     const { gdevice } = nextProps;
-
     if (!isEqual(nextProps.gdevice.hostdetail.time4Update, this.props.gdevice.hostdetail.time4Update)) {
       if (gdevice.hostdetail.data.length) {
         this.setState({

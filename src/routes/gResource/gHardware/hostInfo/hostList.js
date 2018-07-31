@@ -60,7 +60,7 @@ export default class HostList extends PureComponent {
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
+    const {dispatch, location} = this.props;
 
     dispatch({
       type: 'gproline/getProjectLine',  
@@ -80,8 +80,11 @@ export default class HostList extends PureComponent {
     });
 
   
-    if (location.query && location.query.projectid) {
-
+      if (location.query && location.query.projectid) {
+        dispatch({
+          type: 'gdevice/queryHostsByPid',  
+          payload: { projectid: location.query.projectid}
+        });
     } else {
       dispatch({
         type: 'gdevice/queryHost',  
@@ -89,24 +92,6 @@ export default class HostList extends PureComponent {
       });
     }
   }
-
-  componentWillReceiveProps = nextProps => {
-    const { gdevice } = nextProps;
-
-    if (!isEqual(nextProps.gdevice.host.time4Update, this.props.gdevice.host.time4Update)) {
-
-      if (gdevice.host.data.length) {
-        if (location.query && location.query.projectid) {
-          dispatch({
-            type: 'gdevice/queryHostsByPid',  
-            payload:`?currentPage=${1}&pageSize=${40}&projectid=${location.query.projectid}`
-          });
-        }
-      }
-    }
-  }
-  
-
 
 
 
@@ -262,45 +247,35 @@ handleMenuClick = (e) => {
   }
 
   handleSearch = () => {
-    const fields = {
-      sn: form.getFieldValue('serialnumber') ? form.getFieldValue('serialnumber') : '',
-      eth1: form.getFieldValue('ipadds') ? form.getFieldValue('ipadds') : '',
-      eth2: form.getFieldValue('eth2') ? form.getFieldValue('eth2') : '',
-      eth3: form.getFieldValue('eth3') ? form.getFieldValue('eth3') : '',
-      eth4: form.getFieldValue('eth4') ? form.getFieldValue('eth4') : '',
-      fqdn: form.getFieldValue('fqdn') ? form.getFieldValue('fqdn') : '',
-      internal_ip: form.getFieldValue('internal_ip') ? form.getFieldValue('internal_ip') : '',
-      mac: form.getFieldValue('mac') ? form.getFieldValue('mac') : '',
-      switch_port: form.getFieldValue('switch_port') ? form.getFieldValue('switch_port') : '',
-      start_guaratee: form.getFieldValue('start_guaratee')
-      ? form.getFieldValue('start_guaratee').format('YYYY-MM-DD HH:mm:ss')
-      : '',
-      stop_guaratee: form.getFieldValue('stop_guaratee')
-      ? form.getFieldValue('stop_guaratee').format('YYYY-MM-DD HH:mm:ss')
-      : '',
-      hardware_vendor: form.getFieldValue('hardware_vendor') ? form.getFieldValue('hardware_vendor') : '',
-      manufacturer: form.getFieldValue('manufacturer') ? form.getFieldValue('manufacturer') : '',
-      cpu_model: form.getFieldValue('cpu_model') ? form.getFieldValue('cpu_model') : '',
-      cpuarch: form.getFieldValue('cpuarch') ? form.getFieldValue('cpuarch') : '',
-      num_cpus: form.getFieldValue('num_cpus') ? form.getFieldValue('num_cpus') : '',
-      disk: form.getFieldValue('disk') ? form.getFieldValue('disk') : '',
-      assets_number: form.getFieldValue('assets_number') ? form.getFieldValue('assets_number') : '',
-      service_code: form.getFieldValue('service_code') ? form.getFieldValue('service_code') : '',
-      memory: form.getFieldValue('memory') ? form.getFieldValue('memory') : '',
+    const form = this.props.form;
+    form.validateFields((err, values) => {
+      if (!err) {
+        const fields = {
+          ipadds: form.getFieldValue('ipadds') ? form.getFieldValue('ipadds') : '',
+          fqdn: form.getFieldValue('fqdn') ? form.getFieldValue('fqdn') : '',
+          status: form.getFieldValue('status') ? form.getFieldValue('status') : '',
+          sn: form.getFieldValue('serialnumber') ? form.getFieldValue('serialnumber') : '',
+          idctitle:form.getFieldValue('idc') ? form.getFieldValue('idc') : '',
+          equipment_type: form.getFieldValue('equipment_type') ? form.getFieldValue('equipment_type') : '',
+          assets_number: form.getFieldValue('assets_number') ? form.getFieldValue('assets_number') : '',
+          osversion: form.getFieldValue('osversion') ? form.getFieldValue('osversion') : '',
+          search_target: '0'
+        }
 
-      idc_id: form.getFieldValue('idc_id') ? form.getFieldValue('idc_id') : '',
-      cabinet_id: form.getFieldValue('cabinet_id') ? form.getFieldValue('cabinet_id') : '',
-      bay_id: form.getFieldValue('bay_id') ? form.getFieldValue('bay_id') : '',
+        this.props.dispatch({
+          type: 'gdevice/searchOnlineHost',
+          payload:  fields,
+        }); 
 
-      osversion: form.getFieldValue('osversion') ? form.getFieldValue('osversion') : '',
-      biosversion: form.getFieldValue('biosversion') ? form.getFieldValue('biosversion') : '',
-      agentversion: form.getFieldValue('agentversion') ? form.getFieldValue('agentversion') : '',
-
-      planversion: form.getFieldValue('planversion') ? form.getFieldValue('planversion') : '',
-
-    };
+      }
+    })
   }
  
+
+  handleFormReset = () => {
+    const form = this.props.form;
+    form.resetFields();
+  }
 
   renderSimpleForm() {
     const { getFieldDecorator } = this.props.form;
@@ -326,7 +301,6 @@ handleMenuClick = (e) => {
                     <Option value="0">运行中</Option>
                     <Option value="1">已关机</Option>
                     <Option value="3">异常中</Option>
-                    <Option value="4">已过保</Option>
                   </Select>
                 )}
               </FormItem>
@@ -387,7 +361,7 @@ handleMenuClick = (e) => {
         <Row>
           <Col span={8}>
             <FormItem label="序列号" {...formItemLayout}>
-              {getFieldDecorator('sn')(
+              {getFieldDecorator('serialnumber')(
                 <Input placeholder="请输入" />
               )}
             </FormItem>
@@ -410,7 +384,7 @@ handleMenuClick = (e) => {
           </Col>
           <Col span={8}>
               <FormItem label='硬件类型' {...formItemLayout}>
-                {getFieldDecorator(`ventor_type`)(
+                {getFieldDecorator(`equipment_type`)(
                   <Select
                   style={{ width: '100%' }}
                     placeholder="请选择"
@@ -430,7 +404,7 @@ handleMenuClick = (e) => {
         <Row>
           <Col span={8}>
             <FormItem label="资产编号" {...formItemLayout}>
-              {getFieldDecorator('asset_sn')(
+              {getFieldDecorator('assets_number')(
                  <Input placeholder="请输入" />
               )}
             </FormItem>
@@ -444,7 +418,7 @@ handleMenuClick = (e) => {
           </Col>
           <Col span={8}>
               <FormItem label='操作系统类型' {...formItemLayout}>
-                {getFieldDecorator(`systemos`)(
+                {getFieldDecorator(`osversion`)(
                   <Select placeholder="请选择" style={{ width: '100%' }}>
                       <Option value="1">Centos6.9</Option>
                       <Option value="2">Centos7.2</Option>
