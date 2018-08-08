@@ -11,8 +11,6 @@ import {
   Button,
   Dropdown,
   Menu,
-  DatePicker,
-  message,
   Divider
 } from 'antd';
 
@@ -28,6 +26,8 @@ import styles from './ipresouce.less'
 
 const FormItem = Form.Item;
 const Search = Input.Search;
+const InputGroup = Input.Group
+
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
@@ -109,7 +109,6 @@ export default class ipResourceList extends PureComponent {
     let arr1 = new Array()
   
     if (!isNaN(val.ID)) {
-      console.log("xxxxxxxx")
       arr1.push(val.ID)
     } else {
       arr1 = val
@@ -133,6 +132,21 @@ export default class ipResourceList extends PureComponent {
      }
   }
  
+
+  handleSearch = (value,e) => {
+    //  e.preventDefault();
+    value = value.replace(/\s+/g,"");
+    if ( value.length  > 0 ) {
+      const {dispatch} = this.props;
+      dispatch({
+        type: 'gidc/searchIpResource',
+        payload: {
+          "ipaddress":value,   
+          },
+      });
+    }     
+   }
+
   render() {
     const { gidc } = this.props;
     const {selectedRows,enable} = this.state;
@@ -150,10 +164,30 @@ export default class ipResourceList extends PureComponent {
       </Menu>
     )
 
+    
+
+    const mainSearch = (
+      <div style={{ textAlign: 'center' }}>
+       <InputGroup compact>
+       <Button size="large" style={{color: "blue"}}>ipAddress</Button>
+          <Input.Search
+          placeholder="请输入ip 地址"
+          enterButton="搜索"
+          size="large"
+          onSearch={this.handleSearch}
+          style={{ width: 522 }}
+        />
+        </InputGroup> 
+      </div>
+    );
+
+    
+
     return (
-      <PageHeaderLayout title="ip资源列表">
+      <PageHeaderLayout title="ip资源列表"  content={mainSearch}>
         <Card bordered={false}>
           <div className={styles.tableList}>  
+
           <div style={{height:40}}>
             <AddResource 
             ipclassify = {gidc.ipclassify}
@@ -172,11 +206,9 @@ export default class ipResourceList extends PureComponent {
                   </div>
                 )
               }
-               <Search
-            placeholder="搜索ip"
-            onSearch={value => console.log(value)}
-            enterButton />  
+          
           </div> 
+        
 
             <Divider>  IP资源数据  </Divider>
             <IpTable

@@ -16,6 +16,33 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const { TextArea } = Input;
 
 
+const dataList = [];
+const generateList = (data) => {
+  for (let i = 0; i < data.length; i += 1) {
+    const node = data[i];
+    const { key } = node;
+    dataList.push({ key, title: node.title });
+    if (node.children) {
+      generateList(node.children, node.key);
+    }
+  }
+};
+
+const getParentKey = (key, tree, id) => {
+  let parentKey;
+  for (let i = 0; i < tree.length; i += 1) {
+    const node = tree[i];
+    if (node.children) {
+      if (node.children.some(item => item.key === key)) {
+        parentKey = node.key;
+      } else if (getParentKey(key, node.children)) {
+        parentKey = getParentKey(key, node.children);
+      }
+    }
+  }
+  return parentKey;
+};
+
 @connect((props) => (props))
 
 export default class TableTree extends PureComponent {
@@ -47,39 +74,23 @@ export default class TableTree extends PureComponent {
     });
   }
   
-   getParentKey = (key, tree) => {
-    let parentKey;
-    for (let i = 0; i < tree.length; i++) {
-      const node = tree[i];
-      if (node.children) {
-        if (node.children.some(item => item.key === key)) {
-          parentKey = node.key;
-        } else if (this.getParentKey(key, node.children)) {
-          parentKey = this.getParentKey(key, node.children);
-        }
-      }
-    }
-    return parentKey;
-  };
-
   onChange = (e) => {
-    const value = e.target.value;
     const treedata = this.props.gappmanage.treedata.data
-    const expandedKeys = treedata.map((item) => {
+    const value = e.target.value;
+    generateList(treedata);
+    const expandedKeys = dataList.map((item) => {
       if (item.title.indexOf(value) > -1) {
-        // return this.getParentKey(item.title, this.props.gappmanage.treedata.data);
-        return item.key
+        return getParentKey(item.key, treedata);
       }
       return null;
     }).filter((item, i, self) => item && self.indexOf(item) === i);
-    console.log(expandedKeys, 'expandedKeys')
-    
     this.setState({
       expandedKeys,
       searchValue: value,
       autoExpandParent: true,
     });
   }
+
 
   treeSelectClick = (selectedKey,e) => {
     if (selectedKey.toString().split("-")[0] == "3" && e.selected)

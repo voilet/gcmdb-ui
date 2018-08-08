@@ -177,6 +177,8 @@ export async function queryHosts(params) {
   return request(`/v1/assets/hardware/host/query/${params}`);
 }
 
+
+
 export async function queryHostsByPid(params) {
   return request(`/v1/assets/hardware/host/querybypro`, {
     method: 'POST',

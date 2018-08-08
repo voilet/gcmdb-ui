@@ -3,10 +3,19 @@ import {
   addProvider,queryProvider,modifyProvider,deleteProvider,
   queryCabinet,addCabinet,deleteCabinet,modifyCabinet,
   deleteBay,queryBay,addBay,modifyBay,
-  queryIpResource,addIpResource,modifyIpResource,deleteIpResource,checkIpResource,queryIpClassify
+  queryIpResource,addIpResource,modifyIpResource,deleteIpResource,checkIpResource,queryIpClassify,searchIpResourceAPI,
+  queryCabinetDetail
   } from '../services/ResourceMangementAPI/Idc/IdcService'
-import {message} from 'antd'
+import {notification} from 'antd'
 
+
+
+const openNotificationWithIcon = (type,data) => {
+  notification[type]({
+    message: 'Notification Title',
+    description: data,
+  });
+};
 
 export default {
   namespace: 'gidc',
@@ -28,6 +37,11 @@ export default {
     },
     //机柜
     cabinet: {
+      data: [],
+      pagination: {}
+    },
+    //机柜详情
+    cabinetdetail: {
       data: [],
       pagination: {}
     },
@@ -77,13 +91,14 @@ export default {
           payload: response,
         });
         } else {
-          message.error(response.data)
+          openNotificationWithIcon('error',response.msg)
       }
     },
+
+
     //查询机柜 && 机架 && 机房
     *queryIdcRelation({ payload }, { call, put }) {
       const response = yield call(queryIdcRelation, payload)
-      console.log("queryIdcRelation-=--------------------------",response)
       const payloadObj=payload.substring(payload.indexOf('?') + 1).split('&').map((item) => item.split('=')).reduce((params, pairs) => (params[pairs[0]] = pairs[1] || '', params), {})
       let stateName = ""
       switch(payloadObj.tag)
@@ -104,7 +119,7 @@ export default {
           payload: response,
         });
         } else {
-          message.error(response.data)
+          openNotificationWithIcon('error',response.msg)
       }
     },
     //添加机房
@@ -142,9 +157,24 @@ export default {
             payload: response || [],
           });
         } else {
-          message.error(response.data);
+          openNotificationWithIcon('error',response.msg)
         }
       },
+
+      *queryCabinetDetail({ payload }, { call , put}) {
+        const response =   yield call(queryCabinetDetail, payload);
+ 
+        if (response.status  == 200) {
+          yield put({
+            type: 'cabinetdetailSave',
+            payload: response || [],
+          });
+        } else {
+          openNotificationWithIcon('error',response.msg)
+        }
+      },
+
+      
 
       //添加机柜信息
       *addCabinet({ payload }, { call, put }) {
@@ -181,7 +211,7 @@ export default {
             payload: response || [],
           });
         } else {
-          message.error(response.data);
+          openNotificationWithIcon('error',response.msg)
         }
       },
 
@@ -218,7 +248,7 @@ export default {
             payload: response || [],
           });
         } else {
-          message.error(response.data);
+          openNotificationWithIcon('error',response.msg)
         }
       },
 
@@ -257,7 +287,22 @@ export default {
           payload: response || [],
         });
       } else {
-        message.error(response.data);
+        openNotificationWithIcon('error',response.msg)
+      }
+    },
+
+
+    //搜索IP资源池
+    *searchIpResource({ payload }, { call,put }) {
+      
+      const response = yield call(searchIpResourceAPI, payload) 
+      if (response.status  == 200) {
+        yield put({
+          type: 'IpResourceSave',
+          payload: response || [],
+        });
+      } else {
+        openNotificationWithIcon('error',response.msg)
       }
     },
 
@@ -271,7 +316,7 @@ export default {
           payload: response || [],
         });
       } else {
-        message.error(response.data);
+        openNotificationWithIcon('error',response.msg)
       }
     },
 
@@ -285,7 +330,7 @@ export default {
 
         });
       } else {
-        message.error(response.data);
+        openNotificationWithIcon('error',response.msg)
       }
     },
 
@@ -333,7 +378,7 @@ export default {
       return {
         ...state,
         idc: action.payload,
-      };
+      }
     },
 
     providerSave(state,action) {
@@ -344,7 +389,6 @@ export default {
     },
 
     cabinetSave(state,action) {
-      debugger
       if (action.payload.data === null ) {
         action.payload.data = []
       }
@@ -353,6 +397,26 @@ export default {
         cabinet: action.payload
       }
     },
+
+    cabinetdetailSave(state,action) {
+    
+      
+      if (action.payload.data === null ) {
+        action.payload.data = []
+      }
+      if (action.payload.data !== null && action.payload.data.bay_details === null) {
+        action.payload.data.bay_details = []
+      }
+
+      return {
+        ...state,
+        cabinetdetail: {
+          ...action.payload.data,
+          time4Update: new Date()
+        }
+      }
+    },
+
     querySave(state,action) {
       if (action.payload.data === null ) {
         action.payload.data = []

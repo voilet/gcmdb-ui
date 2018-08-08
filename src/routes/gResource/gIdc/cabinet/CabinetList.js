@@ -15,10 +15,11 @@ import {
 
 import IdcTable from '../../../../components/Resource/Cabinet';
 import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
-import Addcabinet from './addcabinet'
+import Addcabinet from './addCabinet'
 import styles from './cabinet.less'
 
 const FormItem = Form.Item;
+const InputGroup = Input.Group
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
@@ -114,29 +115,40 @@ export default class CabinetList extends PureComponent {
     )
 
     return (
-      <PageHeaderLayout title="机柜管理">
+  
         <Card bordered={false}>
           <div className={styles.tableList}>  
-            <div style={{height:40}}>
+            <div style={{height:40, textAlign:"center",}}>
               <Addcabinet
                 cabinet={gidc.cabinet}
                 dispatch={this.props.dispatch}             
               />
+               <InputGroup compact>
+          <Button size="large" style={{color: "blue"}}>机柜名称</Button>
+              <Input.Search
+              placeholder="请输入机柜名称"
+              enterButton="搜索"
+              size="large"
+              onSearch={this.handleSearch}
+              style={{ width: 522 }}
+            />
+        </InputGroup> 
     
             </div> 
             <Divider>  机柜数据  </Divider>
             <IdcTable
               //selectedRows={selectedRows}
               //loading={ruleLoading}
+              dispatch = {this.props.dispatch}
               cabinet={gidc.cabinet}
               handleSaveData = {this.handleSaveData}
               handleDeleteData = {this.handleDeleteData}
               //handleSelectRows={this.handleSelectRows}
-              //onChange={this.handleStandardTableChange}
+              onChange={this.handleStandardTableChange}
             />
           </div>
         </Card>
-      </PageHeaderLayout>
+    
     );
   }
 }

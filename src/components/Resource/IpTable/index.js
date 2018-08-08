@@ -157,9 +157,14 @@ class IpTable extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     // clean state
-    if (nextProps.ipresource.data) {
+    console.log("Iptable componentWillReceiveProps",nextProps)
+    if (nextProps.ipresource.data.ipresourcelist) {
       this.setState({
         data: nextProps.ipresource.data.ipresourcelist,
+      });
+    } else {
+      this.setState({
+        data: nextProps.ipresource.data,
       });
     }
   }
@@ -334,6 +339,7 @@ class IpTable extends PureComponent {
     };
 
     this.cacheData = this.state.data.map(item => ({ ...item }));
+
     return (
       <div className={styles.standardTable}>
         <Table

@@ -100,10 +100,26 @@ export const getRouterData = (app) => {
       component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/ipresource/ipResourceList')),
     },
 
-
-     //机柜列表
-     '/resource/idc/cabinet': {
+      //机柜列表
+    '/resource/idc/cabinet': {
+      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/cabinet/cabinetHeader')),
+    },
+   
+     '/resource/idc/cabinet/list': {
       component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/cabinet/CabinetList')),
+    },
+
+    '/resource/idc/cabinet/detail': {
+      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/cabinet/BayDetail')),
+    },
+
+    //编辑机柜列表
+    '/resource/idc/cabinet/edit': {
+      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/cabinet/editCabinet')),
+    },
+    //添加机柜列表
+    '/resource/idc/cabinet/add': {
+      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/cabinet/addCabinet')),
     },
 
 

@@ -24,7 +24,16 @@ import {
   updateprojectTree
 } from '../services/ProjectMangementAPI/Project/Project'
 
-import { message } from 'antd'
+import {notification} from 'antd'
+
+
+
+const openNotificationWithIcon = (type,data) => {
+  notification[type]({
+    message: 'Error',
+    description: data,
+  });
+};
 
 export default {
   namespace: 'gproline',
@@ -115,7 +124,12 @@ export default {
 
      //删除产品列表
      *deleteProject({ payload }, { call, put }) {
-      yield call(deleteProject, payload);
+       
+
+      const response = yield call(deleteProject, payload);
+      if (response.status != 200 ) {
+        openNotificationWithIcon('error',response.msg)
+      }
       yield put({ type: 'reloadProject' })
     },
 
@@ -160,7 +174,7 @@ export default {
     const response = yield call(addProjectGroup, payload.description);
     
     if (response.status == "200") {
-      message.success('提交成功');
+      openNotificationWithIcon('success',response.msg)
     }
     yield put({ type: 'reloadProjectGroup' })
   },
@@ -174,9 +188,9 @@ export default {
   //删除项目组列表
   *deleteProjectgroup({ payload }, { call, put }) {
     const response = yield call(deleteProjectGroup, payload);
-    if (response.status == "500")
+    if (response.status != 200)
     {
-      message.error(response.msg);
+      openNotificationWithIcon('error',response.msg)
     } 
 
     yield put({ type: 'reloadProjectGroup' })

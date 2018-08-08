@@ -66,6 +66,7 @@ import {
       //查询用户密码queryHostPassword
       *queryHostPassword({ payload }, { call, put }) {
         const response = yield call(queryHostPassword, payload) 
+        console.log("queryHost",response)
         if (response.status  == 200) {
           yield put({
             type: 'passwordSave',
@@ -86,6 +87,7 @@ import {
       //查询主机基础信息
       *queryHost({ payload }, { call, put }) {
         const response = yield call(queryHosts, payload) 
+        console.log("queryHost",response)
         if (response.status  == 200) {
           yield put({
             type: 'hostinfo',

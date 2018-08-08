@@ -4,6 +4,7 @@ import { Link } from 'dva/router';
 import { Checkbox, Alert, Icon } from 'antd';
 import Login from 'components/Login';
 import styles from './Login.less';
+import globalLogin from '../../utils/global';
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
 
@@ -31,9 +32,6 @@ export default class LoginPage extends Component {
           type,
         },
       });
-      this.props.dispatch({
-        type: 'user/fetchCurrent',
-      });
     }
   };
 
@@ -46,6 +44,13 @@ export default class LoginPage extends Component {
   renderMessage = content => {
     return <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />;
   };
+
+  componentDidMount () {
+    
+    if(globalLogin.getCookie('isLogin') === '1') {
+      location.hash = '#/resource/idc/idclist'
+    }
+  }
 
   render() {
     const { login, submitting } = this.props;

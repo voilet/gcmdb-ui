@@ -14,7 +14,7 @@ export default {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
-      console.log("response",response)
+    
       yield put({
         type: 'changeLoginStatus',
         payload: response,
@@ -22,11 +22,12 @@ export default {
       // Login successfully
       if (response.status === '200') {
         console.log(globalLogin, 'globalLogin')
-        globalLogin.setCookie('isLogin', true);
+        globalLogin.setCookie('isLogin', '1');
         reloadAuthorized();
-        yield put(routerRedux.push('/'));
+        yield put(routerRedux.push('/resource/idc/idclist'));
       }
     },
+    
     *logout(_, { put, select }) {
       try {
         // get location pathname
@@ -44,7 +45,7 @@ export default {
           },
         });
         reloadAuthorized();
-        globalLogin.setCookie('isLogin', false);
+        globalLogin.setCookie('isLogin','');
         yield put(routerRedux.push('/user/login'));
       }
     },

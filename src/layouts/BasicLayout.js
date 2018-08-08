@@ -91,6 +91,12 @@ enquireScreen(b => {
 // }))
 
 class BasicLayout extends React.PureComponent {
+  constructor(...args) {
+    super(...args)
+    
+    
+  }
+
   static childContextTypes = {
     location: PropTypes.object,
     breadcrumbNameMap: PropTypes.object,
@@ -105,7 +111,13 @@ class BasicLayout extends React.PureComponent {
       breadcrumbNameMap: getBreadcrumbNameMap(getMenuData(), routerData),
     };
   }
+  
   componentDidMount() {
+    if (!globalLogin.getCookie('isLogin')) {
+      location.hash = '#/user/login'
+      return 
+    }
+    
     this.enquireHandler = enquireScreen(mobile => {
       this.setState({
         isMobile: mobile,
@@ -203,7 +215,7 @@ class BasicLayout extends React.PureComponent {
 
   render() {
     const {
-      currentUser,
+      currentUser = {},
       collapsed,
       fetchingNotices,
       notices,
@@ -212,10 +224,12 @@ class BasicLayout extends React.PureComponent {
       location,
     } = this.props;
 
-    console.log('in baseiclayout', this.props)
+    console.log('123 in baseiclayout', this.props)
     console.log('global', globalLogin)
 
     const bashRedirect = this.getBashRedirect();
+
+  
     
     const layout = (
       <Layout>
@@ -302,7 +316,7 @@ class BasicLayout extends React.PureComponent {
 
     {console.log("globalLogin.getCookie('isLogin')",globalLogin.getCookie('isLogin'))}
 
- 
+   
     
     return (
       
@@ -320,14 +334,11 @@ class BasicLayout extends React.PureComponent {
               return <Redirect to="/exception/403" />; 
             }
             // 在此可以检验登录状态，强制要求用户先登录
-            return globalLogin.getCookie('isLogin')
-              ?   
-              <DocumentTitle title={this.getPageTitle()}>
-              <ContainerQuery query={query}>
-               { params => <div className={classNames(params)}> {layout} </div> }
-              </ContainerQuery>
+            return  <DocumentTitle title={this.getPageTitle()}>
+                <ContainerQuery query={query}>
+                { params => <div className={classNames(params)}> {layout} </div> }
+                </ContainerQuery>
                </DocumentTitle>
-              : <Redirect to="/user/login" />;
           }}
        />
        </Fragment>

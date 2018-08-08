@@ -37,6 +37,15 @@ const menuData = [{
       },{
         name: '机柜管理',
         path: 'cabinet',
+        children:[
+          {
+            name: '机柜列表',
+            path: 'list',
+          },{
+            name: '添加机柜',
+            path: 'add',
+          }
+        ]
       }
     ]
   },{

@@ -86,9 +86,10 @@ export default class HostList extends PureComponent {
           payload: { projectid: location.query.projectid}
         });
     } else {
+      console.log("componentDidMount queryhost")
       dispatch({
         type: 'gdevice/queryHost',  
-        payload:`?currentPage=${1}&pageSize=${40}`
+        payload: ""
       });
     }
   }

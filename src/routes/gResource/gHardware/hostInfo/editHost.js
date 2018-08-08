@@ -318,8 +318,8 @@ export default class HostDetail extends Component {
     const { gidc, gproline,gdevice,ghardware} = this.props
     let cabinetOptions,cabinetValue
 
-    console.log("gidc",gidc)
-
+    console.log("Xtabcontent this.props",this.props)
+    console.log("XXXXXXXXXXXXXXXXXXXXXXXX" )
     const idcOptions = this.props.gidc.idc.data.map(post => {
       return <Option key={post.ID} value={post.ID} >{post.title}</Option>
     })

@@ -94,6 +94,13 @@ export async function queryCabinet() {
   return request('/v1/assets/idc/querycabinet');
 }
 
+
+//查询机柜详情
+export async function queryCabinetDetail(params) {
+  return request(`/v1/assets/idc/querycabinetdetail/${params}`);
+}
+
+
 //添加机柜
 export async function addCabinet(params) {
   return request('/v1/assets/idc/addcabinet', {
@@ -169,6 +176,20 @@ export async function deleteBay(params) {
 export async function queryIpResource() {
   return request('/v1/assets/idc/queryipresource');
 }
+
+
+//搜索ip
+export async function searchIpResourceAPI(params) {
+  return request(`/v1/assets/idc/searchipresource`, {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
+
 
 //添加ip
 export async function addIpResource(params) {
