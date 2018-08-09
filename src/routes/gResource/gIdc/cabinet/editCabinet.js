@@ -59,16 +59,14 @@ export default class editCabinet extends PureComponent {
     dispatch({
       type: 'gidc/queryIDC',
     });
+    uuid = this.props.gidc.cabinetdetail.bay_max_id+1;
   }
   }
 
-  componentDidMount() {
  
-    uuid = this.props.gidc.cabinetdetail.bay_max_id;
-  }
 
   componentWillReceiveProps(nextProps) {
-
+   
     if (!isEqual(nextProps.gidc.cabinetdetail.time4Update, this.props.gidc.cabinetdetail.time4Update)) {
 
       if ( nextProps.gidc.cabinetdetail) {
@@ -81,7 +79,7 @@ export default class editCabinet extends PureComponent {
         if (nextProps.gidc.cabinetdetail.bay_details)  {
           this.setState({
             baydata: nextProps.gidc.cabinetdetail.bay_details.map((object)=>{
-              object.checked = false
+              object.checked = true
 
               return object
         }),
@@ -99,6 +97,7 @@ export default class editCabinet extends PureComponent {
   }
 
   handleSubmit = (e) => {
+    const { dispatch, location } = this.props;
 
     const form = this.props.form;
     const {baydata} = this.state
@@ -114,18 +113,19 @@ export default class editCabinet extends PureComponent {
           'idcid':form.getFieldValue('idcid')? form.getFieldValue('idcid') : "",
           'cableport':form.getFieldValue('cableport')? form.getFieldValue('cableport') : "",
           'capacity':form.getFieldValue('capacity')? form.getFieldValue('capacity') : "",
-          'status': this.state.haspower,
+          'status': !!this.state.haspower? "1": "0",
           'bay_details':JSON.stringify(baydata)
          }
 
-        this.props.dispatch({
-          type: 'gidc/addCabinet',
+     
+        dispatch({
+          type: 'gidc/modifyCabinet',
           payload: {
-            description: fields,
+            ID: location.query.id,    
+            description:  fields,
           },
         });
 
-        form.resetFields();
       };
     });
   
@@ -136,13 +136,14 @@ export default class editCabinet extends PureComponent {
     console.log("uuid",uuid)
     const { baydata } = this.state;
     const newData = {
-      "ID": uuid++,
+      "ID": ++uuid,
       "bay_name": "bay"+ count++,
       "host_ip": "空 (无法直接修改,请在主机列表关联修改)",
       "host_sn": "空",
       "height": "2U",
       "height_id": 2,
       "status": false,
+      "checked":false
     }
 
     
@@ -338,6 +339,7 @@ export default class editCabinet extends PureComponent {
      render: (text, record) => {
  
           const { status } = record;
+          console.log(status)
           return(
             <div>
             <Switch

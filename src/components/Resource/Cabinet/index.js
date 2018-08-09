@@ -1,4 +1,4 @@
-import { Table, Popconfirm,notification, Divider } from 'antd';
+import { Table, Popconfirm, Divider } from 'antd';
 import React, { PureComponent } from 'react';
 import { routerRedux } from 'dva/router';
 
@@ -86,11 +86,7 @@ class CabTable extends PureComponent {
     console.log("nextProps.cabinet",nextProps.cabinet)
     if (nextProps.cabinet.data) {
       this.setState({
-        data: nextProps.cabinet.data,
-        cabinetdata:
-          nextProps.cabinet.data.cabinetdata == undefined
-            ? []
-            : nextProps.cabinet.data.cabinetdata
+        data: nextProps.cabinet.data
       });
     }
   }
@@ -102,9 +98,12 @@ class CabTable extends PureComponent {
 
  
   confirmdelete(key) {
-    const { cabinetdata } = this.state;
-    const newData = [...cabinetdata];
+
+    const { data } = this.state;
+    const newData = [...data];
+
     const target = newData.filter(item => key === item.ID)[0];
+
     if (target) {
       const index = newData.indexOf(target);
       if (index > -1) {
@@ -112,10 +111,21 @@ class CabTable extends PureComponent {
       }
       target.tag = false;
 
-      this.setState({ cabinetdata: newData });
+      
+
+      this.setState({ data: newData });
       this.cacheData = newData.map(item => ({ ...item }));
-      this.props.handleDeleteData(target);
+      this.handleDelete(key);
     }
+  }
+
+  handleDelete = (key) => {
+    console.log("key",key)
+    const {dispatch} = this.props
+    dispatch({
+      type: 'gidc/deleteCabinet',
+      payload: key,
+    });   
   }
 
   edit(key) {    
@@ -154,8 +164,7 @@ class CabTable extends PureComponent {
 
 
      console.log("this.state.data",this.state.data)
-    // this.cacheData =
-    //   data.cabinetdata == undefined ? [] : this.state.data.map(item => ({ ...item }));
+
 
     return (
       <div className={styles.standardTable}>

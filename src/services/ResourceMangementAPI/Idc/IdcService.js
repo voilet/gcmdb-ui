@@ -113,8 +113,8 @@ export async function addCabinet(params) {
 }
 
 //修改机柜
-export async function modifyCabinet(params) {
-  return request(`/v1/assets/idc/modifycabinet/${params.ID}`, {
+export async function modifyCabinet(ID,params) {
+  return request(`/v1/assets/idc/modifycabinet/${ID}`, {
     method: 'POST',
     body: {
       ...params,
@@ -125,7 +125,7 @@ export async function modifyCabinet(params) {
 
 //删除机柜
 export async function deleteCabinet(params) {
-  return request(`/v1/assets/idc/deletecabinet/${params.ID}`, {
+  return request(`/v1/assets/idc/deletecabinet/${params}`, {
     method: 'POST',
     body: {
       ...params,

@@ -15,9 +15,6 @@ import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
 import { getRoutes } from '../../../../utils/utils';
 
 
-
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
-
 @connect((props) => (props))
 
 
@@ -68,6 +65,13 @@ export default class cabinetHeader extends PureComponent {
   handleTabChange = key => {
     const { dispatch, match} = this.props;
     switch (key) {
+      case 'list':
+      dispatch(routerRedux.push(`${match.url}/detail`));
+      this.setState({
+        activekey : "list",
+        title: "机柜列表"
+      })
+      break;
       case 'detail':
         dispatch(routerRedux.push(`${match.url}/detail`));
         this.setState({
@@ -97,7 +101,7 @@ export default class cabinetHeader extends PureComponent {
   render() {
     console.log("this.props",this.props)
     const {activekey,title} = this.state;     
-    const { match, routerData, location,loading } = this.props;
+    const { match, routerData} = this.props;
     
     const routes = getRoutes(match.path, routerData);
 
@@ -106,8 +110,13 @@ export default class cabinetHeader extends PureComponent {
     
     const tabList = [
       {
+        key: 'list',
+        tab: '机柜列表',
+      },
+      {
         key: 'add',
         tab: '添加机柜信息',
+        disabled: true,
       },
       {
         key: 'detail',

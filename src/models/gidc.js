@@ -178,19 +178,24 @@ export default {
 
       //添加机柜信息
       *addCabinet({ payload }, { call, put }) {
-        yield call(addCabinet, payload.description);
+        yield call(addCabinet, payload);
         yield put({ type: 'reloadCabinet'})
       },
   
       //删除机柜信息
       *deleteCabinet({ payload }, { call, put }) {
-        yield call(deleteCabinet, payload);
+        response = yield call(deleteCabinet, payload);
+        if (response.status  == 200) {
+          openNotificationWithIcon('success',"删除成功.")
+        } else {
+          openNotificationWithIcon('error',response.msg)
+        }
         yield put({ type: 'reloadCabinet'})
       },
 
       //修改机柜信息
       *modifyCabinet({ payload }, { call, put }) {
-        yield call(modifyCabinet, payload);
+        yield call(modifyCabinet, payload.ID,payload.description);
         yield put({ type: 'reloadCabinet'})
       },
 
@@ -374,11 +379,19 @@ export default {
          relation: action.payload,
       };
     },
-    idcSave(state, action) {
+
+    idcSave(state, action){ 
+      if (action.payload.data === null ) {
+        action.payload.data = []
+      }
       return {
         ...state,
-        idc: action.payload,
+        idc: {
+          ...action.payload,
+          time4Update: new Date()
+        }
       }
+
     },
 
     providerSave(state,action) {
@@ -444,6 +457,7 @@ export default {
         ipcheck: action.payload
       }
     },
+
     empty(state, action){
       return  {
         ...state,
@@ -455,6 +469,9 @@ export default {
         //  ...state.bays,
           data: [],
         },
+        cabinetdetail: {
+          data:[]
+        }
       }
     }
   },
