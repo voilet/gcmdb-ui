@@ -52,9 +52,10 @@ export default class TableTree extends PureComponent {
     autoExpandParent: true,
     selectedKey:[],
     selectedRows: [],
+    treedata:[]
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const {dispatch} = this.props;
     dispatch({
       type: 'gappmanage/getTree',
@@ -66,7 +67,18 @@ export default class TableTree extends PureComponent {
     
   }
 
- 
+  componentWillReceiveProps(nextProps) {
+     
+      if ( nextProps.gappmanage.treedata) {
+        this.setState({
+          treedata: nextProps.gappmanage.treedata.data,
+          hostdata:  nextProps.gappmanage.hostdata.data
+        }) 
+    }
+  }
+
+
+
   onExpand = (expandedKeys) => {
     this.setState({
       expandedKeys,
@@ -75,7 +87,7 @@ export default class TableTree extends PureComponent {
   }
   
   onChange = (e) => {
-    const treedata = this.props.gappmanage.treedata.data
+    const treedata = this.state.treedata
     const value = e.target.value;
     generateList(treedata);
     const expandedKeys = dataList.map((item) => {
@@ -141,13 +153,8 @@ export default class TableTree extends PureComponent {
     //   </Fragment>
     // );
 
-
+    console.log("treedata",this.state.treedata)
     const { searchValue, expandedKeys, autoExpandParent, selectedKey,selectedRows } = this.state;
-    const {gappmanage} = this.props
-    console.log("searchValue+++++++++++",this.props)
-
-
-
 
     const loop = data => data.map((item) => {
 
@@ -173,7 +180,7 @@ export default class TableTree extends PureComponent {
       return <TreeNode 
         key={item.key} title={title} id={item.id} data-key={item.id} />;
     });
-    const treeEl = ''
+
   
     return (
       <Row gutter={24} style={{height:"100%"}}>
@@ -187,7 +194,7 @@ export default class TableTree extends PureComponent {
                 autoExpandParent={autoExpandParent}
                 onSelect={this.treeSelectClick}
               >
-                {loop(gappmanage.treedata.data)}
+                {loop(this.state.treedata)}
               </Tree>
             </div>
           </Card>
@@ -198,7 +205,7 @@ export default class TableTree extends PureComponent {
             <Divider> </Divider>
             <TreeTab 
               selectedKey={selectedKey}
-              treeTabdata = {gappmanage.hostdata}
+              treeTabdata = {this.state.hostdata}
               selectedRows={selectedRows}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

@@ -1,38 +1,17 @@
-import React, { Component } from 'react';
-import { routerRedux } from 'dva/router';
-import { connect } from 'dva';
-import { Card, Badge, Table, Divider, Tabs, Form, Row, Col, Input, Select, Button,Popconfirm ,Icon,message    } from 'antd';
-import DescriptionList from '../../../../components/DescriptionList';
-import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
-import isEqual from 'lodash/isEqual';
+import React, { Component, Fragment } from 'react';
+
+import { Card, Badge, Table, Divider, Form,  Select, Button,Popconfirm     } from 'antd';
 
 import styles from './cleanHost.less';
-import moment from 'moment';
 
-const { Description } = DescriptionList;
 
-const { TextArea } = Input;
-const TabPane = Tabs.TabPane;
-const FormItem = Form.Item;
 const Option = Select.Option;
 
-const formItemLayout = {
-  labelCol: {
-    span: 6,
-  },
-  wrapperCol: {
-    span: 18,
-  },
-};
 
-const dateFormat = 'YYYY/MM/DD';
-const monthFormat = 'YYYY/MM';
-
-let newTabIndex = 0
 
 let uuid = 10000;
 
-@connect((props) => (props))
+
 @Form.create()
 
 export default class cleanHost extends Component {
@@ -41,42 +20,26 @@ export default class cleanHost extends Component {
     totalCallNo: 0,
     data:[],
     selectedLine:false,
-    dataSource:[],
     hasAdd: false
   };
 
 
-  componentDidMount() {
-    //console.log("this.props.location.state+++++++++++",this.props.location.query.id)
-    const { dispatch, location, gdevice } = this.props;
-    if (location.query !== undefined) {
-      dispatch({
-        type: 'gdevice/queryHostDetail',
-        payload: location.query.id
-      });
-     
-      dispatch({
-        type: 'gproline/getProjectLine',
-      })
-    }
-  }
 
-  componentWillReceiveProps = nextProps => {
-    const { gdevice } = nextProps;
-    if (!isEqual(nextProps.gdevice.hostdetail.time4Update, this.props.gdevice.hostdetail.time4Update)) {
-      if (gdevice.hostdetail.data.length) {
-        this.setState({
-          data:(nextProps.gdevice.hostdetail.data[0].projectlists || []).map((obj)=>{          
-            if(obj.selectStatus == undefined){
-              obj.selectStatus=true
-            }
-            return obj;
-          })
-        })
-      }
+  componentDidMount () {
+
+    const { projectlist } = this.props; //父组件传递
+    if (projectlist.length > 0) {
+       this.setState({
+         data: projectlist.map((obj)=> {
+            obj.selectStatus = true  //初始化后不可编辑
+            return obj
+         })
+       })
+
     }
   }
   
+
   handleProjectLine = value => {
     this.props.dispatch({
       type: 'gproline/getProjectGroupbyId',
@@ -103,142 +66,56 @@ export default class cleanHost extends Component {
   };
 
 
-  isInArray = (arr, value) => {
-    for (var i = 0; i < arr.length; i++) {
-      if (value === arr[i]) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-
-
-
-  handleSave = e => {
-    e.preventDefault();
-    const form = this.props.form;
-    const { dateStatus } = this.state;
-
-    form.validateFields((err, values) => {
-      if (!err) {
-          const fields = { };
-  
-          let project = [];
-          for (let i = 0; i < this.state.panes[0].information[0].projectlists.length; i++) {
-            project.push(
-              form.getFieldValue(`project${i}`) ? form.getFieldValue(`project${i}`) : ''
-            );
-          }
-
-          fields.project = project;
-
-          this.props.dispatch({
-            type: 'gdevice/modifyHost',
-            payload: {
-              id: this.props.location.query.id,
-              description: fields,
-            },
-          });
-
-          message.success('修改成功');
- 
-        }
-      })
-    };
-
-
-  reback = () => {
-    const { dispatch, match} = this.props; 
-    let activeKey = this.state.activeKey;
-    const panes = this.state.panes.filter(pane => pane.key !== activeKey);
-    this.setState({ panes });
-
-    dispatch(
-        routerRedux.push(
-            {
-                pathname: '/resource/hardware/host/list',
-            }
-    ));
-  }
-   
-  edit(key) {    
-    const newData = [...this.state.data];
-
-    const target = newData.filter(item => key === item.ID)[0];
-
-    console.log("key",key)
-    console.log("target",target)
-
-    if (target) {
-      target.editable = true;
-      target.selectStatus = false
-      this.setState({ 
-          data: newData,
-         });
-    }
-  }
-
+  //保存
   save(key) {
-    console.log("savekey",key)
     const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
+    const target = newData.filter(item => key === item.ID)[0]
 
     if (target) {
-      delete target.editable;
-      target.selectStatus = true
+      target.saveStatus = true  //保存按钮不可重复点击
+      target.selectStatus = false  
+      target.status = "true"
+
       this.setState({ 
         data: newData 
-      })      
-      this.handleSaveData(target)
+      }) 
+
+      this.props.handleSaveProData(target)
     }
   }
 
-  savenew(key) {
-   
 
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-
-    console.log("target",target)
-
-    if (target) {
-      delete target.editable;
-      if (this.state.project_id) {
-        target.ID =  this.state.project_id
-      }
-      target.selectStatus = true
-      this.setState({ 
-        data: newData 
-      })      
-      this.handleSaveData(target)
-    }
-  }
-  
-  cancel(key) {
+  //取消
+  cancle(key) {
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
     if (target) {
-      delete target.editable;
-      target.selectStatus =true
+      delete target.saveStatus
+      target.status = "false"
+      target.addable = false
       this.setState({ 
         data: newData
      });
     }
   }
 
-  askdelete(key) {
+  //编辑
+  edit(key) {    
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
 
     if (target) {
-      target.deleteable = true;
-      this.setState({ data: newData });
+      target.addable = true
+      target.selectStatus = false
+
+      this.setState({ 
+          data: newData,
+         });
     }
   }
 
-
-
+  
+  //删除
   confirmdelete(key) {
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
@@ -248,42 +125,16 @@ export default class cleanHost extends Component {
         newData.splice(index, 1);
         }
     
-    target.tag = false;
     this.setState({ data: newData });
 
-    //this.cacheData = newData.map(item => ({ ...item }));   
-    this.handleDeleteData(target)
+    this.props.handleDeleteProData(target)
     }
    
   }
 
-
-  canclesave(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    if (target) {
-        const index = newData.indexOf(target)
-        if (index > -1) {
-        newData.splice(index, 1);
-        }
-    
-    target.tag = false;
-    this.setState({ data: newData });
-    }
-   
-  }
-
-  canceldelete(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    if (target) {
-      delete target.deleteable;
-      this.setState({ data: newData });
-    }
-  }
 
   handleAdd = () => {
-    const { count, data } = this.state;
+    const { data } = this.state;
     const newData = {
       "ID": uuid++,
       "proline_title": "",
@@ -299,39 +150,6 @@ export default class cleanHost extends Component {
     });
 
   }
-
-  handleSaveData = (val) => { 
-     const { ID } = val
-    const fields = {proid: ID}
-    this.props.dispatch({
-      type: 'gproline/hostproModify',
-      payload: {
-        description: fields,
-        id: this.props.location.query.id,
-      } 
-    });
-    
-  }
-
-  handleDeleteData = (val) => {
-   const { ID } = val  
-   
-   const fields = {proid: ID}
-    
-    this.props.dispatch({
-      type: 'gproline/hostproDelete',
-      payload: {
-        description: fields,
-        id: this.props.location.query.id,
-      }
-    });
-
-   
-    this.props.dispatch({
-      type: 'gdevice/queryHostDetail',
-      payload: this.props.location.query.id
-    });
-}
 
 
 handleSelectLineValue(value, key, column){
@@ -385,8 +203,9 @@ handleProjectValue(value, key, column) {
   const target = newData.filter(item => key === item.ID)[0];
   
   if (target) {  
+    target.project_id = value
     this.setState({ 
-      project_id: value
+      data: newData,
     });
   }
 }
@@ -394,10 +213,8 @@ handleProjectValue(value, key, column) {
   render() {
     // debugger
     const { data } = this.state;
-    const { gdevice, gproline } = this.props;
-  //  console.log("dataSource123",dataSource)
-
-    console.log("this.props+++++",this.props)
+    const {  gproline } = this.props;
+    console.log("projectline",this.props)
 
     const columns = [{
       title: '产品线名称',
@@ -405,13 +222,11 @@ handleProjectValue(value, key, column) {
       key:'proline_title',
       width:'120px',
       render: (text, record) =>{
-        let prolineOptions
-        console.log("prolinedata",gproline.prolinedata)
-        if (gproline.prolinedata.data) {
-           prolineOptions = gproline.prolinedata.data.map(post => {
-            return <Option key={post.ID} value={post.ID} >{post.title}</Option>
-            })
-        }
+        
+        let prolineOptions =  gproline.prolinedata.data.map(post => {
+        return <Option key={post.ID} value={post.ID} >{post.title}</Option>
+        })
+        
         return(
           <Select 
           defaultValue = {text} 
@@ -431,7 +246,7 @@ handleProjectValue(value, key, column) {
        
 
         let  progroupOptions
-        console.log("prolinedata",gproline.progroupbylid)
+      
         if (gproline.progroupbylid ) {
            progroupOptions = gproline.progroupbylid.map(post =>
             <Option key={post.ID} value={post.ID} >{post.title}</Option>
@@ -483,60 +298,59 @@ handleProjectValue(value, key, column) {
         dataIndex: 'status',
         key: 'status',
         width:'150px',
-        render: (text) => {
-          if (text === 'true') {
-             return(<Badge status="success" text="运行中" />)
-          } else if (text === 'false') {
+        render: (text,record) => {
+        
+
+          if (record.status === 'true') {
+             return(<Badge status="success" text="已上线" />)
+          } else if (record.status === 'false') {
             return( <Badge status="error" text="已下线" />)
           } else {
             return( <Badge status="error" text="未处理" />)
           }
         } 
+      },
+      {
+        title: '负责人',
+        width:'100px',
+        dataIndex: 'user',
+        key: 'user',
       },  {
         title: '操作',
         dataIndex: 'ID',
         key: 'ID',
-        width:'200px',
+        width:'300px',
         render: (text, record) => {
-          const { editable,deleteable,addable } = record;
-          console.log("record+++",record)
+          const { addable } = record;
+          console.log("record.saveStatus",record.saveStatus)
           return (
           <div className="editable-row-operations">
-          
+      
+            {
+              addable ?
+              <span style={{marginLeft: 20}}>
+                <a onClick={() => this.save(record.ID)}><Button disabled={record.saveStatus}>保存</Button></a>
+                </span>
+              : 
+              <span style={{marginLeft: 20}}>
+              <a onClick={() => this.edit(record.ID)}><Button>编辑</Button></a>
+              </span>
+            }
+              
               {
-              !deleteable && (editable ?
-                  <span >
-                  <a style={{marginLeft: 20}} onClick={() => this.save(record.ID)}>保存</a>
-               
-               
-                  <Popconfirm title="确定取消?" onConfirm={() => this.cancel(record.ID)}>
-            
-                       <a style={{marginLeft: 50}}>取消</a>
-                   
-                  </Popconfirm>
-                  </span>
-                  : 
-                  <span style={{marginLeft: 20}}>
-                    {addable ?<a onClick={() => this.savenew(record.ID)}><Button  >保存</Button></a>:<a onClick={() => this.edit(record.ID)}><Button  >编辑</Button></a>}
-                  </span>)
-              }
-               
-               {
-               !editable && (deleteable ?
-                  <span>
-                  <Popconfirm title="确定解除?" onConfirm={() => this.confirmdelete(record.ID)}>
-                      <a style={{marginLeft: 20}} ><Button type="danger">确定</Button></a>
-                  </Popconfirm>
-                 
-                  <a style={{marginLeft: 50}} onClick={() => this.canceldelete(record.ID)}>取消</a>
-                  </span>
-                  : 
-                  <span >
-                     {addable ?<a style={{marginLeft: 50}} onClick={() => this.canclesave(record.ID)}><Button type="danger">取消</Button></a>:
-                     <a style={{marginLeft: 50}} onClick={() => this.askdelete(record.ID)}><Button type="danger">下线</Button></a>}
-                  
-                  </span>)
-              }
+
+              addable ?
+              <span style={{marginLeft: 20}}>
+              <a onClick={() => this.cancle(record.ID)}><Button>取消</Button></a>
+              </span>
+              : 
+              <span>
+                <Popconfirm title="确定删除?" onConfirm={() => this.confirmdelete(record.ID)}>
+                    <a style={{marginLeft: 20}} ><Button type="danger">删除</Button></a>
+                </Popconfirm>
+              </span>
+
+            }
           </div>
           );
       },
@@ -544,15 +358,20 @@ handleProjectValue(value, key, column) {
 
 
     return (
-       <div>
+       <Fragment>
         <Card>
         <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
            添加项目关系
         </Button>
         <Divider>  主机项目关系  </Divider>
-        <Table bordered dataSource={data} columns={columns} />
-        </Card>
-      </div>
+        <Table 
+        bordered 
+        rowKey={record => record.ID}
+        dataSource={data} 
+        columns={columns}
+         />
+       </Card> 
+      </Fragment>
 
     );
   }

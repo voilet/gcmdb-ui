@@ -87,7 +87,7 @@ import {
       //查询主机基础信息
       *queryHost({ payload }, { call, put }) {
         const response = yield call(queryHosts, payload) 
-        console.log("queryHost",response)
+    
         if (response.status  == 200) {
           yield put({
             type: 'hostinfo',
@@ -124,7 +124,7 @@ import {
   
       //修改主机基础信息
       *modifyHost({ payload }, { call,put }) {
-         yield call(modifyHost, payload.description,payload.id);
+        const response = yield call(modifyHost, payload.description,payload.id);
          yield put({
           type: 'saveResponse',
           payload: response,
@@ -135,7 +135,7 @@ import {
         //删除主机基础信息
       *deleteHost({ payload }, { call,put }) {
         const response = yield call(deleteHost, payload);
-        console.log("response",response)
+       
         yield put({
             type: 'saveResponse',
             payload: response,
@@ -194,11 +194,12 @@ import {
   
       //查询主机详细信息
       *queryHostDetail({ payload }, { call, put }) {
-        const response = yield call(queryHostsDetail, payload) 
+        const response = yield call(queryHostsDetail, payload.id) 
         if (response.status  == 200) {
           yield put({
             type: 'hardwareComponentsSave',
             payload: response,
+            cb: payload.cb,
           });
           } else {
             openNotificationWithIcon('error',response.msg)
@@ -235,13 +236,22 @@ import {
           host: action.payload,
         };
       },
+
       hardwareComponentsSave(state, action){
-        const { data } = action.payload
+        if (action.payload.data === null ) {
+          action.payload.data = []
+        }
+
+        if(action.payload.data.hasOwnProperty('projectlists') && action.payload.data.projectlists === null) {
+          action.payload.data.projectlists = []
+        }
+
+        action.cb && action.cb(action.payload.data)
+
         return {
           ...state,
           hostdetail: {
             ...action.payload,
-            data: [ data ],
             time4Update: new Date(),
           }
         };

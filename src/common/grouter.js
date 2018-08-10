@@ -85,15 +85,18 @@ export const getRouterData = (app) => {
     //   component: dynamicWrapper(app, ['ghardware'], () => import('../routes/gResource/gHardware/setMeal/plan/ListPlan')),
     // },
 
+  
+
     //机房列表
     '/resource/idc/idclist': {
       component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/idc/Listidc')),
     },
 
-    //运营商列表
-    '/resource/idc/provider': {
-      component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/provider/ProviderList')),
-    },
+      //运营商列表
+      '/resource/idc/provider': {
+        component: dynamicWrapper(app, ['gidc'], () => import('../routes/gResource/gIdc/provider/ProviderList')),
+      },
+    
 
     //ip资源列表
      '/resource/idc/ipresource': {

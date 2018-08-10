@@ -86,7 +86,7 @@ export default class HostList extends PureComponent {
           payload: { projectid: location.query.projectid}
         });
     } else {
-      console.log("componentDidMount queryhost")
+      
       dispatch({
         type: 'gdevice/queryHost',  
         payload: ""
@@ -142,7 +142,7 @@ export default class HostList extends PureComponent {
 
 
   handleDeleteData = (val) => {
-    console.log(val)
+ 
     const { ID } = val
     let ids=[]
     ids.push(ID)
@@ -275,6 +275,12 @@ handleMenuClick = (e) => {
 
   handleFormReset = () => {
     const form = this.props.form;
+
+    this.props.dispatch({
+      type: 'gdevice/queryHost',
+      payload: ""
+    })
+
     form.resetFields();
   }
 
@@ -457,8 +463,7 @@ handleMenuClick = (e) => {
   render() {
     const { gproline, gdevice, gidc, ghardware } = this.props;
     const {selectedRows} = this.state;
-
-    console.log("this.props",this.props)
+ 
 
     return (
       // <PageHeaderLayout title="查询主机(支持批量查询,数据请用逗号分开)" >
@@ -469,7 +474,7 @@ handleMenuClick = (e) => {
           
 
             <Divider>  主机管理  </Divider>
-             {console.log("gdevice",gdevice)}
+            
             <HostTable
               selectedRows={selectedRows}
              // loading={loading}

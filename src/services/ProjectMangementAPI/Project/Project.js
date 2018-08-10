@@ -2,7 +2,7 @@ import { stringify } from 'qs';
 import request from '../../../utils/request';
 
 //根据搜索条件查询产品列表
-export async function searchProject(params) {
+export async function  searchProject(params){
   return request('/v1/assets/project/search', {
     method: 'POST',
     body: {
@@ -59,14 +59,16 @@ export async function deleteProject(params) {
   });
 }
 
+
+
 //通过pro id 查询机器列表
 export async function queryHostbyPid(id) {
-  return request(`/v1/assets/appmange/querytree/`, {
+  return request(`/v1/assets/appmange/querytree/`,{
     method: 'POST',
     body: {
       ...params,
       method: 'post',
-    },
+    }
   });
 }
 
@@ -118,6 +120,8 @@ export async function deleteProjectGroup(params) {
   });
 }
 
+
+
 //查询产品线列表
 export async function querProjectLine() {
   return request('/v1/assets/projectline/query');
@@ -147,7 +151,7 @@ export async function modifyProjectLine(params) {
 
 //删除产品线
 export async function deleteProjectLine(params) {
-  return request(`/v1/assets/projectline/delete`, {
+  return request(`/v1/assets/projectline/delete/${params}`, {
     method: 'POST',
     body: {
       ...params,
@@ -156,9 +160,12 @@ export async function deleteProjectLine(params) {
   });
 }
 
+
+
+
 ///assets/hardware/hostpro/modify/:id:int
 //修改项目主机关系
-export async function hostproModify(params, id) {
+export async function hostproModify(params,id) {
   return request(`/v1/assets/hardware/hostpro/modify/${id}`, {
     method: 'POST',
     body: {
@@ -170,7 +177,7 @@ export async function hostproModify(params, id) {
 
 ///assets/hardware/hostpro/delete//:id:int
 //解除项目主机关系
-export async function hostproDelete(params, id) {
+export async function hostproDelete(params,id) {
   return request(`/v1/assets/hardware/hostpro/delete/${id}`, {
     method: 'POST',
     body: {
@@ -179,6 +186,7 @@ export async function hostproDelete(params, id) {
     },
   });
 }
+
 
 //更新树
 export async function updateprojectTree() {

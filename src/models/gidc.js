@@ -184,7 +184,7 @@ export default {
   
       //删除机柜信息
       *deleteCabinet({ payload }, { call, put }) {
-        response = yield call(deleteCabinet, payload);
+        const  response = yield call(deleteCabinet, payload);
         if (response.status  == 200) {
           openNotificationWithIcon('success',"删除成功.")
         } else {

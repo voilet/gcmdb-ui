@@ -68,19 +68,32 @@ import {
       },
   
     },
+
+    
   
     reducers: {  
         probyidSave(state, action) {
+           
+      if (action.payload.data === null ) {
+        action.payload.data = []
+      }
         return {
             ...state,
             hostdata: action.payload
         };
         },
       saveTree(state, action) {
+         
+      if (action.payload.data === null ) {
+        action.payload.data = []
+      }
         return {
           ...state,
-          treedata: action.payload,
-        };
+          treedata: {
+            ...action.payload,
+            time4Update: new Date()
+          }
+        }
       },
   
     },

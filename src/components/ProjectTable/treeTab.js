@@ -102,7 +102,7 @@ class TreeTab extends PureComponent {
         }),
           disabled: true
          });
-      this.cacheData = newData.map(item => ({ ...item }));
+      // this.cacheData = newData.map(item => ({ ...item }));
       //console.log('target',target)
       this.props.handleSaveData(target)
     }console.logconsole.log
@@ -112,7 +112,7 @@ class TreeTab extends PureComponent {
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
     if (target) {
-      Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
+      //Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
       delete target.editable;
       this.setState({ 
         data: newData.map((obj)=>{
@@ -148,7 +148,7 @@ class TreeTab extends PureComponent {
     target.tag = false;
     this.setState({ data: newData });
 
-    this.cacheData = newData.map(item => ({ ...item }));   
+    //this.cacheData = newData.map(item => ({ ...item }));   
     this.props.handleDeleteData(target)
     }
    
@@ -187,27 +187,27 @@ class TreeTab extends PureComponent {
     }
   
   }
-  canceldelete(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    if (target) {
-      Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
-      delete target.deleteable;
-      this.setState({ data: newData });
-    }
-  }
+  // canceldelete(key) {
+  //   const newData = [...this.state.data];
+  //   const target = newData.filter(item => key === item.ID)[0];
+  //   if (target) {
+  //   //  Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
+  //     delete target.deleteable;
+  //     this.setState({ data: newData });
+  //   }
+  // }
 
-  ToHostTable(pid) {
-    console.log("ToHostTable", this.props)
-    const { dispatch, match} = this.props; 
-    dispatch(
-        routerRedux.push(
-            {
-                pathname: '/resource/hardware/host/list',
-                query:{projectid: pid}
-            }
-    ));
-  }
+  // ToHostTable(pid) {
+  //   console.log("ToHostTable", this.props)
+  //   const { dispatch, match} = this.props; 
+  //   dispatch(
+  //       routerRedux.push(
+  //           {
+  //               pathname: '/resource/hardware/host/list',
+  //               query:{projectid: pid}
+  //           }
+  //   ));
+  // }
 
 
   render() {
@@ -309,7 +309,7 @@ class TreeTab extends PureComponent {
     };
 
     
-    this.cacheData =  this.state.data.map(item => ({ ...item }));     
+   // this.cacheData =  this.state.data.map(item => ({ ...item }));     
    // console.log('loading', loading)
     return (
       <div className={styles.TreeTab}>

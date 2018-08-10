@@ -232,8 +232,8 @@ export default {
 
     //删除产品线列表
     *deleteProjectLine({ payload }, { call, put }) {
-    response = yield call(deleteProjectLine, payload);
-    if (response.status == "500")
+    const response = yield call(deleteProjectLine, payload);
+    if (response &&response.status == "500")
     {
       message.error(response.msg);
     } 
@@ -274,7 +274,7 @@ export default {
       //console.log("action.payload.ProjectLines !== null",action.payload.ProjectLines != null)
       let result = { ...state }
       //debugger
-      console.log("before+++6666666+++++", result)
+     
       if (action.payload.ProjectLines) {
         result.prolinedata = {
           ...result.prolinedata,
@@ -318,7 +318,7 @@ export default {
         }
       }
 
-      console.log("after+++6666666+++++", result)
+     
       return result
     },
 
@@ -331,6 +331,10 @@ export default {
     },
 
     proLineSave(state, action) {
+      if (action.payload.data === null) {
+        action.payload.data = []
+      }
+      
       return {
         ...state,
         prolinedata: action.payload,

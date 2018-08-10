@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { routerRedux } from 'dva/router';
 import { connect } from 'dva';
-import { Card, Badge, Table, Divider, Tabs, Form, Row, Col, Input, Select, Button,DatePicker,InputNumber,Icon,message    } from 'antd';
-import DescriptionList from '../../../../components/DescriptionList';
-import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
+import isEqual from 'lodash/isEqual';
+import { Card, Divider, Tabs, Form, Row, Col, Input, Select, Button,DatePicker,InputNumber,Icon,message    } from 'antd';
+ 
+import  CleanHost from './cleanHost'
 
 import styles from './hostDetail.less';
 import moment from 'moment';
 
-const { Description } = DescriptionList;
+
 
 const { TextArea } = Input;
 const TabPane = Tabs.TabPane;
@@ -25,49 +26,8 @@ const formItemLayout = {
 };
 
 
-const projectColumns = [
-  {
-    title: '产品线',
-    dataIndex: 'proline_title',
-    key: 'proline_title',
-    width:'120px',
-  },
-  {
-    title: '项目组',
-    dataIndex: 'progroup_title',
-    key: 'progroup_title',
-    width:'120px',
-  },
-  {
-    title: '项目',
-    dataIndex: 'project_title',
-    key: 'project_title',
-    width:'120px',
-  },
-  {
-    title: '项目状态',
-    dataIndex: 'status',
-    key: 'status',
-    render: text =>
-      text === 'true' ? (
-        <Badge status="success" text="运行中" />
-      ) : (
-          <Badge status="error" text="已下线" />
-        ),
-  },
-  {
-    title: '负责人',
-    dataIndex: 'user',
-    key: 'user',
-  },
-];
-
 const dateFormat = 'YYYY/MM/DD';
-const monthFormat = 'YYYY/MM';
-
-let newTabIndex = 0
-
-let uuid = 10000;
+const projectids = []
 
 @connect((props) => (props))
 @Form.create()
@@ -83,16 +43,46 @@ export default class HostDetail extends Component {
     cabinetData:[],
     idcData:[],
     BaysData:[],
+    projectlist:[],
+    hostid: 0,
+    allprojectids: []
   };
 
 
-  componentDidMount() {
+  componentWillMount() {
     //console.log("this.props.location.state+++++++++++",this.props.location.query.id)
-    const { dispatch, location, gdevice } = this.props;
-    if (location.query !== undefined) {
+    const { dispatch, location } = this.props;
+    const {headlist,panes} = this.state
+
+    if (location.hasOwnProperty('query')) {
       dispatch({
         type: 'gdevice/queryHostDetail',
-        payload: location.query.id
+        payload: {
+          id: location.query.id,
+          cb: (data) => {
+            
+       
+            
+            if (Object.keys(data).length !== 0) {
+
+              const activeKey = `${data.detail_id}`
+              const title = data.fqdn
+      
+              if (!this.isInArray(headlist, title)) {
+                headlist.push(title)
+                panes.push({ information: data, key: `${activeKey}`, title: title });
+              }
+      
+              this.setState({ 
+                panes, 
+                headlist, 
+                activeKey,
+                projectlist: data.projectlists,
+                hostid: this.props.location.query.id
+               });
+            }
+          }
+        },
       });
 
       dispatch({
@@ -114,32 +104,12 @@ export default class HostDetail extends Component {
     }
   }
 
-  componentWillReceiveProps = nextProps => {
-    const { gdevice } = this.props;
-    const { panes, headlist } = this.state;
-    console.log("edit componentWillReceiveProps",nextProps)
-   
-
-    if (gdevice.hostdetail.data.length) {
-
-      const activeKey = `${gdevice.hostdetail.data[0].detail_id}`
-      const title = gdevice.hostdetail.data[0].fqdn
-
-      if (!this.isInArray(headlist, title)) {
-        headlist.push(title)
-        panes.push({ information: gdevice.hostdetail.data, key: `${activeKey}`, title: title });
-      }
-      this.setState({ panes, headlist, activeKey });
-    }
-  }
-
   handleIdcChange = value => {    
     this.props.dispatch({
       type: 'gidc/queryIdcRelation',
       payload: `?tag=cabinet&id=${value}`,
     });
 
-    console.log("handleIdcChange",this.props.gidc.cabinet)
     this.props.form.setFieldsValue({
       cabinet_id : this.props.gidc.cabinet.data.map(post => {
         return post.title 
@@ -238,7 +208,6 @@ export default class HostDetail extends Component {
     const form = this.props.form;
     const { dateStatus } = this.state;
 
-    console.log("dateStatus",dateStatus)
     form.validateFields((err, values) => {
       if (!err) {
         if (!dateStatus) {
@@ -279,7 +248,7 @@ export default class HostDetail extends Component {
             osversion: form.getFieldValue('osversion') ? form.getFieldValue('osversion') : '',
             planversion: form.getFieldValue('planversion') ? form.getFieldValue('planversion') : '',
           
-            
+        
    
             user_id: form.getFieldValue('user_id') ? form.getFieldValue('user_id') : '',
 
@@ -287,14 +256,34 @@ export default class HostDetail extends Component {
           };
 
          // console.log("this.state.uuid ", this.state.panes.information )
-          let project = [];
-          for (let i = 0; i < this.state.panes[0].information[0].projectlists.length; i++) {
-            project.push(
-              form.getFieldValue(`project${i}`) ? form.getFieldValue(`project${i}`) : ''
-            );
-          }
 
-          fields.project = project;
+          switch (form.getFieldValue('statusid')) {
+            case '已上线':
+                fields.statusid = 0
+                break
+            case '已关机':
+                fields.statusid = 1
+                break
+            case '运行中':
+                fields.statusid = 2
+                break
+            case '已下线':
+                fields.statusid = 3
+                break
+            case '异常':
+                fields.statusid = 4
+                break
+            case '报废':
+                fields.statusid = 5
+                break
+            case '装机中':
+                fields.statusid = 6
+                break
+            default:
+               break
+            }
+
+          fields.project = this.state.allprojectids;
 
           this.props.dispatch({
             type: 'gdevice/modifyHost',
@@ -311,15 +300,36 @@ export default class HostDetail extends Component {
     });
   }
 
+  handleSaveProData = (value) => {
+     const {project_id} = value     
+     projectids.push(project_id) 
+     this.setState({
+      allprojectids: projectids,
+     })
+  }
+
+  handleDeleteProData = (value) => {
+
+    const {project_id} = value
+    const index = projectids.indexOf(project_id)
+    if (index > -1) {
+      projectids.splice(index, 1);
+    } 
+    
+    this.setState({ allprojectids: projectids });
+  }
 
 
   tabcontent = (information) => {
-    const { getFieldDecorator, getFieldValue } = this.props.form;
-    const { gidc, gproline,gdevice,ghardware} = this.props
-    let cabinetOptions,cabinetValue
 
-    console.log("Xtabcontent this.props",this.props)
-    console.log("XXXXXXXXXXXXXXXXXXXXXXXX" )
+    const { getFieldDecorator } = this.props.form;
+    const { gidc, gdevice,ghardware} = this.props
+
+    let cabinetOptions
+
+    console.log("tabcontent",this.props)
+    console.log("tabcontent222222",information)
+
     const idcOptions = this.props.gidc.idc.data.map(post => {
       return <Option key={post.ID} value={post.ID} >{post.title}</Option>
     })
@@ -329,7 +339,7 @@ export default class HostDetail extends Component {
       cabinetOptions = gidc.cabinet.data.map(post => {
         return <Option key='-1' value="-1" >请选择</Option>
       })
-      cabinetValue = "请选择"
+   
     } else {
       cabinetOptions = (gidc.cabinet.data || []).map(post => {
         return <Option key={post.ID} value={post.ID} >{post.title}</Option>
@@ -383,7 +393,7 @@ export default class HostDetail extends Component {
                   <Select placeholder="请选择" style={{ width: '100%' }}>
                     <Option key="0" value="0">已上线</Option>
                     <Option key="1" value="1">已关机</Option>
-                    <Option key="2"  value="2">运行中</Option>
+                    <Option key="2" value="2">运行中</Option>
                     <Option key="3" value="3">已下线</Option>
                     <Option key="4" value="4">异常</Option>
                     <Option key="5" value="5">报废</Option>
@@ -420,7 +430,6 @@ export default class HostDetail extends Component {
                   {getFieldDecorator('eth2', {
                     rules: [
                       {
-                        required: true,
                         message: '请输入ip地址!',
                       },
                     ],
@@ -714,20 +723,15 @@ export default class HostDetail extends Component {
           <Divider style={{ marginBottom: 32 }} />
           <div className={styles.title}>项目信息</div>
           <Row gutter={24}>
-              <Table
-              rowKey={information.detail_id}
-              style={{ marginBottom: 24 }}
-              pagination={false}
-              //loading={loading}
-              dataSource={information.projectlists}
-              columns={projectColumns}
-              rowKey="id"
-            />
-              <Col span={24} key={2} style={{ display: 'block' }}>
-                <Button type="Pri" onClick={this.modifyProject.bind(this, information.detail_id)} style={{ width: '15%' }}>
-                  <Icon type="plus" /> 修改项目关系
-              </Button>
-              </Col>
+             
+              <CleanHost 
+              hostid={this.state.hostid} 
+              projectlist = {this.state.projectlist} 
+              dispatch = {this.props.dispatch}
+              gproline = {this.props.gproline}
+              handleSaveProData = {this.handleSaveProData}
+              handleDeleteProData = {this.handleDeleteProData}
+              />
             </Row>
 
             <Divider style={{ marginBottom: 32 }} />
@@ -744,7 +748,7 @@ export default class HostDetail extends Component {
             </Row>
             <Row>
               <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" htmlType="submit">保存</Button>
+                <Button type="primary" htmlType="submit">提交</Button>
                 <Divider type="vertical" />
                 <Button onClick= {() => this.reback()}>返回</Button>
               </Col>
@@ -798,35 +802,8 @@ export default class HostDetail extends Component {
   }
 
 
-  modifyProject = (key) => {
-    const { dispatch, match} = this.props; 
-    dispatch(
-        routerRedux.push(
-            {
-                pathname: '/resource/hardware/host/clean',
-                query:{id: key}
-            }
-    ));
-  };
-
-
   render() {
     // debugger
-
-    const { gdevice, loading } = this.props;
-
-
-
-    // if( gdevice.hostdetail.data.length == 0) {
-    //   gdevice.hostdetail.data.push(hostdetailInit)
-    // }
-
-    // const  information =  gdevice.hostdetail.data[0]
-
-    //console.log("this.prop--------------",gdevice)
-
-    console.log('this.state.panes', this.state.panes)
-
     return (
 
       <Tabs
@@ -837,7 +814,7 @@ export default class HostDetail extends Component {
         onEdit={this.onEdit}
       >
 
-        {this.state.panes.map(pane => <TabPane tab={pane.title} key={pane.key}>{this.tabcontent(pane.information[0])}</TabPane>)}
+        {this.state.panes.map(pane => <TabPane tab={pane.title} key={pane.key}>{this.tabcontent(pane.information)}</TabPane>)}
 
       </Tabs>
 
