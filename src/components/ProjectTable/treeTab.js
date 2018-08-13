@@ -31,10 +31,8 @@ class TreeTab extends PureComponent {
       });
     }
    
-    console.log("nextProps.treeTabdata.data",nextProps.treeTabdata.data)
-
     this.setState({
-      data: nextProps.treeTabdata.data
+      data: nextProps.treeTabdata
     })
     
   }
@@ -187,27 +185,7 @@ class TreeTab extends PureComponent {
     }
   
   }
-  // canceldelete(key) {
-  //   const newData = [...this.state.data];
-  //   const target = newData.filter(item => key === item.ID)[0];
-  //   if (target) {
-  //   //  Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
-  //     delete target.deleteable;
-  //     this.setState({ data: newData });
-  //   }
-  // }
 
-  // ToHostTable(pid) {
-  //   console.log("ToHostTable", this.props)
-  //   const { dispatch, match} = this.props; 
-  //   dispatch(
-  //       routerRedux.push(
-  //           {
-  //               pathname: '/resource/hardware/host/list',
-  //               query:{projectid: pid}
-  //           }
-  //   ));
-  // }
 
 
   render() {

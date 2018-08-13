@@ -18,21 +18,15 @@ import {
 } from 'antd';
 
 
-import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
-
-import isEqual from 'lodash/isEqual';
 import HostTable from '../../../../components/Resource/HostTable'
 
 
 
-import HostHeader from './hostHeader'
-import AddHost  from './addHost'
 import styles from './hostInfo.less'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const TabPane = Tabs.TabPane;
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
@@ -113,9 +107,12 @@ export default class HostList extends PureComponent {
       ...formValues,
       ...filters,
     };
+
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
+
+ 
 
      dispatch({
         type: 'gdevice/queryHost',  
@@ -461,7 +458,7 @@ handleMenuClick = (e) => {
 
 
   render() {
-    const { gproline, gdevice, gidc, ghardware } = this.props;
+    const { gdevice } = this.props;
     const {selectedRows} = this.state;
  
 

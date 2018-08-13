@@ -286,7 +286,7 @@ export default class HostDetail extends Component {
                 fields.statusid = form.getFieldValue('statusid')
             }
           
-
+          
           fields.project = this.state.allprojectids
           fields.delproject = this.state.delprojectids
 
@@ -324,13 +324,17 @@ export default class HostDetail extends Component {
 
   handleDeleteProData = (value) => {
 
-    const {project_id} = value
-    const index = projectids.indexOf(project_id)
+   
+    const {ID} = value
+    deletedprojectids.push(ID)
+
+
+    const index = projectids.indexOf(ID)
     if (index > -1) {
       projectids.splice(index, 1);
     } 
+  
 
-    deletedprojectids.push(project_id)
 
     this.setState({ 
       allprojectids: projectids,
@@ -352,9 +356,6 @@ export default class HostDetail extends Component {
     const { gidc, gdevice,ghardware} = this.props
 
     let cabinetOptions
-
-    console.log("tabcontent",this.props)
-    console.log("tabcontent222222",information)
 
     const idcOptions = this.props.gidc.idc.data.map(post => {
       return <Option key={post.ID} value={post.ID} >{post.title}</Option>

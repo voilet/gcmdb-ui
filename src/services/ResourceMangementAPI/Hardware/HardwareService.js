@@ -174,7 +174,13 @@ pageSize=50
 */
 //查询主机基础表
 export async function queryHosts(params) {
-  return request(`/v1/assets/hardware/host/query/${params}`);
+  return request(`/v1/assets/hardware/host/query`, {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
 }
 
 

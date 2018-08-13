@@ -175,11 +175,10 @@ class proLineTable extends PureComponent {
       });
     }
 
-    console.log('handleChange',value,key,column)
   }
 
   handleSelectLineValue(value, key, column){
-    console.log(value, key, column)
+   
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
     
@@ -213,9 +212,7 @@ class proLineTable extends PureComponent {
 
     const { selectedRowKeys, totalCallNo, data} = this.state;
     const { loading, prolinedata  } = this.props;
-    console.log("prolinedata",prolinedata)
-    //debugger
-    console.log("this.state",this.state)
+
     const columns = [
       {
         title: '产品线别名(英文)',

@@ -6,14 +6,13 @@ const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
 
 
-import PageHeaderLayout from '../../../layouts/PageHeaderLayout';
 import TreeTab from '../../../components/ProjectTable/treeTab'
 import SearchTree from './searchProTree'
 import styles from './projectTree.less';
 
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
-const { TextArea } = Input;
+
 
 
 const dataList = [];
@@ -52,16 +51,23 @@ export default class TableTree extends PureComponent {
     autoExpandParent: true,
     selectedKey:[],
     selectedRows: [],
-    treedata:[]
+    treedata:[],
+    hostdata: []
   }
 
   componentWillMount() {
+    
     const {dispatch} = this.props;
     dispatch({
       type: 'gappmanage/getTree',
     });
     dispatch({
       type: 'gappmanage/getAllTree',
+      payload: {
+        cb: (data) => {
+          console.log("getAllTree+++",data)
+        }
+      }
     });
 
     
@@ -107,10 +113,16 @@ export default class TableTree extends PureComponent {
   treeSelectClick = (selectedKey,e) => {
     if (selectedKey.toString().split("-")[0] == "3" && e.selected)
     {
-      console.log("treeSelectClick")
       this.props.dispatch({
         type: 'gappmanage/getHostdatabyId',
-        payload: {projectid: selectedKey.toString().split("-")[1]}
+        payload: {
+          projectid: selectedKey.toString().split("-")[1],
+          cb: (data) => {
+              this.setState({
+                hostdata: data
+              })
+          }
+        }
       }); 
     }
  

@@ -35,6 +35,7 @@ import {
         yield put({
           type: 'probyidSave',
           payload: response,
+          cb: payload.cb,
         });
       },
   
@@ -57,6 +58,7 @@ import {
           yield put({
             type: 'probyidSave',
             payload: response,
+            cb: payload.cb,
           });
         }
       },
@@ -72,16 +74,22 @@ import {
     
   
     reducers: {  
-        probyidSave(state, action) {
+    probyidSave(state, action) {
            
       if (action.payload.data === null ) {
         action.payload.data = []
       }
-        return {
-            ...state,
-            hostdata: action.payload
-        };
-        },
+
+      action.cb && action.cb(action.payload.data)
+      
+
+
+      return {
+          ...state,
+          hostdata: action.payload
+      };
+      },
+      
       saveTree(state, action) {
          
       if (action.payload.data === null ) {

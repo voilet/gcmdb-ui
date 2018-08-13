@@ -37,39 +37,6 @@ const openNotificationWithIcon = (type) => {
 };
 
 
-const PasswordForm = Form.create()(
-  
-  (props) => {
-    console.log("props",props)
-    const { visible, onCancel, form,data,passwd } = props;
-    const { getFieldDecorator } = form;
-
-    return (
-      <Modal
-        visible={visible}
-        title="查看密码"
-        okText="确定"
-        cancelText="返回"
-        onCancel={onCancel}
-        onOk={onCancel}
-        maskClosable={false}
-      >
-        <Form layout="vertical">
-          <FormItem label="服务器IP地址">
-            {
-              data.ipsummary.split(',').map((i,index)=> <div style={{ color: 'red'}}> {i}</div>)
-            }
-             
-          </FormItem>
-          <FormItem label="服务器密码">
-             <font size="6" color="blue">{passwd.data ? passwd.data.password : "查询失败"} </font>
-          </FormItem>
-        </Form>
-      </Modal>
-    );
-  }
-);
-
 
 class HostTable extends PureComponent {
   state = {
@@ -433,7 +400,6 @@ class HostTable extends PureComponent {
         sorter: true,
 
         render: (text, record) => {
-          console.log("所在产品线所在产品线",record)
           var divStyle = {
               color: 'blue',
             };
@@ -476,29 +442,14 @@ class HostTable extends PureComponent {
         render: (text, record) => {
           const {password}  = this.props.gdevice
           let  pass = password
-          console.log("this.props.gdevice.password",pass)
-         // const {ipsummary}   =  this.props.gdevice.host.data.ipsummary
+ 
+
           return (
             <div>
                <ShowPw
                   data={record}
                 />
-                 
-               {/* <PasswordForm
-                ref={form=>{
-                  this.passwordForm = this.passwordForm || {};
-                  this.passwordForm[record.shiftId] = form;
-                }}
-                visible={this.state.modalVisible}
-                data = {record}
-                passwd = {pass}
-                onCancel={()=>{
-                let modalVisible = this.state.modalVisible;
-                modalVisible = false;
-                this.setState({modalVisible});
-               }} 
-               /> */}
-             
+                          
             </div>
           )
         },
@@ -582,7 +533,6 @@ class HostTable extends PureComponent {
         key: 'ID',
         width:'200px',
         render: (text, record) => {
-          const { editable,deleteable } = record;
           return (
           <div className="editable-row-operations">
             <a onClick={() => this.edit(record.ID)}>编辑</a>  
@@ -596,12 +546,6 @@ class HostTable extends PureComponent {
                  <a onClick={() => this.clean(record.ID)}>关系</a>  
 
                  <Divider type="vertical" />
-                 {/* <a onClick={() => this.ChangePassword(record.ID)}>修改密码</a> */}
-                 {/* <ModifyPw
-                  data={record}
-                 /> */}
-
-                <Divider type="vertical" />
 
                 {
                 <Popconfirm title="确定删除?" onConfirm={() => this.deleteHost(record.ID)}>
@@ -618,8 +562,10 @@ class HostTable extends PureComponent {
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
-      ...gdevice.pagination,
+      ...gdevice.host.pagination,
     };
+    console.log("gdevice pagination++++",gdevice.host.pagination)
+    console.log("paginationProps++++",paginationProps)
 
     const rowSelection = {
       selectedRowKeys,
