@@ -250,12 +250,13 @@ export default class HostDetail extends Component {
           
         
    
-            user_id: form.getFieldValue('user_id') ? form.getFieldValue('user_id') : '',
+            user_id: form.getFieldValue('user_manger') ? form.getFieldValue('user_manger') : '',
 
             remarks: form.getFieldValue('remarks') ? form.getFieldValue('remarks') : '',
           };
 
          // console.log("this.state.uuid ", this.state.panes.information )
+     
 
           switch (form.getFieldValue('statusid')) {
             case '已上线':
@@ -280,8 +281,10 @@ export default class HostDetail extends Component {
                 fields.statusid = 6
                 break
             default:
-               break
+                fields.statusid = form.getFieldValue('statusid')
             }
+          
+ 
 
           fields.project = this.state.allprojectids;
 
