@@ -28,6 +28,7 @@ const formItemLayout = {
 
 const dateFormat = 'YYYY/MM/DD';
 const projectids = []
+const deletedprojectids = []
 
 @connect((props) => (props))
 @Form.create()
@@ -45,7 +46,8 @@ export default class HostDetail extends Component {
     BaysData:[],
     projectlist:[],
     hostid: 0,
-    allprojectids: []
+    allprojectids: [],
+    delprojectids:[],
   };
 
 
@@ -284,9 +286,9 @@ export default class HostDetail extends Component {
                 fields.statusid = form.getFieldValue('statusid')
             }
           
- 
 
-          fields.project = this.state.allprojectids;
+          fields.project = this.state.allprojectids
+          fields.delproject = this.state.delprojectids
 
           this.props.dispatch({
             type: 'gdevice/modifyHost',
@@ -304,10 +306,19 @@ export default class HostDetail extends Component {
   }
 
   handleSaveProData = (value) => {
-     const {project_id} = value     
+     const {project_id} = value 
+     
+     
+     const index = deletedprojectids.indexOf(project_id)
+     if (index > -1) {
+      deletedprojectids.splice(index, 1);
+     } 
+
      projectids.push(project_id) 
+
      this.setState({
       allprojectids: projectids,
+      delprojectids: deletedprojectids
      })
   }
 
@@ -318,9 +329,21 @@ export default class HostDetail extends Component {
     if (index > -1) {
       projectids.splice(index, 1);
     } 
-    
-    this.setState({ allprojectids: projectids });
+
+    deletedprojectids.push(project_id)
+
+    this.setState({ 
+      allprojectids: projectids,
+      delprojectids: deletedprojectids
+     });
+
   }
+
+  HandleSelectHostStatus = (value) => {
+    this.props.form.setFieldsValue({
+      statusid: `${value}`,
+    });
+}
 
 
   tabcontent = (information) => {
@@ -393,7 +416,7 @@ export default class HostDetail extends Component {
                     },
                   ],
                 })(
-                  <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Select placeholder="请选择" style={{ width: '100%' }} onChange={this.HandleSelectHostStatus}>
                     <Option key="0" value="0">已上线</Option>
                     <Option key="1" value="1">已关机</Option>
                     <Option key="2" value="2">运行中</Option>

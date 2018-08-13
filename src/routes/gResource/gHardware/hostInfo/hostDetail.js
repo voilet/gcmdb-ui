@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Card, Badge, Table, Divider, Tabs } from 'antd';
 import isEqual from 'lodash/isEqual';
 import DescriptionList from '../../../../components/DescriptionList';
-import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
+ 
 
 import styles from './hostDetail.less';
 
@@ -77,53 +77,64 @@ export default class HostDetail extends Component {
   state = {
     activeKey: '-1',
     title: "",
-    addpanes: [],
-    removepanes: [],
+    panes: [],
     headlist: [],
-    panes: []
+    dateStatus: true,
+    cabinetData:[],
+    idcData:[],
+    BaysData:[],
+    projectlist:[],
+    hostid: 0,
   };
 
 
   componentDidMount() {
-    console.log(11111)
+
     //console.log("this.props.location.state+++++++++++",this.props.location.query.id)
-    const { dispatch, location, gdevice } = this.props;
-    console.log(panes, 'panes')
+    const { dispatch, location } = this.props;
+    const {headlist,panes} = this.state
+
     if(panes && panes.length > 0) {
       this.setState({
         panes,
         activeKey: panes[0].key,
       })
     }
-    if (location.query !== undefined) {
+    
+    if (location.hasOwnProperty('query')) {
       dispatch({
         type: 'gdevice/queryHostDetail',
-        payload: location.query.id
+        payload: {
+          id: location.query.id,
+          cb: (data) => {
+            
+       
+            
+            if (Object.keys(data).length !== 0) {
+
+              const activeKey = `${data.detail_id}`
+              const title = data.fqdn
+      
+              if (!this.isInArray(headlist, title)) {
+                headlist.push(title)
+                panes.push({ information: data, key: `${activeKey}`, title: title });
+              }
+      
+              this.setState({ 
+                panes, 
+                headlist, 
+                activeKey,
+                projectlist: data.projectlists,
+                hostid: this.props.location.query.id
+               });
+            }
+          }
+        },
       });
-    }
+
+    } 
   }
 
-  componentWillReceiveProps = nextProps => {
-    const { gdevice } = nextProps;
-
-
-
-    if (!isEqual(nextProps.gdevice.hostdetail.time4Update, this.props.gdevice.hostdetail.time4Update)) {
-
-      if (gdevice.hostdetail.data.length) {
-
-        const activeKey = `${gdevice.hostdetail.data[0].detail_id}`
-        const title = gdevice.hostdetail.data[0].fqdn
-
-
-        if (!this.isInArray(headlist, title)) {
-          headlist.push(title)
-          panes.push({ information: gdevice.hostdetail.data, key: `${activeKey}`, title: title });
-        }
-        this.setState({ panes, headlist, activeKey });
-      }
-    }
-  }
 
   componentWillUnmount = 　() => {
     const { dispatch } = this.props;
@@ -267,7 +278,7 @@ export default class HostDetail extends Component {
           onEdit={this.onEdit}
         >
 
-          {this.state.panes.map(pane => <TabPane tab={pane.title} key={pane.key}>{this.tabcontent(pane.information[0], projectColumns)}</TabPane>)}
+          {this.state.panes.map(pane => <TabPane tab={pane.title} key={pane.key}>{this.tabcontent(pane.information, projectColumns)}</TabPane>)}
 
         </Tabs>
       </Card>
