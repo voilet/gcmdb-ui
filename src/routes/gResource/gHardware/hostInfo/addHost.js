@@ -70,11 +70,8 @@ export default class HostDetail extends Component {
 
   componentDidMount() {
     //console.log("this.props.location.state+++++++++++",this.props.location.query.id)
-    const { dispatch, location, gdevice } = this.props;
-    const idcdata = this.state.idcdata
-  
- 
-   
+    const { dispatch  } = this.props;
+     
 
     dispatch({
       type: 'gidc/queryIdcRelation',
@@ -246,7 +243,7 @@ export default class HostDetail extends Component {
 
         } else if (dateStatus && passwordStatus) {
           const fields = {
-            sn: form.getFieldValue('serialnumber') ? form.getFieldValue('serialnumber') : '',
+            serialnumber: form.getFieldValue('serialnumber') ? form.getFieldValue('serialnumber') : '',
             eth1: form.getFieldValue('eth1') ? form.getFieldValue('eth1') : '',
             eth2: form.getFieldValue('eth2') ? form.getFieldValue('eth2') : '',
             eth3: form.getFieldValue('eth3') ? form.getFieldValue('eth3') : '',
@@ -351,8 +348,6 @@ export default class HostDetail extends Component {
     ))
     
 
-    console.log("gdevice.user.data",gdevice.user.data)
-    console.log("ghardware.composedata.data",ghardware.composedata.data.list)
 
     const userData = gdevice.user.data.map(item => {
      return(
@@ -377,7 +372,7 @@ export default class HostDetail extends Component {
    
    let keys = getFieldValue('keys');
 
-    console.log("formItems+++++++++++++++++++",this.props)
+   
     
      const formItems = keys.map((k, index) => {
       //产品线列表
@@ -401,11 +396,7 @@ export default class HostDetail extends Component {
         </Option>
       ));
 
-    
-
-
-    console.log("progroupOptions",gproline.progroupbylid)
-    console.log("probygidOptions",gproline.probygid)
+  
 
      return (
        <FormItem label={index == 0 ? '产品线' : ''} key={k}>
@@ -423,11 +414,6 @@ export default class HostDetail extends Component {
                  //showSearch
                  style={{ width: 200, marginRight: 40 }}
                  onChange={this.handleProjectLine}
-                //  optionFilterProp="children"
-                //  
-                //  filterOption={(input, option) =>
-                //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                //  }
                >
                  {prolineOptions}
                </Select>
@@ -448,10 +434,6 @@ export default class HostDetail extends Component {
                  //showSearch
                  style={{ width: 200, marginRight: 40 }}
                  onChange={this.handleProjectGroup}
-                //  optionFilterProp="children"
-                //  filterOption={(input, option) =>
-                //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                //  }
                >
                  {progroupOptions}
                </Select>
@@ -469,12 +451,7 @@ export default class HostDetail extends Component {
                ],
              })(
                <Select
-            //    showSearch
                  style={{ width: 200, marginRight: 40 }}
-                //  optionFilterProp="children"
-                //  filterOption={(input, option) =>
-                //    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                //  }
                >
                  {probygidOptions}
                </Select>

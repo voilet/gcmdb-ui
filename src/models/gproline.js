@@ -30,7 +30,7 @@ import {notification} from 'antd'
 
 const openNotificationWithIcon = (type,data) => {
   notification[type]({
-    message: 'Error',
+    message: 'Message: ',
     description: data,
   });
 };

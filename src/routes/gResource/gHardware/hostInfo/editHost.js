@@ -218,7 +218,7 @@ export default class HostDetail extends Component {
           );
         } else if (dateStatus) {
           const fields = {
-            sn: form.getFieldValue('serialnumber') ? form.getFieldValue('serialnumber') : '',
+            serialnumber: form.getFieldValue('serialnumber') ? form.getFieldValue('serialnumber') : '',
             eth1: form.getFieldValue('eth1') ? form.getFieldValue('eth1') : '',
             eth2: form.getFieldValue('eth2') ? form.getFieldValue('eth2') : '',
             eth3: form.getFieldValue('eth3') ? form.getFieldValue('eth3') : '',
@@ -286,6 +286,8 @@ export default class HostDetail extends Component {
                 fields.statusid = form.getFieldValue('statusid')
             }
           
+          
+        
           
           fields.project = projectids
           fields.delproject = deletedprojectids
