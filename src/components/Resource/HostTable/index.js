@@ -542,8 +542,7 @@ class HostTable extends PureComponent {
                  <Divider type="vertical" />
                  <a onClick={() => this.show(record.ID)}>详情</a>
 
-                 <Divider type="vertical" />
-                 <a onClick={() => this.clean(record.ID)}>关系</a>  
+
 
                  <Divider type="vertical" />
 

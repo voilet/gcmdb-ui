@@ -27,8 +27,8 @@ const formItemLayout = {
 
 
 const dateFormat = 'YYYY/MM/DD';
-const projectids = []
-const deletedprojectids = []
+let projectids = []
+let  deletedprojectids = []
 
 @connect((props) => (props))
 @Form.create()
@@ -287,19 +287,27 @@ export default class HostDetail extends Component {
             }
           
           
-          fields.project = this.state.allprojectids
-          fields.delproject = this.state.delprojectids
+          fields.project = projectids
+          fields.delproject = deletedprojectids
 
           this.props.dispatch({
             type: 'gdevice/modifyHost',
             payload: {
               id: this.props.location.query.id,
               description: fields,
+              cb: (data) => {
+                 if (data.status  == "200") {
+                  message.success('修改成功')
+                 } else {
+                   message.error('修改失败')
+                 }
+                //清空数组
+                projectids = []
+                deletedprojectids = []
+              }
             },
           });
 
-          message.success('修改成功');
- 
         }
       }
     });
@@ -316,10 +324,10 @@ export default class HostDetail extends Component {
 
      projectids.push(project_id) 
 
-     this.setState({
-      allprojectids: projectids,
-      delprojectids: deletedprojectids
-     })
+    //  this.setState({
+    //   allprojectids: projectids,
+    //   delprojectids: deletedprojectids
+    //  })
   }
 
   handleDeleteProData = (value) => {
@@ -334,12 +342,10 @@ export default class HostDetail extends Component {
       projectids.splice(index, 1);
     } 
   
-
-
-    this.setState({ 
-      allprojectids: projectids,
-      delprojectids: deletedprojectids
-     });
+    // this.setState({ 
+    //   allprojectids: projectids,
+    //   delprojectids: deletedprojectids
+    //  });
 
   }
 

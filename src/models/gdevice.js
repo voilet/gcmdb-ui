@@ -66,7 +66,7 @@ import {
       //查询用户密码queryHostPassword
       *queryHostPassword({ payload }, { call, put }) {
         const response = yield call(queryHostPassword, payload) 
-        console.log("queryHost",response)
+ 
         if (response.status  == 200) {
           yield put({
             type: 'passwordSave',
@@ -128,9 +128,11 @@ import {
          yield put({
           type: 'saveResponse',
           payload: response,
+          cb: payload.cb,
         });
          yield put({ type: 'reloadHost'})
         },
+
   
         //删除主机基础信息
       *deleteHost({ payload }, { call,put }) {
@@ -281,6 +283,7 @@ import {
         };
       },
       saveResponse(state, action){
+        action.cb && action.cb(action.payload)
         return {
           ...state,
           response: action.payload,
