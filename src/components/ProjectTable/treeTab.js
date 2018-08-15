@@ -186,6 +186,16 @@ class TreeTab extends PureComponent {
   
   }
 
+  ToHostTable = (key) => {
+    const { dispatch,} = this.props; 
+    dispatch(
+        routerRedux.push(
+            {
+                pathname: '/resource/hardware/host/list',
+                query:{projectid: key}
+            }
+    ));
+  }
 
 
   render() {
@@ -233,9 +243,11 @@ class TreeTab extends PureComponent {
           };
 
           return(
-            <span onClick={() => this.ToHostTable(record.project_id)} style={divStyle }>
+            <span style={divStyle }>
              {  record.hostsip.map(ip=>{
-              return <div> {ip} </div>
+              return <div>
+                     <a onClick={() => this.ToHostTable(record.project_id)}>{ip}</a> 
+                     </div>
             })}
             </span>
             

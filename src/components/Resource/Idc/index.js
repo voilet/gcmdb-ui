@@ -35,11 +35,12 @@ class Idc extends PureComponent {
       dataIndex: 'provider_name',
       width: '8%',
       render: (text, record) => {
-        const { provider_name } = record;
+        const { providers } = record;
         var divStyle = {
           color: 'red',
-        };
-        return <div style={divStyle}>{provider_name}</div>;
+        }
+
+        return providers.map(obj => <div style={divStyle}>{ obj.provider_name}</div>)
       },
     },
     {
@@ -62,20 +63,20 @@ class Idc extends PureComponent {
     },
     {
       title: '位置',
-      dataIndex: 'address',
+      dataIndex: 'addresses',
       width: '15%',
-      render: (text, record) => this.renderColumns(text, record, 'address'),
+      render: (text, record) => this.renderColumns(text, record, 'addresses'),
     },
     {
       title: '机柜名称',
       dataIndex: 'cabinet_name',
       width: '10%',
       render: (text, record) => {
-        const { cabinet_name } = record;
+        const { cabinets } = record;
         var divStyle = {
           color: 'red',
         };
-        return <div style={divStyle}>{cabinet_name}</div>;
+        return cabinets.map(obj => <div style={divStyle}>{ obj.cabinet_name}</div>)
       },
     },
     {

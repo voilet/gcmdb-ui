@@ -47,6 +47,10 @@ export default class ProGroupList extends PureComponent {
     dispatch({
       type: 'gproline/getProjectGroup',
     });
+
+    dispatch({
+      type: 'gproline/getProjectLine',
+    });
   }
 
 
@@ -115,12 +119,14 @@ export default class ProGroupList extends PureComponent {
 
   //保存
   handleSaveData = (val) => {
-    const { ID, title,alias,remarks,enable} = val
+
+    const { ID, title,alias,remarks,line_id} = val
     const params = {
       ID,
       title:title,
       alias: alias,
       remarks:remarks,
+      line_id:line_id
     }
 
 
@@ -198,6 +204,7 @@ export default class ProGroupList extends PureComponent {
               handleSaveData={this.handleSaveData}
               handleDeleteData={this.handleDeleteData}
               progroupdata = {gproline.progroupdata}
+              prolinedata = {gproline.prolinedata}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />

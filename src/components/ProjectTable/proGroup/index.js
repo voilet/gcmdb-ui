@@ -2,6 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 import moment from 'moment';
 import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select, Switch } from 'antd';
 import styles from './index.less';
+const {Option} = Select;
 
 
 const EditableCell = ({ editable, value, onChange }) => (
@@ -204,7 +205,7 @@ class proGroupTable extends PureComponent {
     
 
     const { selectedRowKeys, totalCallNo, data} = this.state;
-    const { loading, progroupdata  } = this.props;
+    const { loading, prolinedata  } = this.props;
 
     const columns = [
       {
@@ -220,6 +221,29 @@ class proGroupTable extends PureComponent {
         key:'title',
         width:'200px',
         render: (text, record) => this.renderColumns(text, record, 'title'),
+      },
+      {
+        title: '产品线名称(中文)',
+        dataIndex: 'line_title',
+        key:'line_title',
+        width:'120px',
+        render: (text, record) =>{
+          
+          console.log("line_title---------",record)
+          const prolineOptions = prolinedata.data.map(post => {
+                return <Option key={post.ID} value={post.ID} >{post.title}</Option>
+                })
+    
+          return(
+            <Select 
+            defaultValue = {record.line.title} 
+              disabled={record.selectStatus} 
+              style={{ width: '100%' }} 
+              onChange={(value)=>this.handleSelectLineValue(value, record.ID, 'line_id')}
+            >
+              {prolineOptions}
+            </Select>)
+        },
       },
       {
         title: '创建时间',
