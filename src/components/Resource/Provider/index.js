@@ -140,9 +140,9 @@ class Provider extends PureComponent {
     }
   };
 
-  // handleTableChange = ( filters, sorter) => {
-  //   this.props.onChange( filters, sorter);
-  // }
+  handleTableChange = (pagination, filters, sorter) => {
+    this.props.onChange(pagination, filters, sorter);
+  }
 
   // handleRowSelectChange = (selectedRowKeys, selectedRows) => {
   //   const totalCallNo = selectedRows.reduce((sum, val) => {
@@ -250,7 +250,15 @@ class Provider extends PureComponent {
   }
 
   render() {
-    const { gprovider, loading } = this.props;
+   
+    const {gprovider} = this.props
+
+    const paginationProps = {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      ...gprovider.pagination,
+    };
+  
 
     this.cacheData = this.state.data.map(item => ({ ...item }));
     return (
@@ -260,7 +268,8 @@ class Provider extends PureComponent {
           rowKey={record => record.ID}
           dataSource={this.state.data}
           columns={this.columns}
-          //  onChange={this.handleTableChange}
+          pagination={paginationProps}
+          onChange={this.handleTableChange}
         />;
       </div>
     );

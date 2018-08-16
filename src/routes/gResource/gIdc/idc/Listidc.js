@@ -40,10 +40,12 @@ export default class Listidc extends PureComponent {
     const {dispatch} = this.props;
     dispatch({
       type: 'gidc/queryIDC',
+      payload: ""
     });
 
     dispatch({
       type: 'gidc/queryProvider',
+      payload: ""
     });
 
   }
@@ -64,6 +66,7 @@ export default class Listidc extends PureComponent {
       ...formValues,
       ...filters,
     };
+    
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }

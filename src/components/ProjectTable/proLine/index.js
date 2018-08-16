@@ -229,6 +229,20 @@ class proLineTable extends PureComponent {
         render: (text, record) => this.renderColumns(text, record, 'title'),
       },
       {
+        title: '占用服务器数量',
+        dataIndex: 'host_nums',
+        key:'host_nums',
+        width:'200px',
+        render: (text, record) => {
+          const { created_at } = record;
+          var divStyle = {
+            color: '#4B0082',
+            textAlign: 'left',
+          };
+          return <div style={divStyle}>{record.host_nums}</div>;
+        },
+      },
+      {
         title: '创建时间',
         dataIndex: 'created_at',
         width: '8%',

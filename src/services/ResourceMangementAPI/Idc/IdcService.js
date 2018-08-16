@@ -12,13 +12,21 @@ export async function queryIdcRelation(params) {
 }
 
 //获取运营商列表
-export async function queryProvider() {
-  return request('/v1/assets/idc/queryprovider');
+export async function queryProvider(params) {
+  console.log('queryProvider', params);
+  //return request('');
+  return request('/v1/assets/idc/queryprovider', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
 }
 
 //添加运营商
 export async function addProvider(params) {
-  console.log('addProvider', params);
+ 
   return request('/v1/assets/idc/addprovider', {
     method: 'POST',
     body: {
@@ -52,8 +60,15 @@ export async function deleteProvider(params) {
 }
 
 //获取机房列表
-export async function queryIDC() {
-  return request('/v1/assets/idc/query');
+export async function queryIDC(params) {
+  console.log(params)
+  return request('/v1/assets/idc/query', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
 }
 
 //添加机房
@@ -173,8 +188,14 @@ export async function deleteBay(params) {
 }
 
 //查询ip
-export async function queryIpResource() {
-  return request('/v1/assets/idc/queryipresource');
+export async function queryIpResource(params) {
+  return request('/v1/assets/idc/queryipresource', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
 }
 
 

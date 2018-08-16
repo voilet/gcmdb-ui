@@ -35,12 +35,10 @@ class Idc extends PureComponent {
       dataIndex: 'provider_name',
       width: '8%',
       render: (text, record) => {
-        const { providers } = record;
         var divStyle = {
           color: 'red',
         }
-
-        return providers.map(obj => <div style={divStyle}>{ obj.provider_name}</div>)
+        return   <div style={divStyle}>{ record.provider_name}</div>
       },
     },
     {
@@ -301,6 +299,16 @@ class Idc extends PureComponent {
         disabled: record.disabled,
       }),
     };
+
+    console.log("gidc.pagination",gidc.pagination)
+
+    const paginationProps = {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      ...gidc.pagination,
+    };
+
+
     this.cacheData = this.state.data.map(item => ({ ...item }));
     return (
       <div className={styles.standardTable}>
@@ -324,6 +332,7 @@ class Idc extends PureComponent {
           dataSource={this.state.data}
           columns={this.columns}
           onChange={this.handleTableChange}
+          pagination={paginationProps}
         />
       </div>
     );

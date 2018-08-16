@@ -191,9 +191,9 @@ class IpTable extends PureComponent {
     }
   };
 
-  handleTableChange = (filters, sorter) => {
-    this.props.onChange(filters, sorter);
-  };
+  handleTableChange = (pagination, filters, sorter) => {
+    this.props.onChange(pagination, filters, sorter);
+  }
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
     const totalCallNo = selectedRows.reduce((sum, val) => {
@@ -338,6 +338,12 @@ class IpTable extends PureComponent {
       }),
     };
 
+    const paginationProps = {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      ...ipresource.pagination,
+    };
+
     this.cacheData = this.state.data.map(item => ({ ...item }));
 
     return (
@@ -345,6 +351,7 @@ class IpTable extends PureComponent {
         <Table
           bordered
           rowSelection={rowSelection}
+          pagination={paginationProps}
           rowKey={record => record.ID}
           dataSource={this.state.data}
           columns={this.columns}

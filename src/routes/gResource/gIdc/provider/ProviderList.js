@@ -39,6 +39,7 @@ export default class ProviderList extends PureComponent {
     const {dispatch} = this.props;
     dispatch({
       type: 'gidc/queryProvider',
+      payload: ""
     });
   }
 

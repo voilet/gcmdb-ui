@@ -246,6 +246,7 @@ export default {
 
       //查询运营商信息
       *queryProvider({ payload }, { call,put }) {
+        
         const response = yield call(queryProvider, payload) 
         if (response.status  == 200) {
           yield put({

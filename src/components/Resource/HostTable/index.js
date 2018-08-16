@@ -475,37 +475,37 @@ class HostTable extends PureComponent {
         key: 'status',
         filters: [
             {
-              text: HostStatusMap[0],
+              text: HostStatus[0],
               value: 0,
             },
             {
-              text: HostStatusMap[1],
+              text: HostStatus[1],
               value: 1,
             },
             {
-              text: HostStatusMap[2],
+              text: HostStatus[2],
               value: 2,
             },
             {
-              text: HostStatusMap[3],
+              text: HostStatus[3],
               value: 3,
             },
             {
-                text: HostStatusMap[4],
+                text: HostStatus[4],
                 value: 4,
             },
             {
-                text: HostStatusMap[5],
+                text: HostStatus[5],
                 value: 5,
             },
             {
-                text: HostStatusMap[6],
+                text: HostStatus[6],
                 value: 6,
             },
           ],
           onFilter: (value, record) => record.status.toString() === value,
           render(val) {
-            return <Badge status={HostStatusMap[val]} text={HostStatus[val]} />;
+            return <Badge status={HostStatus[val]} text={HostStatus[val]} />;
           },
     },{
         title: 'agent',
@@ -563,8 +563,7 @@ class HostTable extends PureComponent {
       showQuickJumper: true,
       ...gdevice.host.pagination,
     };
-    console.log("gdevice pagination++++",gdevice.host.pagination)
-    console.log("paginationProps++++",paginationProps)
+  
 
     const rowSelection = {
       selectedRowKeys,
@@ -584,8 +583,10 @@ class HostTable extends PureComponent {
           <Alert
             message={(
               <div>
+                目前共有 <a style={{ fontWeight: 600 }}>{paginationProps.total}</a> 个主机&nbsp;
                 已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 个主机&nbsp;
                 <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>取消勾选</a>
+              
               </div>
             )}
             type="info"
