@@ -17,7 +17,8 @@ import {
     Divider,
     Table,
      Popconfirm,
-     InputNumber
+     InputNumber,
+     notification
   } from 'antd';
 
 
@@ -28,6 +29,12 @@ const FormItem = Form.Item;
 let count = 0 
 let uuid = 0
 
+const openNotificationWithIcon = (type,data) => {
+  notification[type]({
+    message: 'Notification Title',
+    description: data,
+  });
+};
 
 @connect((props) => (props))
 @Form.create()
@@ -42,28 +49,28 @@ export default class editCabinet extends PureComponent {
     idc:[],
     haspower: false,
     addable: false,
-    baystatus: false
+    baystatus: false,
+    onSubmit: false
   };
 
 
   componentWillMount() {
     const { dispatch} = this.props;
     dispatch({
-      type: 'gidc/queryIDC',
+      type: 'gidc/queryAllIDC',
+      payload: {
+        cb: (data) => {
+          if (data.status == "200") {
+            this.setState({
+              idc:  data.data
+            })
+          }
+        }
+      }
     });
     
   }
 
- 
-
-  componentWillReceiveProps(nextProps) {
-   
-    if (!isEqual(nextProps.gidc.idc.time4Update, this.props.gidc.idc.time4Update)) {
-        this.setState({
-          idc:  nextProps.gidc.idc.data
-        })
-    }
-  }
 
   handleSubmit = (e) => {
     const { dispatch } = this.props;
@@ -86,12 +93,29 @@ export default class editCabinet extends PureComponent {
           'bay_details':JSON.stringify(baydata)
          }
 
-     
         dispatch({
           type: 'gidc/addCabinet',
-          payload: fields,
+          payload: {
+            ...fields,
+            cb: (data) => {
+              if (data.status  == "200") {
+                openNotificationWithIcon('success',data.msg)
+  
+               this.setState({
+                  baydata:[],
+                  haspower: false,
+                  addable: false,
+                  baystatus: false,
+                  onSubmit: true
+               })
+            
+               form.resetFields();
+               } else {
+                openNotificationWithIcon('error',data.msg)
+               }
+            }  
+          },
         });
-
       };
     });
   
@@ -210,7 +234,9 @@ export default class editCabinet extends PureComponent {
   }
 
   handleSelectChange = (value) => {
-    console.log("value",value)
+    this.setState({
+      onSubmit: false
+    })
     this.props.form.setFieldsValue({
       idcid: value,
     });
@@ -377,8 +403,10 @@ export default class editCabinet extends PureComponent {
               <FormItem label="所属机房"  {...formItemLayout} >
                 {getFieldDecorator('idcid'
                   )(<Select 
+                      showSearch
                       style={{ width: 264 }} 
                       onChange={this.handleSelectChange}
+                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     >
                       {
                         this.state.idc.map((item,ind)=>{
@@ -462,7 +490,7 @@ export default class editCabinet extends PureComponent {
             <Row gutter={24} style={{ marginBottom: 32 }}>
          
          <Col span={24} style={{ textAlign: 'left' }}>
-          <Button type="primary" htmlType="submit">提交</Button>
+          <Button type="primary"  onClick={this.handleSubmit} disabled = {this.state.onSubmit}>提交</Button>
           <Divider type="vertical" />
           <Button onClick= {() => this.reback()}>返回</Button>
         </Col>

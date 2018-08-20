@@ -18,6 +18,14 @@ class CabTable extends PureComponent {
 
   columns = [
     {
+      title: '序号',
+      dataIndex: 'num',
+      width: '20px',
+      render (text, record, index) {
+         return index
+       } 
+    },
+    {
       title: '机柜名称',
       dataIndex: 'cabinet_name',
       width: '100px',
@@ -82,14 +90,13 @@ class CabTable extends PureComponent {
     },
   ];
 
-  componentWillReceiveProps(nextProps) {
-    console.log("nextProps.cabinet",nextProps.cabinet)
-    if (nextProps.cabinet.data) {
-      this.setState({
-        data: nextProps.cabinet.data
-      });
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.cabinet.data) {
+  //     this.setState({
+  //       data: nextProps.cabinet.data
+  //     });
+  //   }
+  // }
  
   handleTableChange = (pagination, filters, sorter) => {
     this.props.onChange(pagination, filters, sorter);
@@ -163,15 +170,12 @@ class CabTable extends PureComponent {
     };
 
 
-     console.log("this.state.data",this.state.data)
-
-
     return (
       <div className={styles.standardTable}>
         <Table
           bordered
           rowKey={record => record.ID}
-          dataSource={this.state.data}
+          dataSource={this.props.cabinet.data}
           columns={this.columns}
           pagination={paginationProps}
           onChange={this.handleTableChange}

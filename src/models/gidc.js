@@ -4,7 +4,7 @@ import {
   queryCabinet,addCabinet,deleteCabinet,modifyCabinet,
   deleteBay,queryBay,addBay,modifyBay,
   queryIpResource,addIpResource,modifyIpResource,deleteIpResource,checkIpResource,queryIpClassify,searchIpResourceAPI,
-  queryCabinetDetail
+  queryCabinetDetail,queryAllIDC
   } from '../services/ResourceMangementAPI/Idc/IdcService'
 import {notification} from 'antd'
 
@@ -61,13 +61,17 @@ export default {
     ipcheck: {
       data:[]
     },
+
     ipclassify:{
       data:{
         iptype:[],
         ippurpose: []
       }
     },
+    response: {
+    },
     loading: false
+
   },
 
 
@@ -82,7 +86,7 @@ export default {
       },
     
 
-    // 获取机房列表
+    //分页获取机房列表
     *queryIDC({ payload }, { call, put }) {
       const response = yield call(queryIDC, payload) 
       if (response.status  == 200) {
@@ -94,6 +98,23 @@ export default {
           openNotificationWithIcon('error',response.msg)
       }
     },
+
+     //获取所有机房列表
+     *queryAllIDC({ payload }, { call, put }) {
+      const response = yield call(queryAllIDC, payload) 
+      if (response.status  == 200) {
+        yield put({
+          type: 'idcSave',
+          payload: response,
+          cb: payload.cb   
+        });
+        } else {
+          openNotificationWithIcon('error',response.msg)
+      }
+    },
+
+
+    
 
 
     //查询机柜 && 机架 && 机房
@@ -150,7 +171,7 @@ export default {
       //查询机柜信息
     *queryCabinet({ payload }, { call , put}) {
         const response =   yield call(queryCabinet, payload);
-        console.log("queryCabinet",response)
+ 
         if (response.status  == 200) {
           yield put({
             type: 'cabinetSave',
@@ -178,7 +199,12 @@ export default {
 
       //添加机柜信息
       *addCabinet({ payload }, { call, put }) {
-        yield call(addCabinet, payload);
+        const response = yield call(addCabinet, payload);
+        yield put({
+          type: 'saveResponse',
+          payload: response,
+          cb: payload.cb,
+        });
         yield put({ type: 'reloadCabinet'})
       },
   
@@ -382,15 +408,26 @@ export default {
     },
 
     idcSave(state, action){ 
+
+
+
       if (action.payload.data === null ) {
         action.payload.data = []
+      } else {
+        action.payload.data = action.payload.data.map((obj) =>{
+            if (obj.cabinets && obj.cabinets === null ) {
+                obj.cabinets = []
+            }
+            return obj 
+        })
       }
+
+
+      action.cb && action.cb(action.payload)
+      
       return {
         ...state,
-        idc: {
-          ...action.payload,
-          time4Update: new Date()
-        }
+        idc: action.payload,
       }
 
     },
@@ -459,6 +496,14 @@ export default {
       }
     },
 
+    saveResponse(state, action){
+      action.cb && action.cb(action.payload)
+      return {
+        ...state,
+        response: action.payload,
+      };
+    },
+
     empty(state, action){
       return  {
         ...state,
@@ -472,7 +517,11 @@ export default {
         },
         cabinetdetail: {
           data:[]
-        }
+        },
+        idc: {
+          data: [],
+          pagination: {}
+        },
       }
     }
   },

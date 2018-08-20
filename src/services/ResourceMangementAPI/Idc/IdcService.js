@@ -59,9 +59,8 @@ export async function deleteProvider(params) {
   });
 }
 
-//获取机房列表
+//分页查询机房列表
 export async function queryIDC(params) {
-  console.log(params)
   return request('/v1/assets/idc/query', {
     method: 'POST',
     body: {
@@ -70,6 +69,12 @@ export async function queryIDC(params) {
     },
   });
 }
+
+//查询所有机房列表
+export async function queryAllIDC() {
+  return request(`/v1/assets/idc/all`);
+}
+
 
 //添加机房
 export async function addIDC(params) {

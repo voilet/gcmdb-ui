@@ -302,9 +302,12 @@ handleMenuClick = (e) => {
             <FormItem label="主机状态"  {...formItemLayout} >
                 {getFieldDecorator('status')(
                   <Select placeholder="请选择" style={{ width: '100%' }}>
-                    <Option value="0">运行中</Option>
-                    <Option value="1">已关机</Option>
-                    <Option value="3">异常中</Option>
+                    <Option key="2" value="2">host运行中</Option>
+                    <Option key="3" value="3">host已关机</Option>
+                    <Option key="5" value="5">host异常</Option>
+                    <Option key="6" value="6">host已过保</Option>
+                    <Option key="7" value="7">host装机中</Option>
+                    <Option key="8" value="8">host未处理</Option>
                   </Select>
                 )}
               </FormItem>
@@ -353,10 +356,12 @@ handleMenuClick = (e) => {
             <FormItem label="主机状态" {...formItemLayout}>
               {getFieldDecorator('status')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                    <Option value="0">运行中</Option>
-                    <Option value="1">已关机</Option>
-                    <Option value="3">异常中</Option>
-                    <Option value="4">已过保</Option>
+                    <Option key="2" value="2">host运行中</Option>
+                    <Option key="3" value="3">host已关机</Option>
+                    <Option key="5" value="5">host异常</Option>
+                    <Option key="6" value="6">host已过保</Option>
+                    <Option key="7" value="7">host装机中</Option>
+                    <Option key="8" value="8">host未处理</Option>
                 </Select>
               )}
             </FormItem>
@@ -393,12 +398,12 @@ handleMenuClick = (e) => {
                   style={{ width: '100%' }}
                     placeholder="请选择"
                   >
-                    <Option  value='1'>物理机</Option>
-                    <Option  value='2'>虚拟机</Option>
-                    <Option  value='3'>交换机</Option>
-                    <Option  value='4'>路由器</Option>
-                    <Option  value='5'>防火墙</Option>
-                    <Option  value='6'>存储</Option>
+                    <Option key = "1" value= "1">物理机</Option>
+                    <Option key = "2" value='2'>虚拟机</Option>
+                    <Option key = "3" value='3'>交换机</Option>
+                    <Option key = "4" value='4'>路由器</Option>
+                    <Option key = "5" value='5'>防火墙</Option>
+                    <Option key = "6" value='6'>存储</Option>
                   </Select>
                 )}
               </FormItem>
@@ -424,10 +429,10 @@ handleMenuClick = (e) => {
               <FormItem label='操作系统类型' {...formItemLayout}>
                 {getFieldDecorator(`osversion`)(
                   <Select placeholder="请选择" style={{ width: '100%' }}>
-                      <Option value="1">Centos6.9</Option>
-                      <Option value="2">Centos7.2</Option>
-                      <Option value="3">Windows2003</Option>
-                      <Option value="4">Windows2008</Option>
+                      <Option key = "1" value="1">Centos6.9</Option>
+                      <Option key = "2" value="2">Centos7.2</Option>
+                      <Option key = "3" value="3">Windows2003</Option>
+                      <Option key = "4" value="4">Windows2008</Option>
                   </Select>
                 )}
               </FormItem>
@@ -472,7 +477,9 @@ handleMenuClick = (e) => {
 
             <Divider>  主机管理  </Divider>
             
-            <HostTable
+       
+
+           <HostTable
               selectedRows={selectedRows}
              // loading={loading}
               gdevice={gdevice}
@@ -485,8 +492,6 @@ handleMenuClick = (e) => {
               passwordClick={this.passwordClick}
               {...this.props}
             />
-
-
 
           </div>
         </Card>

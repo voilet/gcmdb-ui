@@ -71,11 +71,16 @@ class Idc extends PureComponent {
       width: '10%',
       render: (text, record) => {
         const { cabinets } = record;
-        var divStyle = {
-          color: 'red',
-        };
-        return cabinets.map(obj => <div style={divStyle}>{ obj.cabinet_name}</div>)
-      },
+
+        if (cabinets) {
+          var divStyle = {
+            color: 'red',
+          };
+          return cabinets.map(obj => <div style={divStyle}>{ obj.cabinet_name}</div>)
+        }
+      }
+      //   
+      // },
     },
     {
       title: '状态',

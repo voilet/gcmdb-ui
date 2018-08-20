@@ -1,33 +1,18 @@
 import React, { PureComponent, Fragment } from 'react';
 import { routerRedux } from 'dva/router';
 
-import moment from 'moment';
-import DescriptionList from '../../DescriptionList';
-import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select,Button,Modal,Form,notification  } from 'antd';
+
+import { Table, Alert, Icon, Divider, Popconfirm,Tag,notification  } from 'antd';
 import styles from './index.less';
 //import HostDetail from './hostDetail'
 import ModifyPw from './ModifyPw'
 import ShowPw from './showPw'
 
-const {Option} = Select;
-const FormItem = Form.Item;
-const { Description } = DescriptionList;
-
-const HostStatusMap = ['online','poweroff','processing','offline','outdate', 'error','installing'];
-const HostStatus = ['已上线', '已关机','运行中','已下线','已过保', '异常','装机中'];
-
-const AgentStatusMap = ['processing','error'];
-const AgentStatus = ['运行中','异常'];
 
 
-const formItemLayout = {
-  labelCol: {
-    span: 6 ,
-  },
-  wrapperCol: {
-    span: 18 ,
-  },
-};
+
+const Status = ['agent异常','agent运行中','host 已上线', 'host 已关机','host 运行中','host 已下线','host 已过保', 'host 异常','host 装机中'];
+
 
 const openNotificationWithIcon = (type) => {
   notification[type]({
@@ -44,66 +29,23 @@ class HostTable extends PureComponent {
     totalCallNo: 0,
     data:[],
     status: false,
-    disabled: true,
-    modalVisible: false,
     confirmDirty: false,
   };
 
-  componentWillReceiveProps(nextProps) {
-    // clean state
+  componentWillReceiveProps(nextProps){
     if (nextProps.selectedRows.length === 0) {
       this.setState({
         selectedRowKeys: [],
         totalCallNo: 0,
       });
     }
-
     if (nextProps.gdevice.host.data) {
-          
-        let content = '',id = '';
-        if(nextProps.gdevice.password.data){
-          content=nextProps.gdevice.password.data.password
-          id=nextProps.gdevice.password.data.ID
-        }
-          this.setState({
-              data: nextProps.gdevice.host.data.map((obj)=>{
-                let pwd = true
-                if( obj.ID == id ){
-                  pwd=content
-                }
-                obj.password = pwd
-                obj.selectStatus = true
-                return obj;
-              }),
-          })
-      }
-  }
-
-
-  handleConfirmBlur = (e) => {
-    const value = e.target.value;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-  }
-
-  compareToFirstPassword = (rule, value, callback) => {
-    const currentPw = this.props.form.getFieldValue('password')
-    
-    const form = this.props.form;
-    if (value && value !== form.getFieldValue('password')) {
-      callback('两次输入的密码必须一致');
-    } else {
-      callback();
+      this.setState({ data: nextProps.gdevice.host.data })
     }
+
   }
 
-  validateToNextPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && this.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true });
-    }
-    callback();
-  }
-
+ 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
     const totalCallNo = selectedRows.reduce((sum, val) => {
       return sum + parseFloat(val.callNo, 10);
@@ -149,186 +91,9 @@ class HostTable extends PureComponent {
   }
   
 
-  clean(key) {   
-    const { dispatch, match} = this.props; 
-    dispatch(
-        routerRedux.push(
-            {
-                pathname: '/resource/hardware/host/clean',
-                query:{id: key}
-            }
-    ));
-    
-  }
-
-  save(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    if (target) {
-      delete target.editable;
-      target.enable = this.state.status
-      this.setState({ 
-        data: newData.map((obj)=>{
-          if(key == obj.ID){
-            obj.selectStatus=true
-          }
-          return obj;
-        }),
-          disabled: true
-         });
-      this.cacheData = newData.map(item => ({ ...item }));
-   
-      this.props.handleSaveData(target)
-    }
-  }
-  
-  cancel(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    if (target) {
-      Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
-      delete target.editable;
-      this.setState({ 
-        data: newData.map((obj)=>{
-          if(key == obj.ID){
-            obj.selectStatus=true
-          }
-          return obj;
-        }),
-        disabled: true
-     });
-    }
-  }
-
-  askdelete(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-
-    if (target) {
-      target.deleteable = true;
-      this.setState({ data: newData });
-    }
-  }
-
-  confirmdelete(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    if (target) {
-        const index = newData.indexOf(target)
-        if (index > -1) {
-        newData.splice(index, 1);
-        }
-    
-    target.tag = false;
-    this.setState({ data: newData });
-
-    this.cacheData = newData.map(item => ({ ...item }));   
-    this.props.handleDeleteData(target)
-    }
-   
-  }
-
-  handleChange(value, key, column) {
-    
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    
-    if (target) {
-      target[column] = value;
-      this.setState({ 
-        data: newData,
-        disabled:false
-      });
-    }
-  }
-
-
-  handleGroupValue(value, key, column) {
-    
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    
-    if (target) {
-      target[column] = value.split(",")[0];
-      target["group_title"] = value.split(",")[1];
-
-      this.setState({ 
-        data: newData,
-        disabled:false
-      });
-    }
-  }
-
-  handleSelectLineValue(value, key, column){
-   // console.log(value, key, column)
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    
-    if (target) {
-      target[column] = value;
-      target["group_title"] = "请选择"
-      target["group_id"] = "-1"
-
-      this.props.dispatch({
-        type: 'gproline/getProjectGroupbyId',
-        payload: value
-      });
-
-      this.setState({ 
-        data: newData,
-        disabled:false,
-        selectedLine: true
-      });
-    }
-  
-  }
-  canceldelete(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    if (target) {
-      Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
-      delete target.deleteable;
-      this.setState({ data: newData });
-    }
-  }
-
   handleProlist = (value) => {
      return  value.map(i => <div>{i.proline_title}->{i.progroup_title}->{i.project_title}<hr /></div>) 
   }
-
-
-  passwordClick = (val,password) => {
-
-    this.setState({
-      modalVisible: true
-    })
-
-    this.props.dispatch({
-      type: 'gdevice/queryHostPassword',
-      payload: val
-    })
-  }
-
-  handleModalVisible = () => {
-    this.setState({
-      modalVisible: false
-    })
-  }
-
-  onSave = (ID,passwd) => {
-    this.props.dispatch({
-      type: 'gdevice/modifyHostPassword',
-      payload: { id: ID, passwd: passwd}
-    })    
-  }
-  
-  ChangePassword = () => {
-     this.setState({
-      modalVisibleEdit: true
-     })
-  }
-
-
 
   deleteHost = (hostid) => {
     let ids = new Array()
@@ -359,14 +124,16 @@ class HostTable extends PureComponent {
           if (index > -1) {
           newData.splice(index, 1);
           }
-      
-      console.log("deleteHost data",newData)
+ 
       this.setState({ data: newData });
-  
-      //this.cacheData = newData.map(item => ({ ...item }));  
+
     }} else {
       openNotificationWithIcon('error')
     }
+  }
+
+  editPass = () => {
+    <ModifyPw />
   }
 
   render() {
@@ -469,62 +236,84 @@ class HostTable extends PureComponent {
         width: "120px",
         key: 'user'
     },{
-        title: '机器状态',
+        title: '状态信息',
         dataIndex: 'status',
         width: "120px",
         key: 'status',
         filters: [
             {
-              text: HostStatus[0],
+              text: Status[0],
               value: 0,
             },
             {
-              text: HostStatus[1],
+              text: Status[1],
               value: 1,
             },
             {
-              text: HostStatus[2],
+              text: Status[2],
               value: 2,
             },
             {
-              text: HostStatus[3],
+              text: Status[3],
               value: 3,
             },
             {
-                text: HostStatus[4],
+                text: Status[4],
                 value: 4,
             },
             {
-                text: HostStatus[5],
+                text: Status[5],
                 value: 5,
             },
             {
-                text: HostStatus[6],
+                text: Status[6],
                 value: 6,
             },
-          ],
-          onFilter: (value, record) => record.status.toString() === value,
-          render(val) {
-            return <Badge status={HostStatus[val]} text={HostStatus[val]} />;
+            {
+              text: Status[7],
+              value: 7,
           },
-    },{
-        title: 'agent',
-        dataIndex: 'agent_survival',
-        width: "120px",
-        key: 'agent_survival',
-        filters: [
-            {
-              text: AgentStatus[0],
-              value: 0,
-            },
-            {
-              text: AgentStatus[1],
-              value: 1,
-            },
+          {
+            text: Status[8],
+            value: 8,
+        },
           ],
-          onFilter: (value, record) => record.status.toString() === value,
-          render(val) {
-            return <Badge status={AgentStatusMap[val]} text={AgentStatus[val]} />;
+          onFilter: (value, record) => {
+            if (record.status.host_status_id.toString() == value) {
+                return true 
+            } else if (record.status.agent_status_id.toString() == value) {
+                return true 
+            } else {
+              return false 
+            }
+          },
+    
+          render(text) {
+            let hostStatus 
+            
+            let agentStatus
+   
+            if ( text.host_status_id !== -1){
+              if (text.host_status_id > 1) {
+                hostStatus = <Tag color="#9F79EE" style={{  marginBottom: '8px'}}>{Status[text.host_status_id]}</Tag>
+              }
+            } else {
+              hostStatus = <Tag color="#9F79EE" style={{  marginBottom: '8px'}}><Icon type="desktop" />host无状态</Tag>
+            }
+           
+            if (text.agent_status_id !== -1){
+              agentStatus = <Tag color="#108ee9" style={{  marginBottom: '8px'}}>{Status[text.agent_status_id]}</Tag>
+            } else {
+              agentStatus = <Tag color="#108ee9" style={{  marginBottom: '8px'}}><Icon type="tag-o" />agent无状态 </Tag>
+            }
+    
+            return (
+              <div>
+                 { hostStatus }
+                 { agentStatus }
+              </div>
+            )
+           
           },
     },
       {
@@ -536,22 +325,16 @@ class HostTable extends PureComponent {
           return (
           <div className="editable-row-operations">
             <a onClick={() => this.edit(record.ID)}>编辑</a>  
-   
-
-          
                  <Divider type="vertical" />
                  <a onClick={() => this.show(record.ID)}>详情</a>
-
-
-
                  <Divider type="vertical" />
-
                 {
                 <Popconfirm title="确定删除?" onConfirm={() => this.deleteHost(record.ID)}>
                   <a>删除</a>  
                  </Popconfirm>
                 }
-                
+                <Divider type="vertical" />
+                {/* <a onClick={() => this.editPass(record.ID)}>修改密码</a> */}
 
           </div>
           );
@@ -574,7 +357,7 @@ class HostTable extends PureComponent {
     };
 
     
-    this.cacheData =  this.state.data.map(item => ({ ...item }));     
+   // this.cacheData =  this.state.data.map(item => ({ ...item }));     
   
 
     return (

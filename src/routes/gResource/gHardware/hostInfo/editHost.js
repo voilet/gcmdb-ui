@@ -63,8 +63,6 @@ export default class HostDetail extends Component {
           id: location.query.id,
           cb: (data) => {
             
-       
-            
             if (Object.keys(data).length !== 0) {
 
               const activeKey = `${data.detail_id}`
@@ -83,6 +81,12 @@ export default class HostDetail extends Component {
                 hostid: this.props.location.query.id
                });
             }
+
+            data.projectlists.map((obj) =>{
+              if (!projectids.indexOf(obj.ID)) {
+                projectids.push(obj.ID)
+              }
+            })
           }
         },
       });
@@ -209,7 +213,7 @@ export default class HostDetail extends Component {
     e.preventDefault();
     const form = this.props.form;
     const { dateStatus } = this.state;
-
+    const { gdevice }  = this.props
     form.validateFields((err, values) => {
       if (!err) {
         if (!dateStatus) {
@@ -243,10 +247,6 @@ export default class HostDetail extends Component {
             assets_number: form.getFieldValue('service_code') ? form.getFieldValue('service_code') : '',
             assets_number: form.getFieldValue('memory') ? form.getFieldValue('memory') : '',
 
-            idc_id: form.getFieldValue('idc_id') ? form.getFieldValue('idc_id') : '',
-            cabinet_id: form.getFieldValue('cabinet_id') ? form.getFieldValue('cabinet_id') : '',
-            bay_id: form.getFieldValue('bay_id') ? form.getFieldValue('bay_id') : '',
-   
             osversion: form.getFieldValue('osversion') ? form.getFieldValue('osversion') : '',
             planversion: form.getFieldValue('planversion') ? form.getFieldValue('planversion') : '',
           
@@ -261,34 +261,49 @@ export default class HostDetail extends Component {
      
 
           switch (form.getFieldValue('statusid')) {
-            case '已上线':
+            case 'host已上线':
                 fields.statusid = 0
                 break
-            case '已关机':
+            case 'host已关机':
                 fields.statusid = 1
                 break
-            case '运行中':
+            case 'host运行中':
                 fields.statusid = 2
                 break
-            case '已下线':
+            case 'host已下线':
                 fields.statusid = 3
                 break
-            case '异常':
+            case 'host异常':
                 fields.statusid = 4
                 break
-            case '报废':
+            case 'host报废':
                 fields.statusid = 5
                 break
-            case '装机中':
+            case 'host装机中':
                 fields.statusid = 6
                 break
             default:
                 fields.statusid = form.getFieldValue('statusid')
             }
-          
-          
-        
-          
+
+            if( gdevice.hostdetail.data.idc_title === form.getFieldValue('idc_id')) {
+              fields.idc_id = gdevice.hostdetail.data.idc_ID
+            } else {
+              fields.idc_id = form.getFieldValue('idc_id') 
+            }       
+
+            if( gdevice.hostdetail.data.cabinet_title === form.getFieldValue('cabinet_id')) {
+              fields.cabinet_id = gdevice.hostdetail.data.cabinet_ID
+            } else {
+              fields.cabinet_id = form.getFieldValue('cabinet_id') 
+            }       
+
+            if( gdevice.hostdetail.data.bays_title === form.getFieldValue('bay_id')) {
+              fields.bay_id = gdevice.hostdetail.data.bays_ID
+            } else {
+              fields.bay_id = form.getFieldValue('bay_id') 
+            }       
+                  
           fields.project = projectids
           fields.delproject = deletedprojectids
 
@@ -363,7 +378,9 @@ export default class HostDetail extends Component {
     const { getFieldDecorator } = this.props.form;
     const { gidc, gdevice,ghardware} = this.props
 
+    console.log("this.props",this.props.gidc)
     let cabinetOptions
+
 
     const idcOptions = this.props.gidc.idc.data.map(post => {
       return <Option key={post.ID} value={post.ID} >{post.title}</Option>
@@ -426,13 +443,13 @@ export default class HostDetail extends Component {
                   ],
                 })(
                   <Select placeholder="请选择" style={{ width: '100%' }} onChange={this.HandleSelectHostStatus}>
-                    <Option key="0" value="0">已上线</Option>
-                    <Option key="1" value="1">已关机</Option>
-                    <Option key="2" value="2">运行中</Option>
-                    <Option key="3" value="3">已下线</Option>
-                    <Option key="4" value="4">异常</Option>
-                    <Option key="5" value="5">报废</Option>
-                    <Option key="6" value="6">装机中</Option>
+                    <Option key="2" value="2">host运行中</Option>
+                    <Option key="3" value="3">host已关机</Option>
+                    <Option key="4" value="4">host已下线</Option>
+                    <Option key="5" value="5">host异常</Option>
+                    <Option key="6" value="6">host已过保</Option>
+                    <Option key="7" value="7">host装机中</Option>
+                    <Option key="8" value="8">host未处理</Option>
                   </Select>
                 )}
               </FormItem>
@@ -548,10 +565,9 @@ export default class HostDetail extends Component {
 
               <Col span={8} key={1} style={{ display: 'block' }}>
                 <FormItem label="机器购买时间" {...formItemLayout}>
-                
                   {
                     getFieldDecorator(`start_guaratee`,{
-                      initialValue: moment(information.start_guaratee, dateFormat)
+                      initialValue: moment(information.start_guaratee).isBefore('2006-05-16') ? moment("2018-05-01", dateFormat) :  moment(`${information.start_guaratee}`, dateFormat)
                     })(<DatePicker 
                       format={dateFormat}
                        onChange={this.newDateChange.bind(this)
@@ -563,7 +579,7 @@ export default class HostDetail extends Component {
               <Col span={8} key={2} style={{ display: 'block' }}>
                 <FormItem label="机器最后维保" {...formItemLayout}>
                   {getFieldDecorator(`stop_guaratee`,{
-                      initialValue: moment(`${information.stop_guaratee}`, dateFormat)
+                       initialValue: moment(information.start_guaratee).isBefore('2006-05-16') ? moment("2018-05-02", dateFormat) :  moment(`${information.stop_guaratee}`, dateFormat)
                     })(<DatePicker onChange={this.oldDateChange.bind(this)} />)}
                 </FormItem>
               </Col>
@@ -664,6 +680,7 @@ export default class HostDetail extends Component {
                   </Col>
                   <Col span={8}>
                     <FormItem label="机架选择" {...formItemLayout}>
+                      
                       {getFieldDecorator(`bay_id`, {
                         initialValue: `${information.bays_title }`,
                     })(<Select style={{ width: 200, marginRight: 40 }}>{baysOptions}</Select>)}

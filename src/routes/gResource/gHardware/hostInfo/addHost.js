@@ -497,13 +497,13 @@ export default class HostDetail extends Component {
                   ],
                 })(
                   <Select placeholder="请选择" style={{ width: '100%' }}>
-                    <Option value="0">已上线</Option>
-                    <Option value="1">已关机</Option>
-                    <Option value="2">运行中</Option>
-                    <Option value="3">已下线</Option>
-                    <Option value="4">异常</Option>
-                    <Option value="5">报废</Option>
-                    <Option value="6">装机中</Option>
+                    <Option key="2" value="2">host运行中</Option>
+                    <Option key="3" value="3">host已关机</Option>
+                    <Option key="4" value="4">host已下线</Option>
+                    <Option key="5" value="5">host异常</Option>
+                    <Option key="6" value="6">host已过保</Option>
+                    <Option key="7" value="7">host装机中</Option>
+                    <Option key="8" value="8">host未处理</Option>
                   </Select>
                 )}
               </FormItem>
@@ -521,12 +521,12 @@ export default class HostDetail extends Component {
                   ],
                 })(
                   <Select placeholder="请选择" style={{ width: '100%' }}>
-                    <Option value="1">物理机</Option>
-                    <Option value="2">虚拟机</Option>
-                    <Option value="3">交换机</Option>
-                    <Option value="4">路由器</Option>
-                    <Option value="5">防火墙</Option>
-                    <Option value="6">存储</Option>
+                    <Option key = "1" value="1">物理机</Option>
+                    <Option key = "2" value="2">虚拟机</Option>
+                    <Option key = "3" value="3">交换机</Option>
+                    <Option key = "4" value="4">路由器</Option>
+                    <Option key = "5" value="5">防火墙</Option>
+                    <Option key = "6" value="6">存储</Option>
                   </Select>
                 )}
               </FormItem>
@@ -544,9 +544,9 @@ export default class HostDetail extends Component {
                   ],
                 })(
                   <Select placeholder="请选择" style={{ width: '100%' }}>
-                    <Option value="1">生产环境</Option>
-                    <Option value="2">仿真环境</Option>
-                    <Option value="3">测试环境</Option>
+                    <Option key = "1" value="1">生产环境</Option>
+                    <Option key = "2" value="2">仿真环境</Option>
+                    <Option key = "3" value="3">测试环境</Option>
                   </Select>
                 )}
               </FormItem>
