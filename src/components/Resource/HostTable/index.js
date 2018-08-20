@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 import { routerRedux } from 'dva/router';
 
 
-import { Table, Alert, Icon, Divider, Popconfirm,Tag,notification  } from 'antd';
+import { Table, Alert, Icon, Badge,Divider, Popconfirm,Tag,notification,Row,Col  } from 'antd';
 import styles from './index.less';
 //import HostDetail from './hostDetail'
 import ModifyPw from './ModifyPw'
@@ -238,7 +238,7 @@ class HostTable extends PureComponent {
     },{
         title: '状态信息',
         dataIndex: 'status',
-        width: "120px",
+        width: "150px",
         key: 'status',
         filters: [
             {
@@ -289,28 +289,86 @@ class HostTable extends PureComponent {
           },
     
           render(text) {
-            let hostStatus 
+            let hostStatusOPT 
             
-            let agentStatus
+            let agentStatusOPT
+
+            let hoststatus
+            let agentstatus 
+
+            if (text.host_status_id === 2)  {
+              hoststatus = "success"
+            } else {
+              hoststatus = "error"
+            }
+
+            if (text.agent_status_id === 1)  {
+              agentstatus = "success"
+            } else {
+              agentstatus = "error"
+            }
+
+
    
             if ( text.host_status_id !== -1){
               if (text.host_status_id > 1) {
-                hostStatus = <Tag color="#9F79EE" style={{  marginBottom: '8px'}}>{Status[text.host_status_id]}</Tag>
+
+                hostStatusOPT = 
+                <Row gutter={16}>
+                  <Col span={2} >
+                  <Badge status={hoststatus} />
+                  </Col>
+                  <Col span={8} >
+                 <Tag color="#9F79EE" style={{  marginBottom: '8px'}}>
+                {Status[text.host_status_id]}
+                </Tag>
+                </Col>
+                </Row>
               }
             } else {
-              hostStatus = <Tag color="#9F79EE" style={{  marginBottom: '8px'}}><Icon type="desktop" />host无状态</Tag>
+              hostStatusOPT = 
+              <Row gutter={16}>
+               <Col span={2} >
+               <Badge status={hoststatus} />
+              </Col>
+              <Col span={8} >
+              <Tag color="#9F79EE" style={{  marginBottom: '8px'}}>
+              host无状态
+              </Tag>
+              </Col>
+               </Row>
             }
            
             if (text.agent_status_id !== -1){
-              agentStatus = <Tag color="#108ee9" style={{  marginBottom: '8px'}}>{Status[text.agent_status_id]}</Tag>
+              agentStatusOPT = 
+              <Row gutter={16}>
+               <Col span={2} >
+                  <Badge status={agentstatus} />
+                </Col>
+              <Col span={8} >
+              <Tag color="#108ee9" style={{  marginBottom: '8px'}}>
+              {Status[text.agent_status_id]}
+              </Tag>
+              </Col>
+              </Row>
             } else {
-              agentStatus = <Tag color="#108ee9" style={{  marginBottom: '8px'}}><Icon type="tag-o" />agent无状态 </Tag>
+              agentStatusOPT = 
+              <Row gutter={16}>
+               <Col span={2} >
+                  <Badge status={agentstatus} />
+                </Col>
+              <Col span={8} >
+              <Tag color="#108ee9" style={{  marginBottom: '8px'}}>
+               agent 无状态
+              </Tag>
+              </Col>
+              </Row>
             }
     
             return (
               <div>
-                 { hostStatus }
-                 { agentStatus }
+                 { hostStatusOPT }
+                 { agentStatusOPT }
               </div>
             )
            
