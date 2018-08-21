@@ -1,16 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { routerRedux } from 'dva/router';
 import { connect } from 'dva';
-import { Card, Badge, Table, Divider, Tabs, Button, Form, Row, Col, Input, Select, InputNumber, DatePicker, Icon, message } from 'antd';
-import isEqual from 'lodash/isEqual';
-import DescriptionList from '../../../../components/DescriptionList';
-import PageHeaderLayout from '../../../../layouts/PageHeaderLayout';
+import { Card, Badge, Switch, Divider, Tabs, Button, Form, Row, Col, Input, Select, InputNumber, DatePicker, Icon, message } from 'antd';
+ 
 
 import styles from './hostDetail.less';
-import { deepEqual } from 'assert';
-
-
-const { Description } = DescriptionList;
+ 
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -63,6 +58,7 @@ export default class HostDetail extends Component {
     idcdata: [],
     confirmDirty: false,
     autoCompleteResult: [],
+    haspower: true
    // idcdata:[{title:"请选择",ID:"-1"}],
   };
 
@@ -228,6 +224,13 @@ export default class HostDetail extends Component {
     ));
   }
 
+  handleStatusChange = (val) =>{
+    this.setState({
+      haspower:val
+    })
+  }
+
+
   handleAdd = e => {
     e.preventDefault();
     const form = this.props.form;
@@ -286,6 +289,30 @@ export default class HostDetail extends Component {
             remarks: form.getFieldValue('remarks') ? form.getFieldValue('remarks') : '',
           };
 
+
+          switch (form.getFieldValue('business_id')) {
+            case 'host已上线':
+                fields.businessid = 10
+                break
+            case 'host未下线':
+                fields.businessid = 9
+                break
+            case 'host已下线':
+                fields.businessid = 4
+                break
+            default:
+                fields.businessid = form.getFieldValue('business_id')
+            }
+
+            if (this.state.haspower) {
+              fields.statusid = 2
+            } else{
+              fields.statusid = 3
+            }
+
+
+
+
           let project = [];
           for (let i = 0; i < uuid; i++) {
             project.push(
@@ -316,6 +343,13 @@ export default class HostDetail extends Component {
     form.resetFields();
   }
 
+
+   HandleSelectHostStatus = (value) => {
+    this.props.form.setFieldsValue({
+      business_id: `${value}`,
+    });
+  }
+  
   tabcontent = (information, projectcolumns) => {
 
     const { getFieldDecorator, getFieldValue } = this.props.form;
@@ -484,30 +518,36 @@ export default class HostDetail extends Component {
             </Col>
           </Row>
           <Row>
-            <Col span={8}>
+          <Col span={8}>
               <FormItem label="主机状态"  {...formItemLayout} >
-                {getFieldDecorator('statusid',
+                {getFieldDecorator('business_id',
                 {
-                  initialValue:"请选择",
                   rules: [
                     {
                       required: true,
-                      message: 'Please select statusid!',
+                      message: '请 选择主机业务状态!',
                     },
                   ],
                 })(
-                  <Select placeholder="请选择" style={{ width: '100%' }}>
-                    <Option key="2" value="2">host运行中</Option>
-                    <Option key="3" value="3">host已关机</Option>
+                  <Select placeholder="请选择" style={{ width: '100%' }} onChange={this.HandleSelectHostStatus}>
                     <Option key="4" value="4">host已下线</Option>
-                    <Option key="5" value="5">host异常</Option>
-                    <Option key="6" value="6">host已过保</Option>
-                    <Option key="7" value="7">host装机中</Option>
-                    <Option key="8" value="8">host未处理</Option>
+                    <Option key="9" value="9">host未下线</Option>
+                    <Option key="10" value="10">host已上线</Option>
                   </Select>
                 )}
               </FormItem>
             </Col>
+            <Col span={8}>
+              <FormItem label="主机电源"  {...formItemLayout} >
+                  <Switch 
+                    checkedChildren="开机" 
+                    unCheckedChildren="关机" 
+                    checked={this.state.haspower} 
+                    onChange={(value) => this.handleStatusChange(value)} 
+                  />
+              </FormItem>
+            </Col>
+
             <Col span={8}>
               <FormItem label="主机类型"  {...formItemLayout} >
                 {getFieldDecorator('hardware_type',

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { routerRedux } from 'dva/router';
 import { connect } from 'dva';
 import isEqual from 'lodash/isEqual';
-import { Card, Divider, Tabs, Form, Row, Col, Input, Select, Button,DatePicker,InputNumber,Icon,message    } from 'antd';
+import { Card, Divider, Tabs, Form, Row, Col, Input, Select, Button,DatePicker,InputNumber,Icon,message,Switch    } from 'antd';
  
 import  CleanHost from './cleanHost'
 
@@ -48,6 +48,7 @@ export default class HostDetail extends Component {
     hostid: 0,
     allprojectids: [],
     delprojectids:[],
+    haspower: true
   };
 
 
@@ -87,6 +88,16 @@ export default class HostDetail extends Component {
                 projectids.push(obj.ID)
               }
             })
+
+            if (data.status.host_status_id == 2){
+               this.setState({
+                haspower:true
+               })
+            } else  {
+               this.setState({
+                haspower:false
+               })
+            } 
           }
         },
       });
@@ -257,34 +268,30 @@ export default class HostDetail extends Component {
             remarks: form.getFieldValue('remarks') ? form.getFieldValue('remarks') : '',
           };
 
-         // console.log("this.state.uuid ", this.state.panes.information )
+ 
      
 
-          switch (form.getFieldValue('statusid')) {
+          switch (form.getFieldValue('business_id')) {
             case 'host已上线':
-                fields.statusid = 0
+                fields.businessid = 10
                 break
-            case 'host已关机':
-                fields.statusid = 1
-                break
-            case 'host运行中':
-                fields.statusid = 2
+            case 'host未下线':
+                fields.businessid = 9
                 break
             case 'host已下线':
-                fields.statusid = 3
-                break
-            case 'host异常':
-                fields.statusid = 4
-                break
-            case 'host报废':
-                fields.statusid = 5
-                break
-            case 'host装机中':
-                fields.statusid = 6
+                fields.businessid = 4
                 break
             default:
-                fields.statusid = form.getFieldValue('statusid')
+                fields.businessid = form.getFieldValue('business_id')
             }
+
+            if (this.state.haspower) {
+              fields.statusid = 2
+            } else{
+              fields.statusid = 3
+            }
+           
+
 
             if( gdevice.hostdetail.data.idc_title === form.getFieldValue('idc_id')) {
               fields.idc_id = gdevice.hostdetail.data.idc_ID
@@ -304,6 +311,7 @@ export default class HostDetail extends Component {
               fields.bay_id = form.getFieldValue('bay_id') 
             }       
                   
+
           fields.project = projectids
           fields.delproject = deletedprojectids
 
@@ -372,6 +380,11 @@ export default class HostDetail extends Component {
     });
 }
 
+handleStatusChange = (val) =>{
+  this.setState({
+    haspower:val
+  })
+}
 
   tabcontent = (information) => {
 
@@ -432,26 +445,32 @@ export default class HostDetail extends Component {
         <Row>
             <Col span={8}>
               <FormItem label="主机状态"  {...formItemLayout} >
-                {getFieldDecorator('statusid',
+                {getFieldDecorator('business_id',
                 {
-                  initialValue: `${information.status_title}`,
+                  initialValue: `${information.status.host_business_status_title}`,
                   rules: [
                     {
                       required: true,
-                      message: '请 选择主机状态!',
+                      message: '请 选择主机业务状态!',
                     },
                   ],
                 })(
                   <Select placeholder="请选择" style={{ width: '100%' }} onChange={this.HandleSelectHostStatus}>
-                    <Option key="2" value="2">host运行中</Option>
-                    <Option key="3" value="3">host已关机</Option>
                     <Option key="4" value="4">host已下线</Option>
-                    <Option key="5" value="5">host异常</Option>
-                    <Option key="6" value="6">host已过保</Option>
-                    <Option key="7" value="7">host装机中</Option>
-                    <Option key="8" value="8">host未处理</Option>
+                    <Option key="9" value="9">host未下线</Option>
+                    <Option key="10" value="10">host已上线</Option>
                   </Select>
                 )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem label="主机电源"  {...formItemLayout} >
+                  <Switch 
+                    checkedChildren="开机" 
+                    unCheckedChildren="关机" 
+                    checked={this.state.haspower} 
+                    onChange={(value) => this.handleStatusChange(value)} 
+                  />
               </FormItem>
             </Col>
           </Row>

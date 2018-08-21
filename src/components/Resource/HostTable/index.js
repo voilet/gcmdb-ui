@@ -11,7 +11,21 @@ import ShowPw from './showPw'
 
 
 
-const Status = ['agent异常','agent运行中','host 已上线', 'host 已关机','host 运行中','host 已下线','host 已过保', 'host 异常','host 装机中'];
+const Status = ['agent异常',
+                'agent运行中',
+                'host运行中', 
+                'host已关机',
+                'host已下线',
+                'host系统异常',
+                'host已过保', 
+                'host装机中',
+                'host未处理',
+                'host未下线',
+                'host已上线',
+                'host网络中断',
+                'host网络异常',
+                'host未过保'
+              ];
 
 
 const openNotificationWithIcon = (type) => {
@@ -152,10 +166,11 @@ class HostTable extends PureComponent {
         width:'150px',
         render: (text, record) => {
             var divStyle = {
-                color: 'blue',
+                color: '#108ee9',
+                fontWeight: 600
               };
             return(
-              text.split(',').map((i,index)=> <div style={{ color: 'blue'}}> {i}</div>) 
+              text.split(',').map((i,index)=> <div style={divStyle}> {i}</div>) 
             )
           }
       },
@@ -168,7 +183,8 @@ class HostTable extends PureComponent {
 
         render: (text, record) => {
           var divStyle = {
-              color: 'blue',
+              color: '#108ee9',
+              fontWeight: 600
             };
           return <div style={divStyle}>
                  {record.projectlists ? this.handleProlist(record.projectlists) : ""}
@@ -181,20 +197,20 @@ class HostTable extends PureComponent {
         key:'idc_title',
         width:'120px',
       },
-      {
-        title: '过保状态',
-        dataIndex: 'stop_guaratee',
-        key:'stop_guaratee',
-        width:'120px',
-        render: (text, record) =>{
-           const time = new Date(text) - new Date()
-           let statusText = time < 0 ? "过保" : "未过保"
-           var divStyle = {
-            color: 'red',
-          };
-          return <div style={divStyle}>{statusText}</div>;
-        },
-      },
+      // {
+      //   title: '过保状态',
+      //   dataIndex: 'stop_guaratee',
+      //   key:'stop_guaratee',
+      //   width:'120px',
+      //   render: (text, record) =>{
+      //      const time = new Date(text) - new Date()
+      //      let statusText = time < 0 ? "过保" : "未过保"
+      //      var divStyle = {
+      //       color: 'red',
+      //     };
+      //     return <div style={divStyle}>{statusText}</div>;
+      //   },
+      // },
       {
         title: '机器名称(fqdn)',
         dataIndex: 'fqdn',
@@ -202,25 +218,65 @@ class HostTable extends PureComponent {
         width:'200px'
       },
       {
-        title: '机器密码',
-        dataIndex: 'password',
-        width: "120px",
-        key: 'password',
-        render: (text, record) => {
-          const {password}  = this.props.gdevice
-          let  pass = password
+        title: '机器简要信息',
+        dataIndex: 'summary',
+        key:'summary',
+        width:'200px',
+        render: (text,record) => {
+            var divStyle = {
+            color: '#108ee9',
+            fontWeight: 600
+            };
+            return(
+              <div style={divStyle}>
+                <Row gutter={24}>
+                <Col span={12} >
+                   cpu核数:
+                </Col>
+                <Col span={12} >
+                   {text.cpu_info}
+                </Col>
+                </Row>
+                <Row gutter={24}>
+                <Col span={12} >
+                    内存信息:
+                </Col>
+                <Col span={12} >
+                    {text.mem_info.split("|")[0]}
+                </Col>
+                </Row>
+                <Row gutter={24}>
+                <Col span={12} >
+                    磁盘信息:
+                </Col>
+                <Col span={12} >
+                    {text.disk_info}
+                </Col>
+                </Row>
+              </div>
+            )
+        }
+      }
+      // {
+      //   title: '机器密码',
+      //   dataIndex: 'password',
+      //   width: "120px",
+      //   key: 'password',
+      //   render: (text, record) => {
+      //     const {password}  = this.props.gdevice
+      //     let  pass = password
  
 
-          return (
-            <div>
-               <ShowPw
-                  data={record}
-                />
+      //     return (
+      //       <div>
+      //          <ShowPw
+      //             data={record}
+      //           />
                           
-            </div>
-          )
-        },
-      },{
+      //       </div>
+      //     )
+      //   },
+       ,{
         title: '套餐',
         dataIndex: 'composeplan_title',
         width: "120px",
@@ -289,86 +345,74 @@ class HostTable extends PureComponent {
           },
     
           render(text) {
-            let hostStatusOPT 
-            
-            let agentStatusOPT
-
-            let hoststatus
+ 
             let agentstatus 
 
-            if (text.host_status_id === 2)  {
-              hoststatus = "success"
-            } else {
-              hoststatus = "error"
-            }
-
+      
             if (text.agent_status_id === 1)  {
               agentstatus = "success"
             } else {
               agentstatus = "error"
             }
-
-
    
-            if ( text.host_status_id !== -1){
-              if (text.host_status_id > 1) {
+ 
+      
+            // const hostStatusOPT = 
+            // <Row gutter={16}>
+            //   <Col span={8} >
+            //   <Tag color="#9F79EE" style={{  marginBottom: '8px'}}>
+            // {Status[text.host_status_id]}
+            // </Tag>
+            // </Col>
+            // </Row>
+            
+            // const businessStatusOPT = 
+            // <Row gutter={16}>
+            //   <Col span={2} >
+            //     <Badge status={agentstatus} />
+            //   </Col>
+            // <Col span={8} >
+            // <Tag color="#108ee9" style={{  marginBottom: '8px'}}>
+            // {Status[text.host_business_status_id]}
+            // </Tag>
+            // </Col>
+            // </Row>
 
-                hostStatusOPT = 
-                <Row gutter={16}>
-                  <Col span={2} >
-                  <Badge status={hoststatus} />
-                  </Col>
-                  <Col span={8} >
-                 <Tag color="#9F79EE" style={{  marginBottom: '8px'}}>
-                {Status[text.host_status_id]}
-                </Tag>
-                </Col>
-                </Row>
-              }
-            } else {
-              hostStatusOPT = 
-              <Row gutter={16}>
-               <Col span={2} >
-               <Badge status={hoststatus} />
-              </Col>
-              <Col span={8} >
-              <Tag color="#9F79EE" style={{  marginBottom: '8px'}}>
-              host无状态
-              </Tag>
-              </Col>
-               </Row>
-            }
-           
-            if (text.agent_status_id !== -1){
-              agentStatusOPT = 
-              <Row gutter={16}>
-               <Col span={2} >
-                  <Badge status={agentstatus} />
-                </Col>
-              <Col span={8} >
-              <Tag color="#108ee9" style={{  marginBottom: '8px'}}>
-              {Status[text.agent_status_id]}
-              </Tag>
-              </Col>
-              </Row>
-            } else {
-              agentStatusOPT = 
-              <Row gutter={16}>
-               <Col span={2} >
-                  <Badge status={agentstatus} />
-                </Col>
-              <Col span={8} >
-              <Tag color="#108ee9" style={{  marginBottom: '8px'}}>
-               agent 无状态
-              </Tag>
-              </Col>
-              </Row>
-            }
-    
+            // const maintainStatusOPT = 
+            // <Row gutter={16}>
+            // <Col span={8} >
+            // <Tag color="#EE9A00" style={{  marginBottom: '8px'}}>
+            // {Status[text.host_maintain_status_id]}
+            // </Tag>
+            // </Col>
+            // </Row>
+         
             return (
               <div>
-                 { hostStatusOPT }
-                 { agentStatusOPT }
+                  <Row gutter={16}  style={{  marginBottom: '8px',marginLeft: '16px'}}>
+                  <Col span={6} >
+                    <Badge status={agentstatus} />
+                  </Col>
+                    <Col span={6} >
+                      <Tag color="#108ee9">
+                        {Status[text.host_business_status_id]}
+                      </Tag>
+                    </Col>
+                  </Row>
+                  <Row gutter={16} style={{  marginBottom: '8px',marginLeft: '46px'}}>
+                    <Col span={6} >
+                      <Tag color="#9F79EE" >
+                        {Status[text.host_status_id]}
+                      </Tag>
+                    </Col>
+                  </Row>
+                  <Row gutter={16} style={{  marginBottom: '8px',marginLeft: '46px'}}>
+                    <Col span={6} >
+                      <Tag color="#EE9A00" >
+                        {Status[text.host_maintain_status_id]}
+                      </Tag>
+                    </Col>
+                  </Row>
               </div>
             )
            
