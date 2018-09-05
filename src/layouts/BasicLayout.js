@@ -1,63 +1,50 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { Layout, Icon, message } from 'antd';
+import React from 'react';
+import { Layout } from 'antd';
 import DocumentTitle from 'react-document-title';
+import isEqual from 'lodash/isEqual';
+import memoizeOne from 'memoize-one';
 import { connect } from 'dva';
-import { Route, Redirect, Switch, routerRedux } from 'dva/router';
 import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import { enquireScreen, unenquireScreen } from 'enquire-js';
-import GlobalHeader from '../components/GlobalHeader';
-import GlobalFooter from '../components/GlobalFooter';
-import SiderMenu from '../components/SiderMenu';
-import NotFound from '../routes/Exception/404';
-import { getRoutes } from '../utils/utils';
-import Authorized from '../utils/Authorized';
-import globalLogin from '../utils/global';
-import { getMenuData } from '../common/gmenu';
+import { formatMessage } from 'umi/locale';
+import SiderMenu from '@/components/SiderMenu';
+import Authorized from '@/utils/Authorized';
+import SettingDrawer from '@/components/SettingDrawer';
 import logo from '../assets/logo.svg';
+import Footer from './Footer';
+import Header from './Header';
+import Context from './MenuContext';
 
-const { Content, Header, Footer } = Layout;
-const { AuthorizedRoute, check } = Authorized;
+const { Content } = Layout;
+const { check } = Authorized;
 
-/**
- * 根据菜单取得重定向地址.
- */
-const redirectData = [];
-const getRedirect = item => {
-  if (item && item.children) {
-    if (item.children[0] && item.children[0].path) {
-      redirectData.push({
-        from: `${item.path}`,
-        to: `${item.children[0].path}`,
-      });
-      item.children.forEach(children => {
-        getRedirect(children);
-      });
+// Conversion router to menu.
+function formatter(data, parentPath = '', parentAuthority, parentName) {
+  return data.map(item => {
+    let locale = 'menu';
+    if (parentName && item.name) {
+      locale = `${parentName}.${item.name}`;
+    } else if (item.name) {
+      locale = `menu.${item.name}`;
+    } else if (parentName) {
+      locale = parentName;
     }
-  }
-};
-getMenuData().forEach(getRedirect);
-
-/**
- * 获取面包屑映射
- * @param {Object} menuData 菜单配置
- * @param {Object} routerData 路由配置
- */
-const getBreadcrumbNameMap = (menuData, routerData) => {
-  const result = {};
-  const childResult = {};
-  for (const i of menuData) {
-    if (!routerData[i.path]) {
-      result[i.path] = i;
+    const result = {
+      ...item,
+      locale,
+      authority: item.authority || parentAuthority,
+    };
+    if (item.routes) {
+      const children = formatter(item.routes, `${parentPath}${item.path}/`, item.authority, locale);
+      // Reduce memory usage
+      result.children = children;
     }
-    if (i.children) {
-      Object.assign(childResult, getBreadcrumbNameMap(i.children, routerData));
-    }
-  }
-  return Object.assign({}, routerData, result, childResult);
-};
+    delete result.routes;
+    return result;
+  });
+}
 
 const query = {
   'screen-xs': {
@@ -77,86 +64,127 @@ const query = {
   },
   'screen-xl': {
     minWidth: 1200,
+    maxWidth: 1599,
+  },
+  'screen-xxl': {
+    minWidth: 1600,
   },
 };
 
-let isMobile;
-enquireScreen(b => {
-  isMobile = b;
-});
-
-
-// @connect(({ login }) => ({
-//   login,
-// }))
-
 class BasicLayout extends React.PureComponent {
-  constructor(...args) {
-    super(...args)
-    
-    
+  constructor(props) {
+    super(props);
+    this.getPageTitle = memoizeOne(this.getPageTitle);
+    this.getBreadcrumbNameMap = memoizeOne(this.getBreadcrumbNameMap, isEqual);
+    this.breadcrumbNameMap = this.getBreadcrumbNameMap();
   }
 
-  static childContextTypes = {
-    location: PropTypes.object,
-    breadcrumbNameMap: PropTypes.object,
-  };
   state = {
-    isMobile,
+    rendering: true,
+    isMobile: false,
   };
-  getChildContext() {
-    const { location, routerData } = this.props;
-    return {
-      location,
-      breadcrumbNameMap: getBreadcrumbNameMap(getMenuData(), routerData),
-    };
-  }
-  
+
   componentDidMount() {
-    if (!globalLogin.getCookie('isLogin')) {
-      location.hash = '#/user/login'
-      return 
-    }
-    
-    this.enquireHandler = enquireScreen(mobile => {
-      this.setState({
-        isMobile: mobile,
-      });
-    });
-    this.props.dispatch({
+    const { dispatch } = this.props;
+    dispatch({
       type: 'user/fetchCurrent',
     });
-  }
-
-  // componentWillReceiveProps(nextProps) {
-  //   if (globalLogin.getCookie('isLogin')) {
-  //     this.props.dispatch({
-  //       type: 'user/fetchCurrent',
-  //     });
-  //   }
-  // }
-
-
-
-  componentWillUnmount() {
-    unenquireScreen(this.enquireHandler);
-  }
-  getPageTitle() {
-    const { routerData, location } = this.props;
-    const { pathname } = location;
-    let title = 'GCMB-SUNLANDS';
-    let currRouterData = null;
-    // match params path
-    Object.keys(routerData).forEach(key => {
-      if (pathToRegexp(key).test(pathname)) {
-        currRouterData = routerData[key];
+    dispatch({
+      type: 'setting/getSetting',
+    });
+    this.renderRef = requestAnimationFrame(() => {
+      this.setState({
+        rendering: false,
+      });
+    });
+    this.enquireHandler = enquireScreen(mobile => {
+      const { isMobile } = this.state;
+      if (isMobile !== mobile) {
+        this.setState({
+          isMobile: mobile,
+        });
       }
     });
-    if (currRouterData && currRouterData.name) {
-      title = `${currRouterData.name} - GCMB`;
-    }
-    return title;
   }
+
+  componentDidUpdate() {
+    this.breadcrumbNameMap = this.getBreadcrumbNameMap();
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this.renderRef);
+    unenquireScreen(this.enquireHandler);
+  }
+
+  getContext() {
+    const { location } = this.props;
+    return {
+      location,
+      breadcrumbNameMap: this.breadcrumbNameMap,
+    };
+  }
+
+  getMenuData() {
+    const {
+      route: { routes },
+    } = this.props;
+    return formatter(routes);
+  }
+
+  /**
+   * 获取面包屑映射
+   * @param {Object} menuData 菜单配置
+   */
+  getBreadcrumbNameMap() {
+    const routerMap = {};
+    const mergeMenuAndRouter = data => {
+      data.forEach(menuItem => {
+        if (menuItem.children) {
+          mergeMenuAndRouter(menuItem.children);
+        }
+        // Reduce memory usage
+        routerMap[menuItem.path] = menuItem;
+      });
+    };
+    mergeMenuAndRouter(this.getMenuData());
+    return routerMap;
+  }
+
+  getPageTitle = pathname => {
+    let currRouterData = null;
+    // match params path
+    Object.keys(this.breadcrumbNameMap).forEach(key => {
+      if (pathToRegexp(key).test(pathname)) {
+        currRouterData = this.breadcrumbNameMap[key];
+      }
+    });
+    if (!currRouterData) {
+      return 'Ant Design Pro';
+    }
+    const message = formatMessage({
+      id: currRouterData.locale || currRouterData.name,
+      defaultMessage: currRouterData.name,
+    });
+    return `${message} - Ant Design Pro`;
+  };
+
+  getLayoutStyle = () => {
+    const { fixSiderbar, collapsed, layout } = this.props;
+    if (fixSiderbar && layout !== 'topmenu') {
+      return {
+        paddingLeft: collapsed ? '80px' : '256px',
+      };
+    }
+    return null;
+  };
+
+  getContentStyle = () => {
+    const { fixedHeader } = this.props;
+    return {
+      margin: '24px 24px 0',
+      paddingTop: fixedHeader ? 64 : 0,
+    };
+  };
 
   getBashRedirect = () => {
     // According to the url parameter to redirect
@@ -164,7 +192,6 @@ class BasicLayout extends React.PureComponent {
     const urlParams = new URL(window.location.href);
 
     const redirect = urlParams.searchParams.get('redirect');
-
     // Remove the parameters in the url
     if (redirect) {
       urlParams.searchParams.delete('redirect');
@@ -180,176 +207,76 @@ class BasicLayout extends React.PureComponent {
     return redirect;
   };
 
-
   handleMenuCollapse = collapsed => {
-    this.props.dispatch({
+    const { dispatch } = this.props;
+    dispatch({
       type: 'global/changeLayoutCollapsed',
       payload: collapsed,
     });
   };
-  handleNoticeClear = type => {
-    message.success(`清空了${type}`);
-    this.props.dispatch({
-      type: 'global/clearNotices',
-      payload: type,
-    });
-  };
-  handleMenuClick = ({ key }) => {
-    if (key === 'triggerError') {
-      this.props.dispatch(routerRedux.push('/exception/trigger'));
-      return;
-    }
-    if (key === 'logout') {
-      this.props.dispatch({
-        type: 'login/logout',
-      });
-    }
-  };
-  handleNoticeVisibleChange = visible => {
-    if (visible) {
-      this.props.dispatch({
-        type: 'global/fetchNotices',
-      });
-    }
-  };
 
   render() {
     const {
-      currentUser = {},
-      collapsed,
-      fetchingNotices,
-      notices,
-      routerData,
-      match,
-      location,
+      navTheme,
+      layout: PropsLayout,
+      children,
+      location: { pathname },
     } = this.props;
-
-    console.log('123 in baseiclayout', this.props)
-    console.log('global', globalLogin)
-
-    const bashRedirect = this.getBashRedirect();
-
-  
-    
+    const { rendering, isMobile } = this.state;
+    const isTop = PropsLayout === 'topmenu';
+    const menuData = this.getMenuData();
     const layout = (
       <Layout>
-        <SiderMenu
-          logo={logo}
-          // 不带Authorized参数的情况下如果没有权限,会强制跳到403界面
-          // If you do not have the Authorized parameter
-          // you will be forced to jump to the 403 interface without permission
-          Authorized={Authorized}
-          menuData={getMenuData()}
-          collapsed={collapsed}
-          location={location}
-          isMobile={this.state.isMobile}
-          onCollapse={this.handleMenuCollapse}
-        />
-        <Layout>
-          <Header style={{ padding: 0 }}>
-            <GlobalHeader
-              logo={logo}
-              currentUser={currentUser}
-              fetchingNotices={fetchingNotices}
-              notices={notices}
-              collapsed={collapsed}
-              isMobile={this.state.isMobile}
-              onNoticeClear={this.handleNoticeClear}
-              onCollapse={this.handleMenuCollapse}
-              onMenuClick={this.handleMenuClick}
-              onNoticeVisibleChange={this.handleNoticeVisibleChange}
-            />
-          </Header>
-          <Content style={{ margin: '24px 24px 0', height: '100%' }}>
-            <Switch>
-              {redirectData.map(item => (
-                <Redirect key={item.from} exact from={item.from} to={item.to} />
-              ))}
-              {getRoutes(match.path, routerData).map(item => (
-                <AuthorizedRoute
-                  key={item.key}
-                  path={item.path}
-                  component={item.component}
-                  exact={item.exact}
-                  authority={item.authority}
-                  redirectPath="/exception/403"
-                />
-              ))}
-              <Redirect exact from="/" to={bashRedirect} />
-              <Route render={NotFound} />
-            </Switch>
-          </Content>
-          <Footer style={{ padding: 0 }}>
-            <GlobalFooter
-              links={[
-                {
-                  key: 'Pro 首页',
-                  title: 'Pro 首页',
-                  href: 'http://pro.ant.design',
-                  blankTarget: true,
-                },
-                {
-                  key: 'github',
-                  title: <Icon type="github" />,
-                  href: 'https://github.com/ant-design/ant-design-pro',
-                  blankTarget: true,
-                },
-                {
-                  key: 'Ant Design',
-                  title: 'Ant Design',
-                  href: 'http://ant.design',
-                  blankTarget: true,
-                },
-              ]}
-              copyright={
-                <Fragment>
-                  Copyright <Icon type="copyright" /> 2018 蚂蚁金服体验技术部出品
-                </Fragment>
-              }
-            />
-          </Footer>
+        {isTop && !isMobile ? null : (
+          <SiderMenu
+            logo={logo}
+            Authorized={Authorized}
+            theme={navTheme}
+            onCollapse={this.handleMenuCollapse}
+            menuData={menuData}
+            isMobile={isMobile}
+            {...this.props}
+          />
+        )}
+        <Layout
+          style={{
+            ...this.getLayoutStyle(),
+            minHeight: '100vh',
+          }}
+        >
+          <Header
+            menuData={menuData}
+            handleMenuCollapse={this.handleMenuCollapse}
+            logo={logo}
+            isMobile={isMobile}
+            {...this.props}
+          />
+          <Content style={this.getContentStyle()}>{children}</Content>
+          <Footer />
         </Layout>
       </Layout>
     );
-
-
-
-    {console.log("globalLogin.getCookie('isLogin')",globalLogin.getCookie('isLogin'))}
-
-   
-    
     return (
-      
-      <Fragment>
-        
-      <Route
-          
-          {...this.props}
-        
-          render={() => {
-            // 根据用户权限，结合即将要访问的页面，判断是否渲染
-            const { pathname } = this.props.location;
-            if (pathname === '/exception/500') {
-              // 这里，用户永远无法访问500页面
-              return <Redirect to="/exception/403" />; 
-            }
-            // 在此可以检验登录状态，强制要求用户先登录
-            return  <DocumentTitle title={this.getPageTitle()}>
-                <ContainerQuery query={query}>
-                { params => <div className={classNames(params)}> {layout} </div> }
-                </ContainerQuery>
-               </DocumentTitle>
-          }}
-       />
-       </Fragment>
+      <React.Fragment>
+        <DocumentTitle title={this.getPageTitle(pathname)}>
+          <ContainerQuery query={query}>
+            {params => (
+              <Context.Provider value={this.getContext()}>
+                <div className={classNames(params)}>{layout}</div>
+              </Context.Provider>
+            )}
+          </ContainerQuery>
+        </DocumentTitle>
+        {rendering && process.env.NODE_ENV === 'production' ? null : ( // Do show SettingDrawer in production
+          <SettingDrawer />
+        )}
+      </React.Fragment>
     );
   }
 }
 
-export default connect(({ user, global, loading,login }) => ({
-  currentUser: user.currentUser,
+export default connect(({ global, setting }) => ({
   collapsed: global.collapsed,
-  fetchingNotices: loading.effects['global/fetchNotices'],
-  notices: global.notices,
-  login
+  layout: setting.layout,
+  ...setting,
 }))(BasicLayout);

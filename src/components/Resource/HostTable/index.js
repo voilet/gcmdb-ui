@@ -197,20 +197,6 @@ class HostTable extends PureComponent {
         key:'idc_title',
         width:'120px',
       },
-      // {
-      //   title: '过保状态',
-      //   dataIndex: 'stop_guaratee',
-      //   key:'stop_guaratee',
-      //   width:'120px',
-      //   render: (text, record) =>{
-      //      const time = new Date(text) - new Date()
-      //      let statusText = time < 0 ? "过保" : "未过保"
-      //      var divStyle = {
-      //       color: 'red',
-      //     };
-      //     return <div style={divStyle}>{statusText}</div>;
-      //   },
-      // },
       {
         title: '机器名称(fqdn)',
         dataIndex: 'fqdn',
@@ -356,37 +342,6 @@ class HostTable extends PureComponent {
             }
    
  
-      
-            // const hostStatusOPT = 
-            // <Row gutter={16}>
-            //   <Col span={8} >
-            //   <Tag color="#9F79EE" style={{  marginBottom: '8px'}}>
-            // {Status[text.host_status_id]}
-            // </Tag>
-            // </Col>
-            // </Row>
-            
-            // const businessStatusOPT = 
-            // <Row gutter={16}>
-            //   <Col span={2} >
-            //     <Badge status={agentstatus} />
-            //   </Col>
-            // <Col span={8} >
-            // <Tag color="#108ee9" style={{  marginBottom: '8px'}}>
-            // {Status[text.host_business_status_id]}
-            // </Tag>
-            // </Col>
-            // </Row>
-
-            // const maintainStatusOPT = 
-            // <Row gutter={16}>
-            // <Col span={8} >
-            // <Tag color="#EE9A00" style={{  marginBottom: '8px'}}>
-            // {Status[text.host_maintain_status_id]}
-            // </Tag>
-            // </Col>
-            // </Row>
-         
             return (
               <div>
                   <Row gutter={16}  style={{  marginBottom: '8px',marginLeft: '16px'}}>

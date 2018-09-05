@@ -1,4 +1,4 @@
-import request from '../utils/request';
+import request from '@/utils/request';
 
 export async function query() {
   return request('/v1/user/info');
@@ -11,3 +11,8 @@ export async function queryCurrent() {
 export async function logoutActive() {
   return request('/logout');
 }
+
+
+
+ 
+

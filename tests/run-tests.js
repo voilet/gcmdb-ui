@@ -3,13 +3,14 @@ const { kill } = require('cross-port-killer');
 
 const env = Object.create(process.env);
 env.BROWSER = 'none';
+env.TEST = true;
 const startServer = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['start'], {
   env,
 });
 
 startServer.stderr.on('data', data => {
   // eslint-disable-next-line
-  console.log(data);
+  console.log(data.toString());
 });
 
 startServer.on('exit', () => {
@@ -30,8 +31,9 @@ startServer.stdout.on('data', data => {
     const testCmd = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['test'], {
       stdio: 'inherit',
     });
-    testCmd.on('exit', () => {
+    testCmd.on('exit', code => {
       startServer.kill();
+      process.exit(code);
     });
   }
 });

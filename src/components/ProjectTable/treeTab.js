@@ -233,7 +233,6 @@ class TreeTab extends PureComponent {
         key:'hostsip',
         width:'200px',
         render: (text, record) => {
-          console.log("host ip record",record)
           const divStyle = {
             color: 'red',
             cursor: 'pointer',

@@ -106,7 +106,6 @@ class proGroupTable extends PureComponent {
           disabled: true
          });
       this.cacheData = newData.map(item => ({ ...item }));
-      console.log('target',target)
       this.props.handleSaveData(target)
     }
   }
@@ -168,12 +167,9 @@ class proGroupTable extends PureComponent {
         disabled:false
       });
     }
-
-    console.log('handleChange',value,key,column)
   }
 
   handleSelectLineValue(value, key, column){
-    console.log(value, key, column)
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
     
@@ -229,7 +225,6 @@ class proGroupTable extends PureComponent {
         width:'120px',
         render: (text, record) =>{
           
-          console.log("line_title---------",record)
           const prolineOptions = prolinedata.data.map(post => {
                 return <Option key={post.ID} value={post.ID} >{post.title}</Option>
                 })

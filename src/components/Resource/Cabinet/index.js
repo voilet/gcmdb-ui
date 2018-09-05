@@ -10,7 +10,6 @@ class CabTable extends PureComponent {
   state = {
     data: [],
     oldParentData: [],
-    cabinetdata: [],
     status: false,
     disabled: true,
     rateValue: 3,
@@ -90,13 +89,13 @@ class CabTable extends PureComponent {
     },
   ];
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.cabinet.data) {
-  //     this.setState({
-  //       data: nextProps.cabinet.data
-  //     });
-  //   }
-  // }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.cabinet.data) {
+      this.setState({
+        data: nextProps.cabinet.data
+      });
+    }
+  }
  
   handleTableChange = (pagination, filters, sorter) => {
     this.props.onChange(pagination, filters, sorter);
@@ -111,6 +110,8 @@ class CabTable extends PureComponent {
 
     const target = newData.filter(item => key === item.ID)[0];
 
+    console.log("target",target)
+
     if (target) {
       const index = newData.indexOf(target);
       if (index > -1) {
@@ -118,7 +119,7 @@ class CabTable extends PureComponent {
       }
       target.tag = false;
 
-      
+            
 
       this.setState({ data: newData });
       this.cacheData = newData.map(item => ({ ...item }));
@@ -175,7 +176,7 @@ class CabTable extends PureComponent {
         <Table
           bordered
           rowKey={record => record.ID}
-          dataSource={this.props.cabinet.data}
+          dataSource={this.state.data}
           columns={this.columns}
           pagination={paginationProps}
           onChange={this.handleTableChange}
