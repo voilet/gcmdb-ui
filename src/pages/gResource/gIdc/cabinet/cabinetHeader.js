@@ -101,13 +101,10 @@ export default class cabinetHeader extends PureComponent {
   render() {
     console.log("cabinetHeader this.props",this.props)
     const {activekey,title} = this.state;     
-    const { match, route,children} = this.props;
+    const { match,children} = this.props;
     
 
-    const routes = getRoutes(match.path, route);
-
-    
-
+  
     
     const tabList = [
       {

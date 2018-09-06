@@ -28,6 +28,8 @@ export default {
   'menu.project.business.prolist': '项目列表',
   'menu.project.business.grouplist': '项目组列表',
   'menu.project.business.linelist': '产品线列表',
+  'menu.project.treelist': '产品树',
+  
   'menu.result': '结果页',
   'menu.result.success': '成功页',
   'menu.result.fail': '失败页',
