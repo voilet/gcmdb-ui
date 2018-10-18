@@ -15,12 +15,14 @@ import {
   Modal,
   Divider
 } from 'antd';
-import ProjectTable from '../../../components/ProjectTable';
-import PageHeaderLayout from '../../../layouts/PageHeaderLayout';
+import UserTable from '@/components/Access/User';
 
-import styles from './project.less';
-import AddProject from  './addProject'
+//import PageHeaderLayout from '../../../layouts/PageHeaderLayout';
 
+import styles from './userList.less';
+import UserAdd from  './userAdd'
+
+const InputGroup = Input.Group
 
 const FormItem = Form.Item;
 const {Option} = Select;
@@ -39,21 +41,27 @@ export default class TableList extends PureComponent {
     expandForm: false,
     selectedRows: [],
     formValues: {},
+    userdata: [],
+    roledata: []
   };
 
 
 
   componentDidMount() {
     const {dispatch} = this.props;
-    dispatch({
-      type: 'gproline/getProjectList',
-    });
-
-    dispatch({
-      type: 'gproline/getProjectLine',
-    });
-
     
+    dispatch({
+      type: 'guser/getUserlist',
+      // payload: {
+      //   cb: (info) => {
+      //     this.setState({
+      //       userdata : info.data.user_infos,
+      //       roledata:  info.data.role_list,
+      //       pagination: info.pagination
+      //     })
+      //   }
+      // }
+    });
   }
 
 
@@ -78,18 +86,18 @@ export default class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'gproline/getProjectList',
+      type: 'gproline/getUserlist',
       payload: params,
     });
   }
 
-  handleRefreshTableChange = () => {
-    const {dispatch} = this.props;
-    dispatch({
-      type: 'gproline/getProjectLine',
-      payload: '',
-    });
-  }
+  // handleRefreshTableChange = () => {
+  //   const {dispatch} = this.props;
+  //   dispatch({
+  //     type: 'gproline/getProjectLine',
+  //     payload: '',
+  //   });
+  // }
 
 
 
@@ -116,7 +124,7 @@ export default class TableList extends PureComponent {
     const {selectedRows} = this.state;
 
     if (!selectedRows) return;
-    console.log(selectedRows)
+   
     switch (e.key) {
       case 'remove':
         dispatch({
@@ -168,30 +176,33 @@ export default class TableList extends PureComponent {
 
   //保存
   handleSaveData = (val) => {
-    const { ID, group_id, pro_title, line_id, pro_alias, pro_code_url, pro_enable, pro_remarks} = val
+    let value = "on"
 
-    if (group_id != "-1") {
-      const params = {
-        ID,
-        title:pro_title,
-        alias:pro_alias,
-        remarks:pro_remarks,
-        code_url:pro_code_url,
-        enable:pro_enable,
-        groupid:group_id,
-        lineid:line_id,
-      }
+    console.log("val",val)
+    const { ID, email, enable, phone, real_name, role,username,password} = val
   
-      this.props.dispatch({
-        type: 'gproline/modifyProject',
-        payload: params 
-      });
+    if( enable ){
+        value = "on"
     } else {
-      this.props.dispatch({
-        type: 'gproline/getProjectList',
-      });
-    } 
+        value = "off"
+    }
 
+    const userinfo = {
+      ID,
+      enable:enable,
+      role:role,
+      username:username,
+      enable:value,
+      email:email,
+      real_name:real_name,
+      phone:phone, 
+    }
+
+    this.props.dispatch({
+      type: 'guser/modifyUser',
+      payload: userinfo 
+    }) 
+    
   }
 
   handleDeleteData = (val) => {
@@ -215,13 +226,13 @@ export default class TableList extends PureComponent {
 
   render() {
     
-    const {selectedRows, modalVisible, addInputValue} = this.state;
+    const {selectedRows, userdata, roledata,pagination} = this.state;
     const { getFieldDecorator } = this.props.form;
     //const { submitting } = this.props;
   
-    const { gproline,loading,submitting,dispatch } = this.props;
+    const { guser,dispatch } = this.props;
     
-    console.log('Parent,props', this.props)
+    console.log('guser',guser)
     
     const formItemLayout = {
       labelCol: {
@@ -244,9 +255,9 @@ export default class TableList extends PureComponent {
 
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
+        <Menu.Item key="remove">批量删除</Menu.Item>
         <Menu.Item key="approval">批量启用</Menu.Item>
-        <Menu.Item key="stop">批量暂停</Menu.Item>
+        <Menu.Item key="stop">批量禁用</Menu.Item>
       </Menu>
     );
 
@@ -257,22 +268,25 @@ export default class TableList extends PureComponent {
             <div className={styles.tableListOperator}>
               <Row gutter={16}>
                <Col span={2}>
-                  <AddProject 
+                  <UserAdd
+                   roledata = {guser.data.data.role_list}
                   /> 
                 </Col>
               </Row>
-              </div>
-            <Divider> 项目列表 </Divider>
+            </div>
+            
+          
+            <Divider> 用户列表 </Divider>
 
-            <ProjectTable
+            <UserTable
               selectedRows={selectedRows}
               // loading={loading}
               dispatch = {dispatch}
               handleSaveData={this.handleSaveData}
               handleDeleteData={this.handleDeleteData}
-              prolinedata = {gproline.prolinedata}
-              progroupbylid = {gproline.progroupbylid}
-              prodata={this.props.gproline.projectdata }
+              userdata = {guser.data.data.user_infos}
+              roledata = {guser.data.data.role_list}
+              pagination = {guser.data.pagination}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />

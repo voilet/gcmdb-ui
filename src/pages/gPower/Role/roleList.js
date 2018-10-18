@@ -14,11 +14,12 @@ import {
   Modal,
   Divider
 } from 'antd';
-import ProjectTable from '../../../components/ProjectTable';
-import PageHeaderLayout from '../../../layouts/PageHeaderLayout';
 
-import styles from './project.less';
-import AddProject from  './addProject'
+
+import RoleTable from '@/components/Access/Role';
+
+import Addrole from  './roleAdd'
+import styles from './roleList.less';
 
 
 const FormItem = Form.Item;
@@ -33,7 +34,7 @@ const { TextArea } = Input;
 
 @Form.create()
 
-export default class TableList extends PureComponent {
+export default class RoleList extends PureComponent {
   state = {
     expandForm: false,
     selectedRows: [],
@@ -45,14 +46,8 @@ export default class TableList extends PureComponent {
   componentDidMount() {
     const {dispatch} = this.props;
     dispatch({
-      type: 'gproline/getProjectList',
-    });
-
-    dispatch({
-      type: 'gproline/getProjectLine',
-    });
-
-    
+      type: 'grole/getRolelist',
+    });   
   }
 
 
@@ -218,9 +213,9 @@ export default class TableList extends PureComponent {
     const { getFieldDecorator } = this.props.form;
     //const { submitting } = this.props;
   
-    const { gproline,loading,submitting,dispatch } = this.props;
+    const { grole,loading,submitting,dispatch } = this.props;
     
-    console.log('Parent,props', this.props)
+    console.log('grole', grole)
     
     const formItemLayout = {
       labelCol: {
@@ -255,26 +250,26 @@ export default class TableList extends PureComponent {
             <div className={styles.tableListOperator}>
               <Row gutter={16}>
                <Col span={2}>
-                  <AddProject 
-                  /> 
+                  {/* <Addrole 
+                  />  */}
                 </Col>
               </Row>
               </div>
             <Divider> 角色列表 </Divider>
 
-            <RoleTable
+          
+          <RoleTable
               selectedRows={selectedRows}
               // loading={loading}
               dispatch = {dispatch}
               handleSaveData={this.handleSaveData}
               handleDeleteData={this.handleDeleteData}
-              prolinedata = {gproline.prolinedata}
-              progroupbylid = {gproline.progroupbylid}
-              prodata={this.props.gproline.projectdata }
+              roledata = {grole.data}
+              assignInfo = {grole.assignInfo}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />
-
+            
           </div>
         </Card>
     

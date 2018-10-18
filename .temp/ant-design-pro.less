@@ -1,4 +1,146 @@
 @import "../node_modules/antd/lib/style/themes/default.less";
+.antd-pro-gcmdb-ui-src-components-access-resource-edit-modal-edit-option{
+    display: flex;
+    align-items: center;
+}
+.antd-pro-gcmdb-ui-src-components-access-resource-edit-modal-edit-option-text{
+    color: #40a9ff;
+    cursor: pointer;
+}
+.antd-pro-gcmdb-ui-src-components-access-resource-edit-modal-icon-divide{
+    display: inline-block;
+    margin: 0 8px;
+    height: 0.9em;
+    width: 1px;
+    background: #e8e8e8;
+}
+.antd-pro-gcmdb-ui-src-components-access-resource-edit-modal-item-text{
+    font-weight: bold;
+}
+.antd-pro-gcmdb-ui-src-components-access-resource-edit-modal-form-item-left{
+    margin-right: 10px;
+}
+.antd-pro-gcmdb-ui-src-components-access-resource-edit-modal-form-item-right{
+    margin-left: 10px;
+}
+
+.antd-pro-gcmdb-ui-src-components-access-resource-index-activeChart {
+  position: relative;
+}
+.antd-pro-gcmdb-ui-src-components-access-resource-index-activeChartGrid {
+  p {
+    position: absolute;
+    top: 80px;
+  }
+  p:last-child {
+    top: 115px;
+  }
+}
+.antd-pro-gcmdb-ui-src-components-access-resource-index-activeChartLegend {
+  position: relative;
+  font-size: 0;
+  margin-top: 8px;
+  height: 20px;
+  line-height: 20px;
+  span {
+    display: inline-block;
+    font-size: 12px;
+    text-align: center;
+    width: 33.33%;
+  }
+  span:first-child {
+    text-align: left;
+  }
+  span:last-child {
+    text-align: right;
+  }
+}
+.antd-pro-gcmdb-ui-src-components-access-resource-index-seq-text{
+  color: #40a9ff;
+  cursor: pointer;
+}
+.antd-pro-gcmdb-ui-src-components-access-role-assign-modal-switch-btn-block{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+.antd-pro-gcmdb-ui-src-components-access-role-assign-modal-table-block{
+    [class*="ant-table-wrapper"]{
+        height: 500px;
+        overflow-y: auto;
+    }
+}
+::-webkit-scrollbar-track{
+    -webkit-box-shadow: none;
+}
+::-webkit-scrollbar{
+    width: 4px;
+    background-color: rgba(31,45,61,0.14) !important;
+}
+.antd-pro-gcmdb-ui-src-components-access-role-index-activeChart {
+  position: relative;
+}
+.antd-pro-gcmdb-ui-src-components-access-role-index-activeChartGrid {
+  p {
+    position: absolute;
+    top: 80px;
+  }
+  p:last-child {
+    top: 115px;
+  }
+}
+.antd-pro-gcmdb-ui-src-components-access-role-index-activeChartLegend {
+  position: relative;
+  font-size: 0;
+  margin-top: 8px;
+  height: 20px;
+  line-height: 20px;
+  span {
+    display: inline-block;
+    font-size: 12px;
+    text-align: center;
+    width: 33.33%;
+  }
+  span:first-child {
+    text-align: left;
+  }
+  span:last-child {
+    text-align: right;
+  }
+}
+
+.antd-pro-gcmdb-ui-src-components-access-user-index-activeChart {
+  position: relative;
+}
+.antd-pro-gcmdb-ui-src-components-access-user-index-activeChartGrid {
+  p {
+    position: absolute;
+    top: 80px;
+  }
+  p:last-child {
+    top: 115px;
+  }
+}
+.antd-pro-gcmdb-ui-src-components-access-user-index-activeChartLegend {
+  position: relative;
+  font-size: 0;
+  margin-top: 8px;
+  height: 20px;
+  line-height: 20px;
+  span {
+    display: inline-block;
+    font-size: 12px;
+    text-align: center;
+    width: 33.33%;
+  }
+  span:first-child {
+    text-align: left;
+  }
+  span:last-child {
+    text-align: right;
+  }
+}
+
 .antd-pro-gcmdb-ui-src-components-active-chart-index-activeChart {
   position: relative;
 }
@@ -3009,6 +3151,194 @@ i.antd-pro-gcmdb-ui-src-components-global-header-index-trigger {
 .antd-pro-gcmdb-ui-src-pages-forms-style-optional {
   color: @text-color-secondary;
   font-style: normal;
+}
+
+@import "~antd/lib/style/themes/default.less";
+
+
+.antd-pro-gcmdb-ui-src-pages-g-power-resource-resource-list-tableList {
+  .antd-pro-gcmdb-ui-src-pages-g-power-resource-resource-list-tableListOperator {
+    margin-bottom: 16px;
+    button {
+      margin-right: 8px;
+    }
+  }
+}
+
+.antd-pro-gcmdb-ui-src-pages-g-power-resource-resource-list-tableListForm {
+    .ant-form-item {
+      margin-bottom: 24px;
+      margin-right: 0;
+      display: flex;
+      > .ant-form-item-label {
+        width: auto;
+        line-height: 32px;
+        padding-right: 8px;
+      }
+      .ant-form-item-control {
+        line-height: 32px;
+      }
+    }
+    .antd-pro-gcmdb-ui-src-pages-g-power-resource-resource-list-ant-form-item-control-wrapper {
+      flex: 1;
+    }
+  .submitButtons {
+    white-space: nowrap;
+    margin-bottom: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-lg) {
+  .ant-form-item {
+    margin-right: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .ant-form-item {
+    margin-right: 8px;
+  }
+}
+
+@import "~antd/lib/style/themes/default.less";
+
+
+.antd-pro-gcmdb-ui-src-pages-g-power-role-role-list-tableList {
+  .antd-pro-gcmdb-ui-src-pages-g-power-role-role-list-tableListOperator {
+    margin-bottom: 16px;
+    button {
+      margin-right: 8px;
+    }
+  }
+}
+
+.antd-pro-gcmdb-ui-src-pages-g-power-role-role-list-tableListForm {
+    .ant-form-item {
+      margin-bottom: 24px;
+      margin-right: 0;
+      display: flex;
+      > .ant-form-item-label {
+        width: auto;
+        line-height: 32px;
+        padding-right: 8px;
+      }
+      .ant-form-item-control {
+        line-height: 32px;
+      }
+    }
+    .antd-pro-gcmdb-ui-src-pages-g-power-role-role-list-ant-form-item-control-wrapper {
+      flex: 1;
+    }
+  .submitButtons {
+    white-space: nowrap;
+    margin-bottom: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-lg) {
+  .ant-form-item {
+    margin-right: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .ant-form-item {
+    margin-right: 8px;
+  }
+}
+
+@import "~antd/lib/style/themes/default.less";
+
+
+.antd-pro-gcmdb-ui-src-pages-g-power-search-list-tableList {
+  .antd-pro-gcmdb-ui-src-pages-g-power-search-list-tableListOperator {
+    margin-bottom: 16px;
+    button {
+      margin-right: 8px;
+    }
+  }
+}
+
+.antd-pro-gcmdb-ui-src-pages-g-power-search-list-tableListForm {
+    .ant-form-item {
+      margin-bottom: 24px;
+      margin-right: 0;
+      display: flex;
+      > .ant-form-item-label {
+        width: auto;
+        line-height: 32px;
+        padding-right: 8px;
+      }
+      .ant-form-item-control {
+        line-height: 32px;
+      }
+    }
+    .antd-pro-gcmdb-ui-src-pages-g-power-search-list-ant-form-item-control-wrapper {
+      flex: 1;
+    }
+  .submitButtons {
+    white-space: nowrap;
+    margin-bottom: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-lg) {
+  .ant-form-item {
+    margin-right: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .ant-form-item {
+    margin-right: 8px;
+  }
+}
+
+@import "~antd/lib/style/themes/default.less";
+
+
+.antd-pro-gcmdb-ui-src-pages-g-power-user-user-list-tableList {
+  .antd-pro-gcmdb-ui-src-pages-g-power-user-user-list-tableListOperator {
+    margin-bottom: 16px;
+    button {
+      margin-right: 8px;
+    }
+  }
+}
+
+.antd-pro-gcmdb-ui-src-pages-g-power-user-user-list-tableListForm {
+    .ant-form-item {
+      margin-bottom: 24px;
+      margin-right: 0;
+      display: flex;
+      > .ant-form-item-label {
+        width: auto;
+        line-height: 32px;
+        padding-right: 8px;
+      }
+      .ant-form-item-control {
+        line-height: 32px;
+      }
+    }
+    .antd-pro-gcmdb-ui-src-pages-g-power-user-user-list-ant-form-item-control-wrapper {
+      flex: 1;
+    }
+  .submitButtons {
+    white-space: nowrap;
+    margin-bottom: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-lg) {
+  .ant-form-item {
+    margin-right: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .ant-form-item {
+    margin-right: 8px;
+  }
 }
 
 @import "~antd/lib/style/themes/default.less";

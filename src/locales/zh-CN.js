@@ -29,7 +29,11 @@ export default {
   'menu.project.business.grouplist': '项目组列表',
   'menu.project.business.linelist': '产品线列表',
   'menu.project.treelist': '产品树',
-  
+  'menu.power': '权限管理',
+  'menu.power.user': '用户管理',
+  'menu.power.user.list': '用户列表',
+  'menu.power.user.rolelist': '角色列表',
+  'menu.power.user.resourcelist':'资源列表',
   'menu.result': '结果页',
   'menu.result.success': '成功页',
   'menu.result.fail': '失败页',

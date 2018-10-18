@@ -187,6 +187,36 @@ export default [
         ],
       },
       {
+        name: 'power',
+        icon: 'user',
+        path: '/authmanage',
+        routes: [
+          {
+            path: '/authmanage/user',
+            name: 'user',
+            component: './gPower/SearchList',
+            routes: [
+              {
+                path: '/authmanage/user/list',
+                name: 'list',
+                component: './gPower/User/userList',
+              },
+              {
+                path: '/authmanage/user/rolelist',
+                name: 'rolelist',
+                component: './gPower/Role/roleList',
+              },
+              {
+                path: '/authmanage/user/resourcelist',
+                name: 'resourcelist',
+                component: './gPower/Resource/resourceList',
+              },
+            ],
+          },
+          
+        ],
+      },
+      {
         name: 'result',
         icon: 'check-circle-o',
         path: '/result',

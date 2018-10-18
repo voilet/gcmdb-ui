@@ -31,58 +31,51 @@ const InputGroup = Input.Group
 
 export default class SearchList extends PureComponent {
   state = {
-     activekey: "projectline",
+     activekey: "user",
      selectKey: "exsited"
   };
 
   componentDidMount() {
-    const  searchResult = this.props.gproline
+    // const  searchResult = this.props.gproline
     
-    console.log("searchResult",searchResult)
-    if (searchResult.prolinedata.data.length > 0) {
-      this.setState({
-        activekey : "projectline"
-      })
-    } else {
-      if (searchResult.progroupdata.data.length > 0) {
-        this.setState({
-          activekey : "projectgroup"
-        })
-      } else {
-        this.setState({
-          activekey : "project"
-        })
-      }
-    }
+    // if (searchResult.prolinedata.data.length > 0) {
+    //   this.setState({
+    //     activekey : "projectline"
+    //   })
+    // } else {
+    //   if (searchResult.progroupdata.data.length > 0) {
+    //     this.setState({
+    //       activekey : "projectgroup"
+    //     })
+    //   } else {
+    //     this.setState({
+    //       activekey : "project"
+    //     })
+    //   }
+    // }
   }
 
   handleTabChange = key => {
     const { dispatch, match, } = this.props;
     switch (key) {
-      case 'project':
-        dispatch(routerRedux.push(`${match.url}/prolist`));
+      case 'user':
+        dispatch(routerRedux.push(`${match.url}/list`));
         this.setState({
-          activekey : "project"
+          activekey : "user"
         })
         break;
-      case 'projectgroup':
-        dispatch(routerRedux.push(`${match.url}/grouplist`));
+      case 'role':
+        dispatch(routerRedux.push(`${match.url}/rolelist`));
         this.setState({
-          activekey : "projectgroup"
+          activekey : "role"
         })
         break;
-      case 'projectline':
-        dispatch(routerRedux.push(`${match.url}/linelist`));
+      case 'resource':
+        dispatch(routerRedux.push(`${match.url}/resourcelist`));
         this.setState({
-          activekey : "projectline"
+          activekey : "resource"
         })
         break;
-      case 'deletedlist':
-      dispatch(routerRedux.push(`${match.url}/deletedlist`));
-      this.setState({
-        activekey : "deletedlist"
-      })
-      break;
       default:
         break;
     }
@@ -101,17 +94,6 @@ export default class SearchList extends PureComponent {
           },
       });
     }
-
-    if ( this.state.selectKey == "deleted" ) {
-      dispatch({
-        type: 'gproline/SearchProjectList',
-        payload: {
-          "content":value,
-          "key":"deleted"     
-          },
-      });
-    }
-
   }
 
   handleChange = (value) => {
@@ -127,35 +109,29 @@ export default class SearchList extends PureComponent {
     
     const routes = getRoutes(match.path, route);
 
-     console.log(this.props)
-
     
     const tabList = [
       {
-        key: 'project',
-        tab: '项目列表',
+        key: 'user',
+        tab: '用户管理',
       },
       {
-        key: 'projectgroup',
-        tab: '项目组列表',
+        key: 'role',
+        tab: '角色管理',
       },
       {
-        key: 'projectline',
-        tab: '产品线列表',
-      },
-      {
-        key: 'deletedlist',
-        tab: '已删除的项目',
-      },
+        key: 'resource',
+        tab: '资源管理',
+      }
     ];
 
 
     const mainSearch = (
       <div style={{ textAlign: 'center' }}>
        <InputGroup compact>
-          <Select size="large" defaultValue="搜索项目"  onChange={this.handleChange}>
-            <Option value="exsited">搜索项目</Option>
-            <Option value="deleted">搜索删除</Option>
+          <Select size="large" defaultValue="搜索用户"  onChange={this.handleChange}>
+            <Option value="exsited">搜索用户</Option>
+            <Option value="deleted">搜索角色</Option>
           </Select>
           <Input.Search
           placeholder="请输入"
@@ -170,7 +146,7 @@ export default class SearchList extends PureComponent {
 
     return (
       <PageHeaderWrapper
-        title="搜索业务线"
+        title="权限管理"
         content={mainSearch}
         tabList={tabList}
         tabActiveKey={activekey}
