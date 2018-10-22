@@ -8,9 +8,33 @@ export async function queryResourcelist() {
 
 
 
+//添加资源列表
+export async function addResourcelist(params) {
+  return request('/manage/auth/resource/add', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
+
 //修改资源列表
 export async function modifyResourcelist(params) {
   return request('/manage/auth/resource/modify', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
+
+//修改资源列表顺序
+export async function modifyResourceSeq(params) {
+  return request('/manage/auth/resource/modifyseq', {
     method: 'POST',
     body: {
       ...params,

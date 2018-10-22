@@ -105,55 +105,7 @@ export default class RoleList extends PureComponent {
     });
   }
 
-  handleMenuClick = (e) => {
-    const {dispatch} = this.props;
-    const {selectedRows} = this.state;
-
-    if (!selectedRows) return;
-    console.log(selectedRows)
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'gproline/getProjectLine',
-          payload: {
-            ID: selectedRows.map(row => row.ID).join(','),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
-        break;
-      case  'approval':
-          dispatch({
-            type: 'gproline/getProjectLine',
-            payload: {
-              ID: selectedRows.map(row => row.ID).join(','),
-            },
-            callback: () => {
-              this.setState({
-                selectedRows: [],
-              });
-            },
-          });
-      case  'stop':
-          dispatch({
-            type: 'gproline/getProjectLine',
-            payload: {
-              ID: selectedRows.map(row => row.ID).join(','),
-            },
-            callback: () => {
-              this.setState({
-                selectedRows: [],
-              });
-            },
-          });
-      default:
-        break;
-    }
-  }
-
+ 
   handleSelectRows = (rows) => {
     this.setState({
       selectedRows: rows,
@@ -162,30 +114,26 @@ export default class RoleList extends PureComponent {
 
   //保存
   handleSaveData = (val) => {
-    const { ID, group_id, pro_title, line_id, pro_alias, pro_code_url, pro_enable, pro_remarks} = val
-
-    if (group_id != "-1") {
-      const params = {
+    const { ID, title} = val
+    const params = {
         ID,
-        title:pro_title,
-        alias:pro_alias,
-        remarks:pro_remarks,
-        code_url:pro_code_url,
-        enable:pro_enable,
-        groupid:group_id,
-        lineid:line_id,
-      }
-  
-      this.props.dispatch({
-        type: 'gproline/modifyProject',
-        payload: params 
-      });
-    } else {
-      this.props.dispatch({
-        type: 'gproline/getProjectList',
-      });
-    } 
+        title:title,
+    }
 
+    this.props.dispatch({
+        type: 'grole/modifyRole',
+        payload: {
+          description: params,
+          cb: (info) => {
+              if (info.status == '200'){
+                  openNotificationWithIcon('success',"分配权限成功!~ ~")
+                } else {
+                  openNotificationWithIcon('error',"分配权限失败!~ ~")
+                }
+          }
+      },
+      });
+    
   }
 
   handleDeleteData = (val) => {

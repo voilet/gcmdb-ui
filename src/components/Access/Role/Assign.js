@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Table, Switch, Button,Tag } from 'antd'
+import { Modal, Table, Switch, Button,Tag,notification } from 'antd'
 import PropTypes from 'prop-types'
 
 import style from './assignModal.less'
@@ -36,6 +36,13 @@ const columns = [{
     key: 'link_url',
 }]
 
+
+const openNotificationWithIcon = (type,content) => {
+    notification[type]({
+      message: '通 知 栏',
+      description: content,
+    });
+  };
 
 class Assign extends React.Component {
     constructor(props) {
@@ -87,7 +94,7 @@ class Assign extends React.Component {
     }
 
     getExpandKeys = data => {
-        
+     
         data.forEach(item => {
             if (item.has_licence === 1) {
                 this.selectedRowKeys.push(item.ID)
@@ -145,8 +152,31 @@ class Assign extends React.Component {
     }
 
     submitAssign = () => {
-        console.log('分配成功,请求参数为：', this.params)
+        console.log('分配成功,请求参数为：', )
+        const { dispatch } = this.props
+ 
+        dispatch({
+            type: 'grole/allocateRoleResource',
+            payload: {
+                description: this.params,
+                cb: (info) => {
+                    if (info.status == '200'){
+                        openNotificationWithIcon('success',"分配权限成功!~ ~")
+                      } else {
+                        openNotificationWithIcon('error',"分配权限失败!~ ~")
+                      }
+                }
+            },
+
+        })
+
+        this.setState({
+            visible: true,
+        })
+
         this.init()
+
+
     }
 
     cancelAssign = () => {
@@ -194,11 +224,7 @@ class Assign extends React.Component {
             isExpandAll: expandItem.length === this.expandItem.length,
         })
     }
-
-    openModal = () => {
-        debugger
-       
-    }
+ 
 
     render() {
         const {

@@ -18,7 +18,7 @@ import {
 
 import ResourceTable from '@/components/Access/Resource';
 
-import Addresource from  './resourceAdd'
+import ResourceAdd from  './ResourceAdd'
 
 import styles from './resourceList.less';
 
@@ -31,22 +31,27 @@ export default class ResourceList extends PureComponent {
     expandForm: false,
     selectedRows: [],
     formValues: {},
-    resourcedata:[]
+    resourcedata:[],
+    parentdata:[]
   };
 
   componentDidMount() {
     const {dispatch} = this.props;
 
     dispatch({
-      type: 'gresource/getResourcelist',
+      type: 'gresource/getResourcelist'
+    });   
+
+    dispatch({
+      type: 'gresource/getResourceTreeForparent',
       payload: {
         cb: (val) => {
            this.setState({
-              resourcedata:val.data
+              parentdata:val.data
            })
         }
       }
-    });   
+    });  
   }
 
 
@@ -59,19 +64,6 @@ export default class ResourceList extends PureComponent {
     });
   }
 
-
-
-  handleFormReset = () => {
-    const {form, dispatch} = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'gproline/getProjectList',
-      payload: {},
-    });
-  }
 
   toggleForm = () => {
     this.setState({
@@ -91,31 +83,32 @@ export default class ResourceList extends PureComponent {
 
   render() {
     
-    const {selectedRows,resourcedata} = this.state;
+    const {selectedRows,parentdata } = this.state;
 
     const { gresource,dispatch } = this.props;
     
+    console.log("this.props",this.props)
+    // console.log("resourcedata",gresource.parentdata.data ? gresource.parentdata.data : [])
+
     return (
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               <Row gutter={16}>
                <Col span={2}>
-                  {/* <Addrole 
-                  />  */}
+                  <ResourceAdd dispatch={dispatch} resource={parentdata}/>
                 </Col>
               </Row>
               </div>
             <Divider> 资源列表 </Divider>
-       
-          
+      
           <ResourceTable
               selectedRows={selectedRows}
               // loading={loading}
               dispatch = {dispatch}
               handleSaveData={this.handleSaveData}
               handleDeleteData={this.handleDeleteData}
-              resourcedata = {resourcedata}
+              resourcedata = {gresource.data}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />

@@ -76,51 +76,23 @@ class RoleTable extends PureComponent {
     );
   }
 
-  edit(key) {    
-    console.log("key",key)
-    
+  edit(key) {        
     const newData = [...this.state.data];
-
-
-    console.log("newData",newData)
-
     const target = newData.filter(item => key === item.ID)[0];
 
     if (target) {
-      console.log("target",target)
       target.editable = true;
-      this.setState({ 
-          data: newData.map((obj)=>{
-            if(key == obj.ID){
-              obj.selectStatus=false
-            }
-            return obj;
-          }),
-         });
-    }
+      this.setState({ data: newData})
+      }
   }
 
   save(key) {
-    
-   
     const newData = [...this.state.data];
-
     const target = newData.filter(item => key === item.ID)[0];
-
-  
-
     if (target) {
       delete target.editable;
-
-      if (typeof(target.role) === "undefined")
-      {
-          target.role = target.title_id
-      }
-  
-
-      this.setState({ data: newData })
-    
-     this.props.handleSaveData(target)
+      this.setState({data: newData})
+      this.props.handleSaveData(target)
     }
   }
   
@@ -129,14 +101,7 @@ class RoleTable extends PureComponent {
     const target = newData.filter(item => key === item.ID)[0];
     if (target) {
       delete target.editable;
-      this.setState({ 
-        data: newData.map((obj)=>{
-          if(key == obj.ID){
-            obj.selectStatus=true
-          }
-          return obj;
-        }),
-     });
+      this.setState({ data: newData })
     }
   }
 
@@ -169,6 +134,9 @@ class RoleTable extends PureComponent {
   }
 
   handleChange(value, key, column) {    
+
+    console.log("value  ,key,col",value, key, column)
+
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
     
@@ -256,7 +224,7 @@ class RoleTable extends PureComponent {
         dataIndex: 'title',
         key:'title',
         width:'120px',
-        render: (text, record) => this.renderColumns(text, record, 'username'),
+        render: (text, record) => this.renderColumns(text, record, 'title'),
       },
       {
         title: '用户数',
@@ -278,7 +246,7 @@ class RoleTable extends PureComponent {
                   <span>
                   <a onClick={() => this.save(record.ID)}>保存</a>
                   <Divider type="vertical" />
-                  <Popconfirm title="确定取消?" onConfirm={() => this.cancel(record.ID)}>
+                  <Popconfirm title="确定取消?" onClick={() => this.cancel(record.ID)}>
                       <a>取消</a>
                   </Popconfirm>
                   </span>

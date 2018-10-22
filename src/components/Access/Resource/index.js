@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 
 import style from './index.less'
 import EditModal from './EditModal'
+import PopEdit from './PopEdit'
 
 const ButtonGroup = Button.Group
 
@@ -56,7 +57,7 @@ class ResourceTable extends React.Component {
             key: 'seq',
             width: '100px',
             render: (text, record) => {
-              const seqText = record.seq ? <span className={style['seq-text']}>{record.seq}</span> : <span />
+              const seqText = record.seq ? <PopEdit seq={record.seq} dispatch={this.props.dispatch} resId={record.ID} key={record.ID} /> : <span />
               return seqText
             }
         },

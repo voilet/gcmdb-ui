@@ -1,12 +1,22 @@
 import React from 'react'
-import { Modal, Form, Input, Select, Row, Col, TreeSelect  } from 'antd'
+import { Modal, Form, Input, Select, Row, Col, TreeSelect,Button  } from 'antd'
 
 import style from './editModal.less'
 
 const FormItem = Form.Item
 const { Option } = Select
 const { Search } = Input
+const { confirm } = Modal
 const typeError = '区域只能是一级节点，不能有父节点'
+
+const openNotificationWithIcon = (type,content) => {
+    notification[type]({
+      message: '通 知 栏',
+      description: content,
+    });
+  };
+
+
 
 class EditModal extends React.Component {
     constructor(props) {
@@ -14,6 +24,7 @@ class EditModal extends React.Component {
         this.state = {
             visible: false,
             treeData: [],
+            newurl: ""
         }
     }
 
@@ -71,8 +82,12 @@ class EditModal extends React.Component {
                 resetFields,
             },
         } = this.props
+
         const type = getFieldValue('type')
         const fatherNode = getFieldValue('fatherNode')
+        const {dispatch} = this.props
+        
+
         let typeText = ''
         if (type === 'area') {
             typeText = '区域'
@@ -81,7 +96,8 @@ class EditModal extends React.Component {
         } else {
             typeText = '按钮'
         }
-        if (type !== 'area' && fatherNode === 'no_parent') {
+        
+        if (type === 'area' && fatherNode !== 'no_parent') {
             setFields({
                 type: {
                     value: typeText,
@@ -93,7 +109,27 @@ class EditModal extends React.Component {
             validateFields(Object.keys(validateFieldsValue), (err, values) => {
                 if (!err) {
                     // 参数正确，发送请求，重置表单
-                    console.log('params', values)
+                    if (!values.url) {
+                        values.url = ""
+                    }
+
+                    if (!values.icon) {
+                        values.icon = ""
+                    }
+                
+                    dispatch({
+                        type: 'gresource/modifyResourcelist',
+                        payload: {
+                            description: values,
+                            cb: (info) => {
+                                if (info.status == '200'){
+                                    openNotificationWithIcon('success',"修改资源成功!~ ~")
+                                  } else {
+                                    openNotificationWithIcon('error',"修改资源失败!~ ~")
+                                  }
+                            }
+                        },
+                    })  
                     resetFields()
                     this.closeEdit()
                 }
@@ -126,6 +162,52 @@ class EditModal extends React.Component {
         return type
     }
 
+    deleteRes = () => {
+        confirm({
+            title: '请确认',
+            content: '您是否要删除所选的项？',
+            okText: '确定',
+            okType: 'danger',
+            cancelText: '取消',
+            onOk: () => {
+                // 确认删除，发送请求
+                // 删除成功，则重新load列表
+                const { dispatch } = this.props
+                console.log('删除成功')
+            },
+          })
+    }
+
+
+    onSearch = (val) => {
+        const {
+            form: {
+                getFieldValue,
+                setFieldsValue,
+            }, 
+        } = this.props
+
+        const urlfor = getFieldValue('url')
+
+        const {dispatch} = this.props
+        dispatch({
+            type: 'gresource/getURLforLink',
+            payload: {
+                UrlFor: urlfor,
+                cb: _val => {
+                    const {
+                        data: {
+                            link_url,
+                        },
+                    } = _val
+                    console.log(link_url)
+                    setFieldsValue({'afterUrl': link_url})
+                }
+            },
+        })  
+    }
+
+
     render() {
         const {
             visible,
@@ -143,12 +225,15 @@ class EditModal extends React.Component {
                 children_id,
             },
         } = this.props
+
+        let {newurl} = this.state
+
         return (
             <div>
                 <div className={style['edit-option']}>
                     <span onClick={this.showEditModal} className={style['edit-option-text']}>编辑</span>
                     <div className={style['icon-divide']} />
-                    <span className={style['edit-option-text']}>删除</span>
+                    <span onClick={this.deleteRes} className={style['edit-option-text']}>删除</span>
                 </div>
                 <Modal
                     title="编辑资源"
@@ -242,7 +327,8 @@ class EditModal extends React.Component {
                                         className={style['form-item-left']}
                                     >
                                     {
-                                        getFieldDecorator('url', {})(
+                                        getFieldDecorator('url', {
+                                        })(
                                             <Input />,
                                         )
                                     }
@@ -272,13 +358,12 @@ class EditModal extends React.Component {
                                     >
                                     {
                                         getFieldDecorator('afterUrl', {
-                                            initialValue: link_url ? link_url : '',
+                                            initialValue: '',
                                         })(
-                                            <Search
-                                                enterButton="验证"
-                                            />,
+                                            <Input disabled  className={style['input-value']}/>
                                         )
                                     }
+                                        <Button onClick={this.onSearch} type= "primary"> 验证</Button>
                                     </FormItem>
                                 </Col>
                             </Row>

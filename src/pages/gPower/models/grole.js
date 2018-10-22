@@ -1,8 +1,8 @@
 import {
   queryRolelist,
   modifyRolelist,
-  grantRolelist,
-  getResourceById
+  getResourceById,
+  allocateResource
 } from '@/services/AuthManagementAPI/roleAPI'
 
 
@@ -31,13 +31,13 @@ export default {
 
     //修改角色信息列表
     *modifyRole({payload},{call,put}){
-      const response = yield call(modifyUserlist,payload);
+      const response = yield call(modifyRolelist,payload.description);
       yield put({
         type: 'saveResponse',
         payload: response,
         cb: payload.cb,
       });
-      yield put({ type: 'reloadUser'})
+      yield put({ type: 'reloadRole'})
     },
     
     //添加用户信息列表
@@ -48,7 +48,7 @@ export default {
         payload: response,
         cb: payload.cb,
       });
-      yield put({ type: 'reloadUser'})
+      yield put({ type: 'reloadRole'})
     },
 
     //根据角色id获取资源列表
@@ -61,9 +61,19 @@ export default {
       });
     },
 
+    //根据角色id 分配资源
+    *allocateRoleResource({payload},{call,put}){
+      const response = yield call(allocateResource,payload.description)
+      yield put({
+        type: 'saveResource',
+        payload: response,
+        cb: payload.cb,
+      });
+    },
+
     //重新加载主机基础信息
-    *reloadUser(action, { put, select }) {
-      yield put({ type: 'getUserlist'} );
+    *reloadRole(action, { put, select }) {
+      yield put({ type: 'getRolelist'} );
     },
 
   },

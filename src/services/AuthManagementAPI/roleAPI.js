@@ -43,3 +43,14 @@ export async function getResourceById(params) {
   });
 }
 
+//分配权限
+export async function allocateResource(params) {
+  return request('/manage/auth/user/allocate', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+

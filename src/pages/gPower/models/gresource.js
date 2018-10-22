@@ -3,7 +3,9 @@ import {
     addResourcelist,
     modifyResourcelist,
     deleteResourcelist,
-    getResourceTreeForparent
+    getResourceTreeForparent,
+    queryURLforLink,
+    modifyResourceSeq
   } from '@/services/AuthManagementAPI/resourceAPI'
   
   
@@ -12,7 +14,8 @@ import {
   
     state: {
       data: [],
-      parentdata: []
+      parentdata: [],
+      link:[]
     },
   
     effects: {
@@ -20,12 +23,9 @@ import {
       *getResourcelist({payload},{call,put}) {
         
         const response = yield call(queryResourcelist);
-    
-        
         yield put({
           type: 'saveResource',
           payload: response,
-          cb:  payload.cb 
         });
       },
   
@@ -37,18 +37,30 @@ import {
           payload: response,
           cb: payload.cb,
         });
-        yield put({ type: 'reloadUser'})
+        yield put({ type: 'reloadResource'})
       },
-      
-      //添加资源列表
-      *addResourcelist({payload},{call,put}){
-        const response = yield call(addResourcelist,payload);
+
+      //修改资源列表seq
+      *modifyResourceSeq({payload},{call,put}){
+        const response = yield call(modifyResourceSeq,payload.description);
         yield put({
           type: 'saveResponse',
           payload: response,
           cb: payload.cb,
         });
-        yield put({ type: 'reloadUser'})
+        yield put({ type: 'reloadResource'})
+      },
+
+      
+      //添加资源列表
+      *addResourcelist({payload},{call,put}){
+        const response = yield call(addResourcelist,payload.description);
+        yield put({
+          type: 'saveResponse',
+          payload: response,
+          cb: payload.cb,
+        });
+        yield put({ type: 'reloadResource'})
       },
 
       //删除资源列表
@@ -59,7 +71,7 @@ import {
         payload: response,
         cb: payload.cb,
       });
-      yield put({ type: 'reloadUser'})
+      yield put({ type: 'reloadResource'})
     },
       
   
@@ -68,6 +80,16 @@ import {
       const response = yield call(getResourceTreeForparent,payload)
       yield put({
         type: 'saveParentResource',
+        payload: response,
+        cb: payload.cb,
+      });
+    },
+
+    //验证资源URL 
+    *getURLforLink({payload},{call,put}){
+      const response = yield call(queryURLforLink,payload)
+      yield put({
+        type: 'saveURLforLink',
         payload: response,
         cb: payload.cb,
       });
@@ -103,12 +125,20 @@ import {
         };
       },
       saveResource(state, action) {
-        action.cb && action.cb(action.payload)
         return {
           ...state,
           ...action.payload,
         };
       },
+
+      saveURLforLink(state,action){
+        action.cb && action.cb(action.payload)
+        return {
+          ...state,
+          link: action.payload,
+        };
+      },
+
       changeNotifyCount(state, action) {
         return {
           ...state,
