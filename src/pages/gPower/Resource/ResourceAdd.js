@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Form, Input, Select, Row, Col, TreeSelect,Button  } from 'antd'
+import { Modal, Form, Input, Select, Row, Col, TreeSelect,Button,notification  } from 'antd'
 
 import style from './resourceAdd.less'
 
@@ -112,7 +112,7 @@ class ResourceAdd extends React.Component {
                         values.icon = ""
                     }
                 
-                    dispatch({
+                    this.props.dispatch({
                         type: 'gresource/addResourcelist',
                         payload: {
                             description: values,

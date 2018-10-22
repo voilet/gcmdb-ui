@@ -165,7 +165,7 @@ class EditModal extends React.Component {
     deleteRes = () => {
         confirm({
             title: '请确认',
-            content: '您是否要删除所选的项？',
+            content: '您是否要删除所选的项及其子项？',
             okText: '确定',
             okType: 'danger',
             cancelText: '取消',
