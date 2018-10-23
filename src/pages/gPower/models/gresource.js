@@ -65,7 +65,7 @@ import {
 
       //删除资源列表
       *deleteResourcelist({payload},{call,put}){
-      const response = yield call(deleteResourcelist,payload);
+      const response = yield call(deleteResourcelist,payload.description);
       yield put({
         type: 'saveResponse',
         payload: response,

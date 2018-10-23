@@ -285,7 +285,7 @@ let routes = [
               {
                 "path": "/authmanage/user/rolelist",
                 "name": "rolelist",
-                "component": dynamic({ loader: () => import('../gPower/Role/roleList'), loading: require('/data/golang/src/gcmdbUi/src/components/PageLoading/index').default  }),
+                "component": dynamic({ loader: () => import('../gPower/Role/roleTable'), loading: require('/data/golang/src/gcmdbUi/src/components/PageLoading/index').default  }),
                 "exact": true
               },
               {

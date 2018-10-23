@@ -4,10 +4,6 @@ import {connect} from 'dva';
 import {
   Input,
   Select,
-  Icon,
-  Button,
-  Dropdown,
-  Menu,
 } from 'antd';
 
 
@@ -16,11 +12,10 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { getRoutes } from '@/utils/utils';
 
 
-import styles from './SearchList.less';
+ 
 
 const {Option} = Select;
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
-const { TextArea } = Input;
+ 
 const InputGroup = Input.Group
 
 
@@ -82,19 +77,7 @@ export default class SearchList extends PureComponent {
   }
 
 
-  handleSearch = (value) => {
-   //  e.preventDefault();
-    const {dispatch} = this.props;
-    if ( this.state.selectKey == "exsited" ) {
-      dispatch({
-        type: 'gproline/SearchProjectList',
-        payload: {
-          "content":value,
-          "key":"exsited"     
-          },
-      });
-    }
-  }
+ 
 
   handleChange = (value) => {
     this.setState({
@@ -105,11 +88,9 @@ export default class SearchList extends PureComponent {
   render() {
     
     const {activekey} = this.state;     
-    const { match, route, children,loading } = this.props;
+    const { children } = this.props;
     
-    const routes = getRoutes(match.path, route);
-
-    
+     
     const tabList = [
       {
         key: 'user',

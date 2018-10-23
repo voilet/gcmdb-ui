@@ -204,7 +204,7 @@ export default [
               {
                 path: '/authmanage/user/rolelist',
                 name: 'rolelist',
-                component: './gPower/Role/roleList',
+                component: './gPower/Role/roleTable',
               },
               {
                 path: '/authmanage/user/resourcelist',

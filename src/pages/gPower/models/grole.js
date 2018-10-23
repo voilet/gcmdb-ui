@@ -2,7 +2,9 @@ import {
   queryRolelist,
   modifyRolelist,
   getResourceById,
-  allocateResource
+  allocateResource,
+  deleteRole,
+  addRolelist
 } from '@/services/AuthManagementAPI/roleAPI'
 
 
@@ -39,10 +41,21 @@ export default {
       });
       yield put({ type: 'reloadRole'})
     },
-    
+
+    //删除角色信息列表
+    *deleteRole({payload},{call,put}){
+      const response = yield call(deleteRole,payload.description);
+      yield put({
+        type: 'saveResponse',
+        payload: response,
+        cb: payload.cb,
+      });
+      yield put({ type: 'reloadRole'})
+  },
+  
     //添加用户信息列表
     *addRole({payload},{call,put}){
-      const response = yield call(addUserlist,payload.description);
+      const response = yield call(addRolelist,payload.description);
       yield put({
         type: 'saveResponse',
         payload: response,

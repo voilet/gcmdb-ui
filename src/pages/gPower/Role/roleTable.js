@@ -17,7 +17,8 @@ import {
 
 
 import styles from './roleList.less';
- 
+import AddRole from './roleAdd'
+import RolesTable from '@/components/Access/Role';
  
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
@@ -178,11 +179,20 @@ export default class RoleList extends PureComponent {
                 </Col>
               </Row>
               </div>
+            <AddRole dispatch = {this.props.dispatch} />
             <Divider> 角色列表 </Divider>
-
-          
-      
-            
+            <RolesTable
+              selectedRows={selectedRows}
+              // loading={loading}
+              dispatch = {dispatch}
+              handleSaveData={this.handleSaveData}
+              handleDeleteData={this.handleDeleteData}
+              roledata = {grole.data}
+              assignInfo = {grole.assignInfo}
+              onSelectRow={this.handleSelectRows}
+              onChange={this.handleStandardTableChange}
+            />
+        
           </div>
         </Card>
     

@@ -7,6 +7,18 @@ export async function queryRolelist() {
 }
 
 
+//添加角色信息
+export async function addRolelist(params) {
+  return request('/manage/auth/role/add', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
+
 
 //修改角色信息
 export async function modifyRolelist(params) {
@@ -54,3 +66,14 @@ export async function allocateResource(params) {
   });
 }
 
+
+//删除角色
+export async function deleteRole(params) {
+  return request('/manage/auth/role/delete/', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}

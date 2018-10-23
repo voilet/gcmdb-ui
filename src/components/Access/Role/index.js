@@ -1,12 +1,10 @@
-import React, { PureComponent, Fragment } from 'react';
-import moment from 'moment';
-import { Table, Alert, Divider, Input, Popconfirm, Select, Button  } from 'antd';
+import React, { PureComponent } from 'react';
+ 
+import { Table, Alert, Divider, Input, Popconfirm, Button,Modal  } from 'antd';
 import styles from './index.less';
 import Assign from './Assign'
  
-const {Option} = Select;
-
-
+const { confirm } = Modal
 
 const EditableCell = ({ editable, value, onChange }) => (
   <div>
@@ -25,26 +23,18 @@ class RoleTable extends PureComponent {
     selectedLine:false
   };
 
-  componentWillReceiveProps(nextProps) {
-    // clean state
-    if (nextProps.selectedRows.length === 0) {
-      this.setState({
-        selectedRowKeys: [],
-        totalCallNo: 0,
-      });
+  
+  static getDerivedStateFromProps(nextProps, prevState){
+    if (nextProps.resource === prevState.resource)
+    {
+        return {}
     }
+    else {
+       return {data: nextProps.roledata}
+    }
+ }
 
-    if(nextProps.roledata){
-      this.setState({
-        data:nextProps.roledata.map((obj)=>{
-          if(obj.selectStatus == undefined){
-            obj.selectStatus=true
-          }
-          return obj;
-        })
-      })
-    }
-  }
+
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
     const totalCallNo = selectedRows.reduce((sum, val) => {
@@ -105,38 +95,43 @@ class RoleTable extends PureComponent {
     }
   }
 
-  askdelete(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
 
-    if (target) {
-      target.deleteable = true;
-      this.setState({ data: newData });
-    }
-  }
+  confirmdelete(value) {
+    const { dispatch } = this.props
+ 
+    const { ID:delete_id  } = value
 
-  confirmdelete(key) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => key === item.ID)[0];
-    if (target) {
-        const index = newData.indexOf(target)
-        if (index > -1) {
-        newData.splice(index, 1);
-        }
-    
-    target.tag = false;
-    this.setState({ data: newData });
+    confirm({
+        title: '请确认',
+        content: '您是否要删除所选的项？',
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk: () => {
+            // 确认删除，发送请求
+            // 删除成功，则重新load列表
+            dispatch({
+                type: 'grole/deleteRole',
+                payload: {
+                    description: {
+                        ID: delete_id
+                    },
+                    cb: (info) => {
+                        if (info.status == '200'){
+                            openNotificationWithIcon('success',"删除角色成功!~ ~")
+                        } else {
+                            openNotificationWithIcon('error',"删除角色失败!~ ~")
+                        }
+                        // 刷新页面
 
-    this.cacheData = newData.map(item => ({ ...item }));   
-    this.props.handleDeleteData(target)
-    }
-   
+                    }
+                },
+            })
+        },
+    })
   }
 
   handleChange(value, key, column) {    
-
-    console.log("value  ,key,col",value, key, column)
-
     const newData = [...this.state.data];
     const target = newData.filter(item => key === item.ID)[0];
     
@@ -198,15 +193,6 @@ class RoleTable extends PureComponent {
     }
   }
 
-  // grant(roleid){
-  //   const { assignInfo } = this.props
-
-  //   const option = (
-       
-  //   )
-  //   return option
-  // }
-
 
   render() {
     const { selectedRowKeys, totalCallNo, data} = this.state;
@@ -259,9 +245,9 @@ class RoleTable extends PureComponent {
                {
                  !editable ?
                   <span>
-                  <Popconfirm title="确定删除?" onConfirm={() => this.confirmdelete(record.ID)}>
-                  <Button>删除</Button>
-                  </Popconfirm>
+                 
+                  <Button onClick = { ()=> this.confirmdelete(record)}>删除</Button>
+                   
                   <span>
                       <Divider type="vertical" />
                       <Assign record={record.ID} assignInfo={assignInfo} dispatch={this.props.dispatch} />

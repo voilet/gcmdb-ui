@@ -163,6 +163,12 @@ class EditModal extends React.Component {
     }
 
     deleteRes = () => {
+        const {
+            dispatch,
+            record: {
+                ID: delete_id,
+            },
+        } = this.props
         confirm({
             title: '请确认',
             content: '您是否要删除所选的项及其子项？',
@@ -172,7 +178,6 @@ class EditModal extends React.Component {
             onOk: () => {
                 // 确认删除，发送请求
                 // 删除成功，则重新load列表
-                const { dispatch } = this.props
                 console.log('删除成功')
             },
           })
