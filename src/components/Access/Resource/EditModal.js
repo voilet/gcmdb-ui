@@ -78,51 +78,42 @@ class EditModal extends React.Component {
                 validateFields,
                 getFieldsValue,
                 setFields,
-                getFieldValue,
                 resetFields,
             },
+            dispatch,
         } = this.props
-
-        const type = getFieldValue('type')
-        const fatherNode = getFieldValue('fatherNode')
-        const {dispatch} = this.props
-        
-
-        let typeText = ''
-        if (type === 'area') {
-            typeText = '区域'
-        } else if (type === 'menu') {
-            typeText = '菜单'
-        } else {
-            typeText = '按钮'
-        }
-        
-        if (type === 'area' && fatherNode !== 'no_parent') {
-            setFields({
-                type: {
-                    value: typeText,
-                    errors: [new Error(typeError)]
+        const validateFieldsValue = getFieldsValue()
+        validateFields(Object.keys(validateFieldsValue), (err, values) => {
+            if (!err) {
+                // 参数正确，发送请求，重置表单
+                const {
+                    url,
+                    icon,
+                    type,
+                    fatherNode,
+                } = values
+                if (!url) {
+                    values.url = ""
                 }
-            })
-        } else {
-            const validateFieldsValue = getFieldsValue()
-            validateFields(Object.keys(validateFieldsValue), (err, values) => {
-                if (!err) {
-                    // 参数正确，发送请求，重置表单
-                    if (!values.url) {
-                        values.url = ""
-                    }
 
-                    if (!values.icon) {
-                        values.icon = ""
-                    }
+                if (!icon) {
+                    values.icon = ""
+                }
                 
+                if (type === 'area' && fatherNode !== 'no_parent') {
+                    setFields({
+                        type: {
+                            value: type,
+                            errors: [new Error(typeError)]
+                        }
+                    })
+                } else {
                     dispatch({
                         type: 'gresource/modifyResourcelist',
                         payload: {
                             description: values,
                             cb: (info) => {
-                                if (info.status == '200'){
+                                if (info.status === '200'){
                                     openNotificationWithIcon('success',"修改资源成功!~ ~")
                                   } else {
                                     openNotificationWithIcon('error',"修改资源失败!~ ~")
@@ -133,8 +124,8 @@ class EditModal extends React.Component {
                     resetFields()
                     this.closeEdit()
                 }
-            })
-        }
+            }
+        })
     }
 
     closeEdit = () => {

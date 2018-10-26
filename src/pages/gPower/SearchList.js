@@ -9,16 +9,9 @@ import {
 
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-import { getRoutes } from '@/utils/utils';
-
-
  
-
 const {Option} = Select;
- 
 const InputGroup = Input.Group
-
-
 
 
 @connect((props) => (props))
@@ -27,7 +20,7 @@ const InputGroup = Input.Group
 export default class SearchList extends PureComponent {
   state = {
      activekey: "user",
-     selectKey: "exsited"
+     selectKey: "user"
   };
 
   componentDidMount() {
@@ -76,10 +69,38 @@ export default class SearchList extends PureComponent {
     }
   }
 
+  handleSearch = (value) => {
+    //  e.preventDefault();
+    const { dispatch, } = this.props;
 
+     if ( this.state.selectKey == "user" ) {
+       dispatch({
+         type: 'guser/searchUser', 
+         payload: {
+            destination: { "content":value }
+           },
+       });
+     }
+
+   }
+
+  changeTable = () => {
+    const { dispatch, match, } = this.props;
+    
+    dispatch(routerRedux.push(`${match.url}/list`));
+     this.setState({
+       activekey : "user"
+     })
+  }
  
 
   handleChange = (value) => {
+
+    console.log("value",value)
+
+    if (value == "user") {
+      this.changeTable()
+    }
     this.setState({
       selectKey: value
     })
@@ -110,9 +131,8 @@ export default class SearchList extends PureComponent {
     const mainSearch = (
       <div style={{ textAlign: 'center' }}>
        <InputGroup compact>
-          <Select size="large" defaultValue="搜索用户"  onChange={this.handleChange}>
-            <Option value="exsited">搜索用户</Option>
-            <Option value="deleted">搜索角色</Option>
+          <Select size="large" defaultValue="请选择"  onChange={this.handleChange}>
+            <Option value="user">搜索用户</Option>
           </Select>
           <Input.Search
           placeholder="请输入"

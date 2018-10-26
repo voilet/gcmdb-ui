@@ -1,7 +1,8 @@
 import {
   queryUserlist,
   addUserlist,
-  modifyUserlist
+  modifyUserlist,
+  searchUserlist
 } from '@/services/AuthManagementAPI/userAPI'
 
 
@@ -68,6 +69,20 @@ export default {
       yield put({ type: 'reloadUser'})
     },
 
+    //搜索用户
+    *searchUser({ payload }, { call, put }) {
+      const response = yield call(searchUserlist, payload.destination) 
+      // 
+      yield put({
+        type: 'searchSaveUser',
+        payload: response,
+      });
+    
+
+    },
+
+
+
     //重新加载主机基础信息
     *reloadUser(action, { put, select }) {
       yield put({ type: 'getUserlist'} );
@@ -82,11 +97,20 @@ export default {
         list: action.payload,
       };
     },
+
     saveResponse(state, action){
       action.cb && action.cb(action.payload)
       return {
         ...state,
         response: action.payload,
+      };
+    },
+
+    searchSaveUser(state, action){
+      // action.cb && action.cb(action.payload)
+      return {
+        ...state,
+        data: action.payload,
       };
     },
     saveUser(state, action) {
@@ -105,5 +129,17 @@ export default {
         },
       };
     },
+
+    empty(state, action){
+      return  {
+        ...state,
+        data: {
+          data: {
+            user_infos:[],
+          },
+          pagination:{}
+        }
+      }
+    }
   },
 };

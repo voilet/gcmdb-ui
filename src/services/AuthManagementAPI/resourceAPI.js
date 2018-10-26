@@ -68,12 +68,6 @@ export async function queryURLforLink(params) {
 
 //获取父节点资源树
 export async function getResourceTreeForparent(params) {
-  return request('/manage/auth/resource/parentinfo', {
-    method: 'POST',
-    body: {
-      ...params,
-      method: 'post',
-    },
-  });
+  return request(`/manage/auth/resource/parentinfo`);
 }
 
