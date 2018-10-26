@@ -1,7 +1,6 @@
 import React from 'react'
 import { Tag, Table, Divider , Button } from 'antd'
-import PropTypes from 'prop-types'
-
+ 
 import style from './index.less'
 import EditModal from './EditModal'
 import PopEdit from './PopEdit'
@@ -74,10 +73,7 @@ class ResourceTable extends React.Component {
         }]    
     }
 
-    componentWillReceiveProps = () => {
-        const {resourcedata} = this.props 
-    }
-
+   
     getExpandKeys = data => {
         data.forEach(item => {
             if (item.has_licence === 1) {
@@ -158,8 +154,6 @@ class ResourceTable extends React.Component {
             isExpandAll: true,
             expandItem: tempArr,
         })
-        // console.log("isExpandAll",this.state.isExpandAll)
-        // console.log("expandItem",this.state.expandItem)
     }
 
     lessenAll = () => {
@@ -198,7 +192,6 @@ class ResourceTable extends React.Component {
             <React.Fragment>
                 
               <div className={style['switch-btn-block']}>
-                      {/* <Switch checkedChildren="全部展开" unCheckedChildren="全部收缩" checked={isExpandAll} onChange={this.expandSwitch} /> */}
               <ButtonGroup>
                 <Button type="primary" onClick={this.expandAll}>全部展开</Button>
                 <Button onClick={this.lessenAll}>全部收缩</Button>
