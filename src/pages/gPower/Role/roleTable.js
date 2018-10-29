@@ -5,13 +5,6 @@ import {
   Col,
   Card,
   Form,
-  Input,
-  Select,
-  Icon,
-  Button,
-  Dropdown,
-  Menu,
-  Modal,
   Divider
 } from 'antd';
 
@@ -149,24 +142,9 @@ export default class RoleList extends PureComponent {
  
 
   render() {
+    const {selectedRows} = this.state;
+    const { grole,dispatch } = this.props;
     
-    const {selectedRows, modalVisible, addInputValue} = this.state;
-    const { getFieldDecorator } = this.props.form;
-    //const { submitting } = this.props;
-  
-    const { grole,loading,submitting,dispatch } = this.props;
-    
-    console.log('grole', grole)
-    
-
-
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量启用</Menu.Item>
-        <Menu.Item key="stop">批量暂停</Menu.Item>
-      </Menu>
-    );
 
     return (
         <Card bordered={false}>

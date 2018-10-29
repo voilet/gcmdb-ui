@@ -97,7 +97,7 @@ class EditModal extends React.Component {
             typeText = '按钮'
         }
         
-        if (type === 'area' && fatherNode !== 'no_parent') {
+        if (type !== 'area' && fatherNode === 'no_parent') {
             setFields({
                 type: {
                     value: typeText,
@@ -163,22 +163,39 @@ class EditModal extends React.Component {
     }
 
     deleteRes = () => {
-        const {
-            dispatch,
-            record: {
-                ID: delete_id,
-            },
-        } = this.props
+        console.log("deleteRes",)
+        const { dispatch,
+            record:{
+                ID: delete_id
+            }} = this.props
+
         confirm({
             title: '请确认',
-            content: '您是否要删除所选的项及其子项？',
+            content: '您是否要删除所选的项？',
             okText: '确定',
             okType: 'danger',
             cancelText: '取消',
             onOk: () => {
                 // 确认删除，发送请求
                 // 删除成功，则重新load列表
-                console.log('删除成功')
+            
+                dispatch({
+                    type: 'gresource/deleteResourcelist',
+                    payload: {
+                        description: {
+                            resourceid: delete_id
+                        },
+                        cb: (info) => {
+                            if (info.status == '200'){
+                                openNotificationWithIcon('success',"删除资源成功!~ ~")
+                            } else {
+                                openNotificationWithIcon('error',"删除资源失败!~ ~")
+                            }
+                            // 刷新页面
+
+                        }
+                    },
+                })
             },
           })
     }

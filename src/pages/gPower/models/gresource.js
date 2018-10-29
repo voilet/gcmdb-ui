@@ -31,7 +31,7 @@ import {
   
       //修改资源列表
       *modifyResourcelist({payload},{call,put}){
-        const response = yield call(modifyResourcelist,payload);
+        const response = yield call(modifyResourcelist,payload.description);
         yield put({
           type: 'saveResponse',
           payload: response,
@@ -77,7 +77,7 @@ import {
   
     //获取父资源列表
     *getResourceTreeForparent({payload},{call,put}){
-      const response = yield call(getResourceTreeForparent,payload)
+      const response = yield call(getResourceTreeForparent)
       yield put({
         type: 'saveParentResource',
         payload: response,

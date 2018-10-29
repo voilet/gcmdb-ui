@@ -98,6 +98,7 @@ export default class AddProject   extends PureComponent {
     });
 
      
+    
     this.setState({
       modalVisible: false,
     });
@@ -106,9 +107,7 @@ export default class AddProject   extends PureComponent {
   }
 
 
-  handleSelectLineValue = (value) => {
-    console.log(value)
-    
+  handleSelectLineValue = (value) => {    
     this.props.dispatch({
       type: 'gproline/getProjectGroupbyId',
       payload: value

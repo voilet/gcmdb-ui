@@ -86,7 +86,6 @@ class UserTable extends PureComponent {
     const target = newData.filter(item => key === item.ID)[0];
 
     if (target) {
-      console.log("target",target)
       target.editable = true;
       this.setState({ 
           data: newData.map((obj)=>{
@@ -234,8 +233,7 @@ class UserTable extends PureComponent {
     const { selectedRowKeys, totalCallNo, data} = this.state;
     const { roledata, userdata } = this.props;
 
-    console.log("console roledata",roledata)
-
+ 
     const columns = [
       {
         title: '用户ID',

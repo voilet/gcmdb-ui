@@ -20,9 +20,20 @@ export async function modifyUserlist(params) {
 }
 
 
-//修改用户列表
+//添加用户列表
 export async function addUserlist(params) {
   return request('/manage/auth/user/add', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
+//搜索用户列表
+export async function searchUserlist(params) {
+  return request('/manage/auth/user/search', {
     method: 'POST',
     body: {
       ...params,
