@@ -1,10 +1,12 @@
 import React, {PureComponent,Fragment} from 'react';
 import {connect} from 'dva';
-import { Tree, Input,Card,Row,Col,Button,Divider  } from 'antd';
+import { Tree, Input,Card,Row,Col,Button,Divider,Tabs } from 'antd';
+
+import { ModReleaseCode } from './listprojectModule/modReleaseCode';
 
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
-
+const { TabPane } = Tabs;
 
 import TreeTab from '@/components/ProjectTable/treeTab'
 import SearchTree from './searchProTree'
@@ -26,7 +28,31 @@ const generateList = (data) => {
     }
   }
 };
+/* 操作过滤项*/
+const tabKeys = [
+    {
+        name:"主机",key:"host"
+    },
+    {
+        name:"代码发布",key:"release"
+    }
+];
+const tabPanels = ( data ) =>{
+  let panels = [];
+  console.log("data",data)
+  data.forEach(function(item,idx){
+    console.log(item)
+      panels.push( <TabPane key={item.key} tab={item.name} /> );
+  });
+  return panels;
+};
 
+const getSubModule = ( operatorName )=>{
+  switch( operatorName){
+      case "release":
+          return <ModReleaseCode />
+  }
+}
 const getParentKey = (key, tree, id) => {
   let parentKey;
   for (let i = 0; i < tree.length; i += 1) {
@@ -51,6 +77,7 @@ export default class TableTree extends PureComponent {
     autoExpandParent: true,
     selectedKey:[],
     selectedRows: [],
+      currentOperatorName:"release",
     treedata:[],
     hostdata: []
   }
@@ -109,8 +136,10 @@ export default class TableTree extends PureComponent {
 
 
   treeSelectClick = (selectedKey,e) => {
+    console.log("selectedKey", selectedKey, e)
     if (selectedKey.toString().split("-")[0] == "3" && e.selected)
     {
+      console.log("?gappmanage/getHostdatabyId")
       this.props.dispatch({
         type: 'gappmanage/getHostdatabyId',
         payload: {
@@ -153,6 +182,11 @@ export default class TableTree extends PureComponent {
     });
   }
 
+  handleSelectOperator = ( key ) =>{
+    this.setState({
+        currentOperatorName:key
+    })
+  }
 
 
   render() {
@@ -203,8 +237,13 @@ export default class TableTree extends PureComponent {
         </Col>
         <Col span={18} style={{paddingLeft:0,height:"100%"}}>
           <Card style={{height:"100%"}}>
-            <SearchTree />
-            <Divider> </Divider>
+            <Tabs activeKey={ this.state.currentOperatorName } onTabClick={ this.handleSelectOperator }>
+                { tabPanels( tabKeys ) }
+            </Tabs>
+            <Divider> 服务器列表 </Divider>
+              { getSubModule( this.state.currentOperatorName )}
+
+            <Divider> old ui </Divider>
             <TreeTab 
               selectedKey={selectedKey}
               treeTabdata = {this.state.hostdata}
