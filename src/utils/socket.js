@@ -15,6 +15,7 @@ export default function funsocket( host, options ){
     };
     return function(){
         const newOptions = { ...defaultOptions, ...options };
+        console.log("....init socket", "ws://" + newOptions.host +  newOptions.path)
         let conn = null;
         try{
             conn  = new WebSocket("ws://" + newOptions.host +  newOptions.path);
@@ -22,9 +23,11 @@ export default function funsocket( host, options ){
             newOptions.onerror({ code:4001,message:"不支持WebSocket"})
         }
         conn.onclose = function(evt) {
+            console.log(".....")
             newOptions.onclose( evt );
         };
         conn.onmessage = function(evt) {
+            console.log("............meesage")
             var result = null;
             try{
                 result = JSON.parse(evt.data);

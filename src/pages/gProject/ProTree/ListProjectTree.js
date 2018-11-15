@@ -2,7 +2,8 @@ import React, {PureComponent,Fragment} from 'react';
 import {connect} from 'dva';
 import { Tree, Input,Card,Row,Col,Button,Divider,Tabs } from 'antd';
 
-import { ModReleaseCode } from './listprojectModule/modReleaseCode';
+import ModReleaseCode from './listprojectModule/modReleaseCode';
+import ModHostList from './listprojectModule/modHostList';
 
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
@@ -39,18 +40,54 @@ const tabKeys = [
 ];
 const tabPanels = ( data ) =>{
   let panels = [];
-  console.log("data",data)
   data.forEach(function(item,idx){
-    console.log(item)
       panels.push( <TabPane key={item.key} tab={item.name} /> );
   });
   return panels;
 };
 
-const getSubModule = ( operatorName )=>{
-  switch( operatorName){
+/* 已经被 umi封装至model*/
+/*
+function mapDispatchToProps(dispatch, ownProps) {
+    console.log("mapDispatchToProps@@@@@@@@");
+    return {
+        onClick: () => {
+            console.log(".........click")
+            dispatch({
+                type: 'SET_VISIBILITY_FILTER',
+                filter: ownProps.filter
+            });
+        }
+    }
+}
+*/
+
+let hostConnect = ( state, ownProps )=>{
+    const { hostdata } = state.gappmanage;
+    console.log("mapStateToProps@@@@@@@@@@@", state);
+    console.log("###host", hostdata);
+    return state
+}
+
+@connect(({ gappmanage }) => ({
+    hostdata: gappmanage.hostdata
+}))
+class ConnectModReleaseCode extends ModReleaseCode{}
+
+//@connect(hostConnect)
+@connect(({ gappmanage }) => ({
+    hostdata: gappmanage.hostdata
+}))
+class ConnectModHostList extends ModHostList{}
+
+const getSubModule = ( state )=>{
+  switch( state.currentOperatorName ){
+      case "host":
+          return <ConnectModHostList key="host">1</ConnectModHostList>
+          break;
       case "release":
-          return <ModReleaseCode />
+        return <ConnectModReleaseCode  key="release" />;
+        break;
   }
 }
 const getParentKey = (key, tree, id) => {
@@ -76,6 +113,7 @@ export default class TableTree extends PureComponent {
     searchValue: '',
     autoExpandParent: true,
     selectedKey:[],
+      selectedProjectId:0,
     selectedRows: [],
       currentOperatorName:"release",
     treedata:[],
@@ -85,10 +123,12 @@ export default class TableTree extends PureComponent {
   componentWillMount() {
     
     const {dispatch} = this.props;
+
     dispatch({
       type: 'gappmanage/getTree',
       payload: {
         callback: (data) => {
+          console.log("getTree data:", data)
           this.setState({
             treedata: data
           })
@@ -101,6 +141,7 @@ export default class TableTree extends PureComponent {
       type: 'gappmanage/getAllTree',
       payload: {
         cb: (data) => {
+            console.log("getAllTree data:", data)
           this.setState({
             hostdata: data
           })
@@ -137,15 +178,19 @@ export default class TableTree extends PureComponent {
 
   treeSelectClick = (selectedKey,e) => {
     console.log("selectedKey", selectedKey, e)
+      let projectId = selectedKey.toString().split("-")[1];
+      console.log(this.props, this.state)
+      //level 为第三级
     if (selectedKey.toString().split("-")[0] == "3" && e.selected)
     {
       console.log("?gappmanage/getHostdatabyId")
       this.props.dispatch({
         type: 'gappmanage/getHostdatabyId',
         payload: {
-          projectid: selectedKey.toString().split("-")[1],
+          projectid: projectId,
           cb: (data) => {
               this.setState({
+                  selectedProjectId:projectId,
                 hostdata: data
               })
           }
@@ -241,17 +286,8 @@ export default class TableTree extends PureComponent {
                 { tabPanels( tabKeys ) }
             </Tabs>
             <Divider> 服务器列表 </Divider>
-              { getSubModule( this.state.currentOperatorName )}
+              { getSubModule( this.state )}
 
-            <Divider> old ui </Divider>
-            <TreeTab 
-              selectedKey={selectedKey}
-              treeTabdata = {this.state.hostdata}
-              selectedRows={selectedRows}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-              dispatch = {this.props.dispatch}
-            />
 
           </Card>
         </Col>

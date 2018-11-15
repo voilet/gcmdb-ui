@@ -18,7 +18,7 @@ import {
       treedata: {
         data: []
       },
-    
+      test:"abc",
       hostdata:{
         data:[]
       }
@@ -30,7 +30,7 @@ import {
       //通过pro id 获取项目组列表
       *getHostdatabyId({ payload }, { call, put }) {
           
-
+        console.log("getHostDatabyId")
         const response = yield call(queryHostbyPid, payload)
         yield put({
           type: 'probyidSave',
@@ -42,6 +42,7 @@ import {
 
       //获取树节点
       *getTree({ payload }, { call, put }) {
+        console.log("**** getTree")
         const response = yield call(queryTree, payload);
         if (response.status == 200) {
           yield put({
@@ -76,7 +77,7 @@ import {
   
     reducers: {  
     probyidSave(state, action) {
-           
+           console.log("probyidSave", state,action)
       if (action.payload.data === null ) {
         action.payload.data = []
       }
