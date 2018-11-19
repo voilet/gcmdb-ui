@@ -32,3 +32,35 @@ export async function queryAllTree() {
 }
 
 
+//查询某个项目中支持自动发布的服务器列表
+/*
+  @param projectid {String} - 项目id
+  @example
+  http://gcmdb.fun.tv/v1//assets/carving/query/project/1
+ */
+
+export async function queryAutoReleaseHostbyPid( params ){
+  console.log("!!!!", arguments)
+    return request(`/v1/assets/carving/project/${params.ID}`, {
+        method: 'GET',
+        body: {
+            method: 'get'
+        },
+    });
+}
+//查询某个项目的发布版本列表
+/*
+  @param projectid {String} - 项目id
+  @example
+  http://gcmdb.fun.tv/v1//assets/carving/query/version/1
+ */
+
+export async function queryProjectVersions( params, projectid ){
+    return request(`/v1/assets/carving/query/version/${projectid}`, {
+        method: 'GET',
+        body: {
+            method: 'get',
+            ...params,
+        },
+    });
+}

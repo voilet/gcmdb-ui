@@ -64,29 +64,34 @@ function mapDispatchToProps(dispatch, ownProps) {
 
 let hostConnect = ( state, ownProps )=>{
     const { hostdata } = state.gappmanage;
-    console.log("mapStateToProps@@@@@@@@@@@", state);
+    console.log("mapStateToProps@@@@@@@@@@@", state, "props", ownProps);
     console.log("###host", hostdata);
-    return state
+    return {
+      hostdata:hostdata
+    }
 }
 
-@connect(({ gappmanage }) => ({
-    hostdata: gappmanage.hostdata
-}))
+
+@connect(hostConnect, function( dispatch, ownProps ){
+  console.log("mapDispatchToProps@@@@@@@@@@@", dispatch, "props", ownProps);
+  return {
+    dispatch:dispatch
+  }
+})
 class ConnectModReleaseCode extends ModReleaseCode{}
 
+
 //@connect(hostConnect)
-@connect(({ gappmanage }) => ({
-    hostdata: gappmanage.hostdata
-}))
+@connect(hostConnect)
 class ConnectModHostList extends ModHostList{}
 
 const getSubModule = ( state )=>{
   switch( state.currentOperatorName ){
       case "host":
-          return <ConnectModHostList key="host">1</ConnectModHostList>
+          return <ConnectModHostList >1</ConnectModHostList>
           break;
       case "release":
-        return <ConnectModReleaseCode  key="release" />;
+        return <ModReleaseCode  selectedProjectId={ state.selectedProjectId }/>;
         break;
   }
 }
@@ -123,7 +128,16 @@ export default class TableTree extends PureComponent {
   componentWillMount() {
     
     const {dispatch} = this.props;
+    setTimeout(function(){
+        dispatch({
+            type: 'gappmanage/aaa',
+            payload: {
+                a:1
+            }
 
+
+        });
+    },3000)
     dispatch({
       type: 'gappmanage/getTree',
       payload: {
@@ -265,7 +279,7 @@ export default class TableTree extends PureComponent {
   
     return (
       <Row gutter={24} style={{height:"100%"}}>
-        <Col span={6} style={{paddingRight:0,height:"100%"}}>
+        <Col xs={24} md={6} style={{paddingRight:0,height:"100%"}}>
           <Card style={{height:"100%"}}>
             <div>
              <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange} />
@@ -280,7 +294,7 @@ export default class TableTree extends PureComponent {
             </div>
           </Card>
         </Col>
-        <Col span={18} style={{paddingLeft:0,height:"100%"}}>
+        <Col xs={24} md={18} style={{paddingLeft:0,height:"100%"}}>
           <Card style={{height:"100%"}}>
             <Tabs activeKey={ this.state.currentOperatorName } onTabClick={ this.handleSelectOperator }>
                 { tabPanels( tabKeys ) }

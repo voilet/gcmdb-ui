@@ -192,3 +192,5 @@ export async function hostproDelete(params,id) {
 export async function updateprojectTree() {
   return request(`/v1/assets/tree?active=update`);
 }
+
+

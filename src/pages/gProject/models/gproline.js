@@ -264,6 +264,10 @@ export default {
       yield put({ type: 'getTree' })
     },
 
+      // 查询项目发布状态
+      *queryProjectState({ payload }, { call, put }){
+
+      }
   },
 
   reducers: {
