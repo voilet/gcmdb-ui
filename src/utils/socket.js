@@ -45,8 +45,9 @@ export default function funsocket( host, options ){
             */
         };
         conn.onopen = function(e) {
-            newOptions.onopen(e);
+            console.log("socket open", e);
             conn.send('{"active": "login"}');
+            newOptions.onopen(e);
         };
         return conn;
     }

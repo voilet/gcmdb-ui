@@ -71,14 +71,40 @@ let hostConnect = ( state, ownProps )=>{
     }
 }
 
-
-@connect(hostConnect, function( dispatch, ownProps ){
+/*
+@connect( props, function( dispatch, ownProps ){
   console.log("mapDispatchToProps@@@@@@@@@@@", dispatch, "props", ownProps);
   return {
-    dispatch:dispatch
+      ...props
+  }
+})
+*/
+/*
+@connect(( state, ownProps ) => {
+    console.log("mapStateToProps@@@@@@@@@@@", state, "props", ownProps);
+  return {
+      selectedProjectId: state.selectedProjectId
+  }
+},(dispatch, ownProps)=>{
+  return {
+    onFetchAutoHost:function( projectId ){
+        console.log("onFetchAutoHost...", projectId);
+        dispatch({
+            type: 'gappmanage/getAutoHostdatabyId',
+            payload: {
+                projectId:projectId
+            }
+
+
+        });
+    },
+    onSubmit:function(){
+      console.log("onModSubmit...");
+    }
   }
 })
 class ConnectModReleaseCode extends ModReleaseCode{}
+*/
 
 
 //@connect(hostConnect)
@@ -91,7 +117,7 @@ const getSubModule = ( state )=>{
           return <ConnectModHostList >1</ConnectModHostList>
           break;
       case "release":
-        return <ModReleaseCode  selectedProjectId={ state.selectedProjectId }/>;
+        return <ModReleaseCode selectedProjectId={ state.selectedProjectId }/>;
         break;
   }
 }
@@ -128,16 +154,7 @@ export default class TableTree extends PureComponent {
   componentWillMount() {
     
     const {dispatch} = this.props;
-    setTimeout(function(){
-        dispatch({
-            type: 'gappmanage/aaa',
-            payload: {
-                a:1
-            }
 
-
-        });
-    },3000)
     dispatch({
       type: 'gappmanage/getTree',
       payload: {
@@ -198,20 +215,26 @@ export default class TableTree extends PureComponent {
     if (selectedKey.toString().split("-")[0] == "3" && e.selected)
     {
       console.log("?gappmanage/getHostdatabyId")
+        this.setState({
+            selectedProjectId:projectId
+        });
       this.props.dispatch({
         type: 'gappmanage/getHostdatabyId',
         payload: {
           projectid: projectId,
           cb: (data) => {
+              console.log("?gappmanage/getHostdatabyId:res", data )
               this.setState({
-                  selectedProjectId:projectId,
                 hostdata: data
               })
           }
         }
       }); 
     }
- 
+
+    setTimeout(()=>{
+        console.log("@@@@@@@@@@@@", this.state, this.props)
+    },1000)
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {

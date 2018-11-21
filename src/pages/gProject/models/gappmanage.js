@@ -6,6 +6,8 @@ import {
     updateprojectTree,
     queryHostbyPid,
     queryAutoReleaseHostbyPid,
+    queryProjectVersions,
+    queryReleaseHosts,
     queryAllTree
   } from '@/services/ProjectMangementAPI/Appmanage/Appmanage'
 
@@ -32,6 +34,7 @@ import {
       autohostdata:{
         data:[]
       },
+
         //项目参数
       versions:{
         data:[]
@@ -55,16 +58,37 @@ import {
         //通过pro id 获取项目组列表
         *aaa({ payload }, { call, put }) {
             console.log("@@@@@@@@@@@@@@@@aaaa is called")
+            const response = yield "abc";
+
+
         },
 
         //通过pro id 获取项目组列表
         *getAutoHostdatabyId({ payload }, { call, put }) {
-          const response = yield call(queryAutoReleaseHostbyPid, payload)
-          yield put({
-              type: 'projectReleaseHostUpdate',
-              payload: response,
-              cb: payload.cb,
-          });
+          const response = yield call(queryAutoReleaseHostbyPid, payload);
+          if( response.status == 200 ){
+
+              yield put({
+                  type: 'projectReleaseHostUpdate',
+                  payload: response,
+                  callback: payload.callback
+              });
+          }
+
+        },
+        *getAutoHostVersions({ payload },{ call, put } ){
+            const response = yield call(queryProjectVersions, payload);
+            if( response.status == 200 ){
+                console.log("status===", response)
+                yield put({
+                    type: 'projectReleaseVersionUpdate',
+                    payload: response.data,
+                    callback: payload.callback,
+                });
+            }
+        },
+        *getReleaseHosts({ payload },{ call, put }){
+            yield call(queryReleaseHosts, payload);
         },
 
       //获取树节点
@@ -138,17 +162,33 @@ import {
       },
 
       projectReleaseHostUpdate( state, action ){
-      console.log("~~~~~~~~~~~~~", arguments)
         if( !action.payload.data ){
           action.payload.data = [];
         }
+        action.callback && action.callback(action.payload);
         return {
             ...state,
-            hostdata:{}
+            autohostdata:action.payload
         }
 
-      }
 
+      }
+      ,
+      projectReleaseVersionUpdate( state, action ){
+          if( !action.payload ){
+              action.payload = [];
+          }
+          console.log("filter", action.payload);
+          action.callback && action.callback(action.payload);
+          return {
+              ...state,
+              filter:{
+                version:action.payload
+              }
+          }
+
+
+      }
     },
   };
   

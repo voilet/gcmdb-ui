@@ -55,8 +55,23 @@ export async function queryAutoReleaseHostbyPid( params ){
   http://gcmdb.fun.tv/v1//assets/carving/query/version/1
  */
 
-export async function queryProjectVersions( params, projectid ){
-    return request(`/v1/assets/carving/query/version/${projectid}`, {
+export async function queryProjectVersions( params ){
+    return request(`/v1/assets/carving/query/version/${params.ID}`, {
+        method: 'GET',
+        body: {
+            method: 'get',
+            ...params,
+        },
+    });
+}
+//查询某个项目的发布状态（通过socket侦听，无response数据）
+/*
+  @param projectid {String} - 项目id
+  @example
+  http://gcmdb.fun.tv/v1//assets/carving/query/version/1
+ */
+export async function queryReleaseHosts( params ){
+    return request(`/v1/assets/carving/active/release/${params.ID}?active=${params.active}`, {
         method: 'GET',
         body: {
             method: 'get',
