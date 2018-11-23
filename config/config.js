@@ -34,6 +34,11 @@ export default {
   ],
   // 路由配置
   routes: pageRoutes,
+    history: 'hash', //采用hash路由：#/xxx的形式
+
+    base:'/',
+
+    publicPath:'/#',
   // Theme for antd
   // https://ant.design/docs/react/customize-theme-cn
   theme: {
