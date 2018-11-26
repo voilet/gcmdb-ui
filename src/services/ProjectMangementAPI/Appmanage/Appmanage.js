@@ -42,10 +42,7 @@ export async function queryAllTree() {
 export async function queryAutoReleaseHostbyPid( params ){
   console.log("!!!!", arguments)
     return request(`/v1/assets/carving/project/${params.ID}`, {
-        method: 'GET',
-        body: {
-            method: 'get'
-        },
+        method: 'GET'
     });
 }
 //查询某个项目的发布版本列表
@@ -58,10 +55,6 @@ export async function queryAutoReleaseHostbyPid( params ){
 export async function queryProjectVersions( params ){
     return request(`/v1/assets/carving/query/version/${params.ID}`, {
         method: 'GET',
-        body: {
-            method: 'get',
-            ...params,
-        },
     });
 }
 //查询某个项目的发布状态（通过socket侦听，无response数据）
@@ -73,9 +66,5 @@ export async function queryProjectVersions( params ){
 export async function queryReleaseHosts( params ){
     return request(`/v1/assets/carving/active/release/${params.ID}?active=${params.active}&version=${params.VERSION}&appid=${params.APPID}`, {
         method: 'GET',
-        body: {
-            method: 'get',
-            ...params,
-        },
     });
 }

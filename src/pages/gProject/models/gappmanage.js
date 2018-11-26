@@ -66,6 +66,7 @@ import {
         //通过pro id 获取项目组列表
         *getAutoHostdatabyId({ payload }, { call, put }) {
           const response = yield call(queryAutoReleaseHostbyPid, payload);
+          console.log("response  bug.....", response)
           if( response.status == 200 ){
 
               yield put({
