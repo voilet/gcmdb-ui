@@ -88,7 +88,14 @@ import {
             }
         },
         *getReleaseHosts({ payload },{ call, put }){
-            yield call(queryReleaseHosts, payload);
+            const response = yield call(queryReleaseHosts, payload);
+            if( response ){
+                yield put({
+                    type: 'projectReleaseVersionResult',
+                    payload: response,
+                    callback: payload.callback,
+                });
+            }
         },
 
       //获取树节点
@@ -188,7 +195,15 @@ import {
           }
 
 
-      }
+      },
+        projectReleaseVersionResult( state, action ){
+            if( !action.payload ){
+                action.payload = {};
+            }
+            action.callback && action.callback(action.payload);
+            return state
+
+        }
     },
   };
   

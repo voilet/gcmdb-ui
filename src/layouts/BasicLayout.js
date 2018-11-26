@@ -88,6 +88,15 @@ class BasicLayout extends React.PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'user/fetchCurrent',
+        payload: {
+            callback:(payload)=>{
+              console.log("payload",payload)
+               if( payload.status == 10003 ){
+                   window.location = "/#/User/Login?redirect="+ encodeURIComponent(location.href);
+               }
+            }
+        },
+
     });
     dispatch({
       type: 'setting/getSetting',

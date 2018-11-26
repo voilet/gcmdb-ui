@@ -71,7 +71,7 @@ export async function queryProjectVersions( params ){
   http://gcmdb.fun.tv/v1//assets/carving/query/version/1
  */
 export async function queryReleaseHosts( params ){
-    return request(`/v1/assets/carving/active/release/${params.ID}?active=${params.active}`, {
+    return request(`/v1/assets/carving/active/release/${params.ID}?active=${params.active}&version=${params.VERSION}&appid=${params.APPID}`, {
         method: 'GET',
         body: {
             method: 'get',

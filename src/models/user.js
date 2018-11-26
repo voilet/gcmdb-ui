@@ -16,11 +16,12 @@ export default {
         payload: response,
       });
     },
-    *fetchCurrent(_, { call, put }) {
+    *fetchCurrent({ payload }, { call, put }) {
       const response = yield call(queryCurrent);
       yield put({
         type: 'saveCurrentUser',
         payload: response,
+          callback:payload.callback
       });
     },
   },
@@ -33,6 +34,7 @@ export default {
       };
     },
     saveCurrentUser(state, action) {
+      action.callback && action.callback( action.payload );
       return {
         ...state,
         currentUser: action.payload || {},

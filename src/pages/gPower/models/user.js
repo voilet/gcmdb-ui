@@ -23,11 +23,12 @@ export default {
       });
     },
     
-    *fetchCurrent(_, { call, put }) {
+    *fetchCurrent( { payload } , { call, put }) {
       const response = yield call(queryCurrent);
       yield put({
         type: 'saveCurrentUser',
         payload: response,
+          callback:payload.callback
       });
     },
 
