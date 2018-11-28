@@ -41,10 +41,27 @@ export default class SearchList extends PureComponent {
     //     })
     //   }
     // }
+      this.checkHash();
   }
+    componentWillReceiveProps(nextProps) {
+      this.checkHash();
+    }
+
+  checkHash = ()=>{
+      var path = this.props.location.pathname;
+      var key = /authmanage\/user\/([^\/]+)/.exec(path.toString());
+      if( key && key[1]){
+        key = key[1];
+        this.setState({
+            activekey:key
+        })
+      }
+  }
+
 
   handleTabChange = key => {
     const { dispatch, match, } = this.props;
+    key = key.replace("list","");
     switch (key) {
       case 'user':
         dispatch(routerRedux.push(`${match.url}/list`));
@@ -64,6 +81,11 @@ export default class SearchList extends PureComponent {
           activekey : "resource"
         })
         break;
+        case 'forthost':
+            dispatch(routerRedux.push(`${match.url}/forthostlist`));
+            this.setState({
+                activekey : "forthost"
+            })
       default:
         break;
     }
@@ -86,7 +108,6 @@ export default class SearchList extends PureComponent {
 
   changeTable = () => {
     const { dispatch, match, } = this.props;
-    
     dispatch(routerRedux.push(`${match.url}/list`));
      this.setState({
        activekey : "user"
@@ -95,8 +116,6 @@ export default class SearchList extends PureComponent {
  
 
   handleChange = (value) => {
-
-    console.log("value",value)
 
     if (value == "user") {
       this.changeTable()
@@ -118,12 +137,16 @@ export default class SearchList extends PureComponent {
         tab: '用户管理',
       },
       {
-        key: 'role',
+        key: 'rolelist',
         tab: '角色管理',
       },
       {
-        key: 'resource',
+        key: 'resourcelist',
         tab: '资源管理',
+      },
+      {
+          key: 'forthostlist',
+          tab: '堡垒机管理',
       }
     ];
 
@@ -151,6 +174,7 @@ export default class SearchList extends PureComponent {
         content={mainSearch}
         tabList={tabList}
         tabActiveKey={activekey}
+        onTabClick={this.handleTabChange}
         onTabChange={this.handleTabChange}
       >
        {children}

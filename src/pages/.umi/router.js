@@ -295,6 +295,12 @@ let routes = [
                 "exact": true
               },
               {
+                "path": "/authmanage/user/forthostlist",
+                "name": "forthostlist",
+                "component": dynamic({ loader: () => import('../gPower/Resource/forthostList'), loading: require('/root/gcmdbUi/src/components/PageLoading/index').default  }),
+                "exact": true
+              },
+              {
                 "component": () => React.createElement(require('/root/gcmdbUi/node_modules/_umi-build-dev@1.1.2@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
               }
             ]

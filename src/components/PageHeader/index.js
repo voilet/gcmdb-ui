@@ -44,7 +44,12 @@ export default class PageHeader extends PureComponent {
       onTabChange(key);
     }
   };
-
+  onTabClick = key => {
+      const { onTabClick } = this.props;
+      if (onTabClick) {
+          onTabClick(key);
+      }
+  };
   getBreadcrumbProps = () => {
     const { routes, params, location, breadcrumbNameMap } = this.props;
     return {
@@ -231,6 +236,7 @@ export default class PageHeader extends PureComponent {
               <Tabs
                 className={styles.tabs}
                 {...activeKeyProps}
+                onTabClick={this.onTabClick}
                 onChange={this.onChange}
                 tabBarExtraContent={tabBarExtraContent}
               >

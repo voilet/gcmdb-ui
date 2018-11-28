@@ -34,6 +34,7 @@ export default {
   'menu.power.user.list': '用户列表',
   'menu.power.user.rolelist': '角色列表',
   'menu.power.user.resourcelist':'资源列表',
+  'menu.power.user.forthostlist':'堡垒机授权',
   'menu.result': '结果页',
   'menu.result.success': '成功页',
   'menu.result.fail': '失败页',

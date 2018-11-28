@@ -211,6 +211,11 @@ export default [
                 name: 'resourcelist',
                 component: './gPower/Resource/resourceList',
               },
+              {
+                  path: '/authmanage/user/forthostlist',
+                  name: 'forthostlist',
+                  component: './gPower/Resource/forthostList',
+              }
             ],
           },
           
