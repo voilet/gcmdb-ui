@@ -38,7 +38,7 @@ export default {
 
     base:'/',
 
-    publicPath:'/',
+    publicPath:'/static/',
     outputPath:'/dist/static',
   // Theme for antd
   // https://ant.design/docs/react/customize-theme-cn

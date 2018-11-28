@@ -6,7 +6,7 @@
  */
 export default function funsocket( host, options ){
     const defaultOptions = {
-        host: 'gcmdb.fun.tv',
+        host: window.location.host,
         path:'/wss',
         onopen:function(){},
         onclose:function(){},
