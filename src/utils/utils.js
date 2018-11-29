@@ -236,5 +236,5 @@ export function QRCode( {text: url, typeNumber= 5, unitSize= 4, errorCorrectLeve
     var qr = qrcode(options.typeNumber || 4, options.errorCorrectLevel || 'M');
     qr.addData(options.text);
     qr.make();
-    return qr.createTableTag(options.unitSize, options.margin);
+    return qr.createImgTag(options.unitSize, options.margin);
 }
