@@ -13,16 +13,6 @@ let routes = [
     "exact": true
   },
   {
-    "path": "/account/center",
-    "redirect": "/account/center/articles",
-    "exact": true
-  },
-  {
-    "path": "/account/settings",
-    "redirect": "/account/settings/base",
-    "exact": true
-  },
-  {
     "path": "/user",
     "component": dynamic({ loader: () => import('../../layouts/UserLayout'), loading: require('/root/gcmdbUi/src/components/PageLoading/index').default  }),
     "routes": [
@@ -378,6 +368,11 @@ let routes = [
             "component": dynamic({ loader: () => import('../Account/Center/Center'), loading: require('/root/gcmdbUi/src/components/PageLoading/index').default  }),
             "routes": [
               {
+                "path": "/account/center",
+                "component": dynamic({ loader: () => import('../Account/Center/Projects'), loading: require('/root/gcmdbUi/src/components/PageLoading/index').default  }),
+                "exact": true
+              },
+              {
                 "path": "/account/center/articles",
                 "component": dynamic({ loader: () => import('../Account/Center/Articles'), loading: require('/root/gcmdbUi/src/components/PageLoading/index').default  }),
                 "exact": true
@@ -398,34 +393,16 @@ let routes = [
             ]
           },
           {
-            "path": "/account/settings",
-            "name": "settings",
+            "path": "/account/info",
+            "name": "info",
             "component": dynamic({ loader: () => import('../Account/Settings/Info'), loading: require('/root/gcmdbUi/src/components/PageLoading/index').default  }),
-            "routes": [
-              {
-                "path": "/account/settings/base",
-                "component": dynamic({ loader: () => import('../Account/Settings/BaseView'), loading: require('/root/gcmdbUi/src/components/PageLoading/index').default  }),
-                "exact": true
-              },
-              {
-                "path": "/account/settings/security",
-                "component": dynamic({ loader: () => import('../Account/Settings/SecurityView'), loading: require('/root/gcmdbUi/src/components/PageLoading/index').default  }),
-                "exact": true
-              },
-              {
-                "path": "/account/settings/binding",
-                "component": dynamic({ loader: () => import('../Account/Settings/BindingView'), loading: require('/root/gcmdbUi/src/components/PageLoading/index').default  }),
-                "exact": true
-              },
-              {
-                "path": "/account/settings/notification",
-                "component": dynamic({ loader: () => import('../Account/Settings/NotificationView'), loading: require('/root/gcmdbUi/src/components/PageLoading/index').default  }),
-                "exact": true
-              },
-              {
-                "component": () => React.createElement(require('/root/gcmdbUi/node_modules/_umi-build-dev@1.1.2@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
-              }
-            ]
+            "exact": true
+          },
+          {
+            "path": "/account/settings",
+            "name": "infomodify",
+            "component": dynamic({ loader: () => import('../Account/Settings/InfoModify'), loading: require('/root/gcmdbUi/src/components/PageLoading/index').default  }),
+            "exact": true
           },
           {
             "component": () => React.createElement(require('/root/gcmdbUi/node_modules/_umi-build-dev@1.1.2@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })

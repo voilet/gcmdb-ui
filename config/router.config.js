@@ -276,7 +276,7 @@ export default [
             routes: [
               {
                 path: '/account/center',
-                redirect: '/account/center/articles',
+                  component: './Account/Center/Projects',
               },
               {
                 path: '/account/center/articles',
@@ -293,32 +293,17 @@ export default [
             ],
           },
           {
-            path: '/account/settings',
-            name: 'settings',
-            component: './Account/Settings/Info',
-            routes: [
-              {
-                path: '/account/settings',
-                redirect: '/account/settings/base',
-              },
-              {
-                path: '/account/settings/base',
-                component: './Account/Settings/BaseView',
-              },
-              {
-                path: '/account/settings/security',
-                component: './Account/Settings/SecurityView',
-              },
-              {
-                path: '/account/settings/binding',
-                component: './Account/Settings/BindingView',
-              },
-              {
-                path: '/account/settings/notification',
-                component: './Account/Settings/NotificationView',
-              },
-            ],
+            path: '/account/info',
+            name: 'info',
+            component: './Account/Settings/Info'
+
           },
+          {
+              path: '/account/settings',
+              name: 'infomodify',
+              component: './Account/Settings/InfoModify'
+
+          }
         ],
       },
       {

@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React from 'react';
 import { parse, stringify } from 'qs';
+import {qrcode, toAscString} from './qrcode';
 
 export function fixedZero(val) {
   return val * 1 < 10 ? `0${val}` : val;
@@ -210,4 +211,30 @@ export function formatWan(val) {
 
 export function isAntdPro() {
   return window.location.hostname === 'preview.pro.ant.design';
+}
+
+/**
+ * 创建二维码
+ * @name QRCode
+ * @function
+ * @param {String} option.text     url 或者文本
+ * @param {num} option.typeNumber  1 to 10
+ * @param {num} option.margin      如果不需要margin 则赋值为0
+ * @param errorCorrectLevel        容错率 'L','M','Q','H'
+ * @remark
+ * @return　String
+ *
+ F.tool.qrcode.create({text: url, typeNumber: 5, unitSize: 4, margin: 0});
+ */
+export function QRCode( {text: url, typeNumber= 5, unitSize= 4, errorCorrectLevel='M',margin=0 }){
+
+  //run
+    let options = { text:url,typeNumber, unitSize, errorCorrectLevel, margin };
+    let text = toAscString(options.text || '');
+    console.log("text===",text, options)
+
+    var qr = qrcode(options.typeNumber || 4, options.errorCorrectLevel || 'M');
+    qr.addData(options.text);
+    qr.make();
+    return qr.createTableTag(options.unitSize, options.margin);
 }

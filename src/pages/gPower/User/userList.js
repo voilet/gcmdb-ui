@@ -260,7 +260,7 @@ export default class TableList extends PureComponent {
         <Menu.Item key="stop">批量禁用</Menu.Item>
       </Menu>
     );
-
+    let guserdata = guser.data.data || {};
     return (
     
         <Card bordered={false}>
@@ -269,7 +269,7 @@ export default class TableList extends PureComponent {
               <Row gutter={16}>
                <Col span={2}>
                   <UserAdd
-                   roledata = {guser.data.data.role_list}
+                   roledata = { guserdata.role_list }
                   /> 
                 </Col>
               </Row>
@@ -284,9 +284,9 @@ export default class TableList extends PureComponent {
               dispatch = {dispatch}
               handleSaveData={this.handleSaveData}
               handleDeleteData={this.handleDeleteData}
-              userdata = {guser.data.data.user_infos}
-              roledata = {guser.data.data.role_list}
-              pagination = {guser.data.pagination}
+              userdata = {guserdata.user_infos}
+              roledata = {guserdata.role_list || []}
+              pagination = {guser.data.pagination || {}}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />
