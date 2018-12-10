@@ -42,28 +42,6 @@ let routes = [
     "Routes": [require('../Authorized').default],
     "routes": [
       {
-        "path": "/",
-        "redirect": "/dashboard/workplace",
-        "exact": true
-      },
-      {
-        "path": "/dashboard",
-        "name": "dashboard",
-        "icon": "dashboard",
-        "routes": [
-          {
-            "path": "/dashboard/workplace",
-            "name": "workplace",
-            "icon": "profile",
-            "component": dynamic({ loader: () => import('../gProject/ProTree/ListProjectTree'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
-            "exact": true
-          },
-          {
-            "component": () => React.createElement(require('/Users/voilet/antd/gcmdbUi/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
-          }
-        ]
-      },
-      {
         "path": "/resource",
         "name": "resource",
         "icon": "table",
@@ -238,21 +216,39 @@ let routes = [
         "icon": "profile",
         "routes": [
           {
-            "path": "/project/business/prolist",
-            "name": "prolist",
-            "component": dynamic({ loader: () => import('../gProject/Project/ListProject'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
-            "exact": true
+            "path": "/project/business",
+            "name": "business",
+            "icon": "profile",
+            "component": dynamic({ loader: () => import('../gProject/SearchList'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
+            "routes": [
+              {
+                "path": "/project/business/prolist",
+                "name": "prolist",
+                "component": dynamic({ loader: () => import('../gProject/Project/ListProject'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
+                "exact": true
+              },
+              {
+                "path": "/project/business/grouplist",
+                "name": "grouplist",
+                "component": dynamic({ loader: () => import('../gProject/Progroup/ListProjectGroup'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
+                "exact": true
+              },
+              {
+                "path": "/project/business/linelist",
+                "name": "linelist",
+                "component": dynamic({ loader: () => import('../gProject/Proline/ListProjectLine'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
+                "exact": true
+              },
+              {
+                "component": () => React.createElement(require('/Users/voilet/antd/gcmdbUi/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+              }
+            ]
           },
           {
-            "path": "/project/business/grouplist",
-            "name": "grouplist",
-            "component": dynamic({ loader: () => import('../gProject/Progroup/ListProjectGroup'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
-            "exact": true
-          },
-          {
-            "path": "/project/business/linelist",
-            "name": "linelist",
-            "component": dynamic({ loader: () => import('../gProject/Proline/ListProjectLine'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
+            "path": "/project/treelist",
+            "name": "treelist",
+            "icon": "profile",
+            "component": dynamic({ loader: () => import('../gProject/ProTree/ListProjectTree'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
             "exact": true
           },
           {
@@ -305,10 +301,31 @@ let routes = [
         ]
       },
       {
+        "name": "result",
+        "icon": "check-circle-o",
+        "path": "/result",
+        "routes": [
+          {
+            "path": "/result/success",
+            "name": "success",
+            "component": dynamic({ loader: () => import('../Result/Success'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
+            "exact": true
+          },
+          {
+            "path": "/result/fail",
+            "name": "fail",
+            "component": dynamic({ loader: () => import('../Result/Error'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
+            "exact": true
+          },
+          {
+            "component": () => React.createElement(require('/Users/voilet/antd/gcmdbUi/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+          }
+        ]
+      },
+      {
         "name": "exception",
         "icon": "warning",
         "path": "/exception",
-        "hideInMenu":true,
         "routes": [
           {
             "path": "/exception/403",
