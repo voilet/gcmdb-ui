@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "@antv/data-set": "^0.9.0",
-    "@babel/runtime": "^7.0.0",
     "antd-pro-merge-less": "^0.0.9",
     "bizcharts": "^3.1.10",
     "bizcharts-plugin-slider": "^2.0.3",
@@ -50,14 +49,16 @@
     "react-fittext": "^1.0.0",
     "react-router-config": "^1.0.0-beta.4",
     "react-router-dom": "^4.3.1",
-    "umi": "^2.0.0-beta.10"
+    "umi": "^2.2.7"
   },
   "devDependencies": {
+    "@babel/runtime": "^7.2.0",
     "@types/react": "^16.4.11",
     "@types/react-dom": "^16.0.6",
     "antd-pro-merge-less": "^0.0.9",
     "antd-pro-theme-webpack-plugin": "^1.1.8",
     "babel-eslint": "^9.0.0",
+    "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "cross-env": "^5.1.1",
     "cross-port-killer": "^1.0.1",
     "enzyme": "^3.4.4",
@@ -82,7 +83,7 @@
     "umi-plugin-react": "^1.0.0-beta.10"
   },
   "optionalDependencies": {
-    "puppeteer": "^1.6.0"
+    "puppeteer": "^1.11.0"
   },
   "lint-staged": {
     "**/*.{js,jsx,less}": [

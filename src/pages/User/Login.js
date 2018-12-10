@@ -76,7 +76,6 @@ class LoginPage extends Component {
             this.loginForm = form;
           }}
         >
-          <Tab key="account" tab="账户密码登录">
             {login.status === 'error' &&
               login.type === 'account' &&
               !submitting &&
@@ -87,15 +86,7 @@ class LoginPage extends Component {
               placeholder="888888/123456"
               onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
             />
-          </Tab>
-          <Tab key="mobile" tab="手机号登录">
-            {login.status === 'error' &&
-              login.type === 'mobile' &&
-              !submitting &&
-              this.renderMessage('验证码错误')}
-            <Mobile name="mobile" />
-            <Captcha name="captcha" countDown={120} onGetCaptcha={this.onGetCaptcha} />
-          </Tab>
+
           <div>
             <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               自动登录
@@ -105,15 +96,7 @@ class LoginPage extends Component {
             </a>
           </div>
           <Submit loading={submitting}>登录</Submit>
-          <div className={styles.other}>
-            其他登录方式
-            <Icon className={styles.icon} type="alipay-circle" />
-            <Icon className={styles.icon} type="taobao-circle" />
-            <Icon className={styles.icon} type="weibo-circle" />
-            <Link className={styles.register} to="/User/Register">
-              注册账户
-            </Link>
-          </div>
+
         </Login>
       </div>
     );
