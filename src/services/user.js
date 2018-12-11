@@ -11,6 +11,12 @@ export async function queryCurrent() {
 export async function queryUserInfo(){
   return request('/v1/user/info');
 }
+export async function updateUserInfo( params ){
+  return request('/v1/user/modify', {
+    method: 'POST',
+    body: params,
+  });
+}
 export async function logoutActive() {
   return request('/logout');
 }

@@ -1,4 +1,4 @@
-import { query as queryUsers, queryCurrent,queryUserInfo } from '@/services/user';
+import { query as queryUsers, queryCurrent,queryUserInfo, updateUserInfo } from '@/services/user';
 
 export default {
   namespace: 'user',
@@ -29,9 +29,24 @@ export default {
           const response = yield call(queryUserInfo);
           yield put({
               type: 'saveCurrentUserInfo',
-              payload: response,
-              callback:payload.callback
+              payload: response.data||{},
+              callback: payload ? payload.callback:function(){}
           });
+      },
+      *modifyUserInfo({ payload }, { call, put }){
+        const response = yield call(updateUserInfo, payload );
+        yield put({
+          type: 'saveCurrentUserInfo',
+          payload: response.data||{},
+          callback:payload.callback
+        });
+        /*
+        yield put({
+          type: 'saveCurrentUserInfo',
+          payload: response.data||{},
+          callback:payload.callback
+        });
+        */
       }
   },
 

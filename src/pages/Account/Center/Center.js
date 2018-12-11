@@ -27,6 +27,9 @@ class Center extends PureComponent {
       type: 'user/fetchCurrent',
     });
     dispatch({
+      type:'user/fetchUserInfo'
+    });
+    dispatch({
       type: 'list/fetch',
       payload: {
         count: 8,

@@ -226,7 +226,7 @@ export function isAntdPro() {
  *
  F.tool.qrcode.create({text: url, typeNumber: 5, unitSize: 4, margin: 0});
  */
-export function QRCode( {text: url, typeNumber= 5, unitSize= 4, errorCorrectLevel='M',margin=0 }){
+export function QRCode( {text: url, typeNumber= 8, unitSize= 4, errorCorrectLevel='M',margin=0 }){
 
   //run
     let options = { text:url,typeNumber, unitSize, errorCorrectLevel, margin };
