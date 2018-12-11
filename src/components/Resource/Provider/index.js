@@ -1,13 +1,12 @@
-import { Table, Input, Popconfirm, Alert, Badge, Divider, Icon, Switch, Rate } from 'antd';
-import React, { PureComponent, Fragment } from 'react';
+import {Table, Input, Popconfirm, Alert, Badge, Divider, Icon, Switch, Rate} from 'antd';
+import React, {PureComponent, Fragment} from 'react';
 import moment from 'moment';
 import styles from './index.less';
-import { stat } from 'fs';
 
-const EditableCell = ({ editable, value, onChange }) => (
+const EditableCell = ({editable, value, onChange}) => (
   <div>
     {editable ? (
-      <Input style={{ margin: '-5px 0' }} value={value} onChange={e => onChange(e.target.value)} />
+      <Input style={{margin: '-5px 0'}} value={value} onChange={e => onChange(e.target.value)}/>
     ) : (
       value
     )}
@@ -52,8 +51,7 @@ class Provider extends PureComponent {
       dataIndex: 'comment',
       width: '15%',
       render: (text, record) => {
-        const { comment } = record;
-        //this.setState({ rateValue: comment})
+        const {comment} = record;
         return (
           <div>
             <Rate
@@ -72,37 +70,37 @@ class Provider extends PureComponent {
       dataIndex: 'ID',
       width: '20%',
       render: (text, record) => {
-        const { editable, deleteable } = record;
+        const {editable, deleteable} = record;
         return (
           <div className="editable-row-operations">
             {!deleteable &&
-              (editable ? (
-                <span>
+            (editable ? (
+              <span>
                   <a onClick={() => this.save(record.ID)}>保存</a>
-                  <Divider type="vertical" />
+                  <Divider type="vertical"/>
                   <Popconfirm title="确定取消?" onConfirm={() => this.cancel(record.ID)}>
                     <a>取消</a>
                   </Popconfirm>
                 </span>
-              ) : (
-                <span>
+            ) : (
+              <span>
                   <a onClick={() => this.edit(record.ID)}>编辑</a>
                 </span>
-              ))}
+            ))}
             {!editable &&
-              (deleteable ? (
-                <span>
+            (deleteable ? (
+              <span>
                   <Popconfirm title="确定删除?" onConfirm={() => this.confirmdelete(record.ID)}>
                     <a>提交</a>
                   </Popconfirm>
-                  <Divider type="vertical" />
+                  <Divider type="vertical"/>
                   <a onClick={() => this.canceldelete(record.ID)}>取消</a>
                 </span>
-              ) : (
-                <span style={{ marginLeft: 10 }}>
+            ) : (
+              <span style={{marginLeft: 10}}>
                   <a onClick={() => this.askdelete(record.ID)}>删除</a>
                 </span>
-              ))}
+            ))}
           </div>
         );
       },
@@ -144,19 +142,6 @@ class Provider extends PureComponent {
     this.props.onChange(pagination, filters, sorter);
   }
 
-  // handleRowSelectChange = (selectedRowKeys, selectedRows) => {
-  //   const totalCallNo = selectedRows.reduce((sum, val) => {
-  //     return sum + parseFloat(val.callNo, 10);
-  //   }, 0);
-
-  //   if (this.props.onSelectRow) {
-  //     this.props.onSelectRow(selectedRows);
-  //   }
-
-  //   this.setState({ selectedRowKeys, totalCallNo });
-
-  //   this.props.handleSelectRows(selectedRowKeys)
-  // }
 
   handleChange(value, key, column) {
     const newData = [...this.state.data];
@@ -194,7 +179,7 @@ class Provider extends PureComponent {
         data: newData,
         disabled: true,
       });
-      this.cacheData = newData.map(item => ({ ...item }));
+      this.cacheData = newData.map(item => ({...item}));
       this.props.handleSaveData(target);
     }
   }
@@ -218,7 +203,7 @@ class Provider extends PureComponent {
 
     if (target) {
       target.deleteable = true;
-      this.setState({ data: newData });
+      this.setState({data: newData});
     }
   }
 
@@ -232,9 +217,9 @@ class Provider extends PureComponent {
       }
 
       target.tag = false;
-      this.setState({ data: newData });
+      this.setState({data: newData});
 
-      this.cacheData = newData.map(item => ({ ...item }));
+      this.cacheData = newData.map(item => ({...item}));
       this.props.handleDeleteData(target);
     }
   }
@@ -245,22 +230,22 @@ class Provider extends PureComponent {
     if (target) {
       Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
       delete target.deleteable;
-      this.setState({ data: newData });
+      this.setState({data: newData});
     }
   }
 
   render() {
-   
-    const {gprovider} = this.props
+
+    const {gprovider} = this.props;
 
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
       ...gprovider.pagination,
     };
-  
 
-    this.cacheData = this.state.data.map(item => ({ ...item }));
+
+    this.cacheData = this.state.data.map(item => ({...item}));
     return (
       <div className={styles.standardTable}>
         <Table
@@ -270,7 +255,7 @@ class Provider extends PureComponent {
           columns={this.columns}
           pagination={paginationProps}
           onChange={this.handleTableChange}
-        />;
+        />
       </div>
     );
   }

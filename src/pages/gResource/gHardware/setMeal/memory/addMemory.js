@@ -156,11 +156,7 @@ export default class Addmem extends PureComponent {
             label="类型"
           >
             {
-              getFieldDecorator('category', {
-                rules: [{
-                  required: true, message: '请选择内存类型',
-                }],
-              })(
+              getFieldDecorator('category')(
                 <Select
                   style={{ width: '100%' }}
                   placeholder="请选择内存类型"

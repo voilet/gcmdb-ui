@@ -271,13 +271,13 @@ export default class HostDetail extends Component {
 
           switch (form.getFieldValue('business_id')) {
             case 'host已上线':
-                fields.businessid = 10
+                fields.businessid = 10;
                 break
             case 'host未下线':
-                fields.businessid = 9
+                fields.businessid = 9;
                 break
             case 'host已下线':
-                fields.businessid = 4
+                fields.businessid = 4;
                 break
             default:
                 fields.businessid = form.getFieldValue('business_id')
@@ -440,26 +440,7 @@ handleStatusChange = (val) =>{
           onSubmit={this.handleSave}
         >
         <Row>
-            <Col span={8}>
-              <FormItem label="主机状态"  {...formItemLayout} >
-                {getFieldDecorator('business_id',
-                {
-                  initialValue: `${information.status.host_business_status_title}`,
-                  rules: [
-                    {
-                      required: true,
-                      message: '请 选择主机业务状态!',
-                    },
-                  ],
-                })(
-                  <Select placeholder="请选择" style={{ width: '100%' }} onChange={this.HandleSelectHostStatus}>
-                    <Option key="4" value="4">host已下线</Option>
-                    <Option key="9" value="9">host未下线</Option>
-                    <Option key="10" value="10">host已上线</Option>
-                  </Select>
-                )}
-              </FormItem>
-            </Col>
+
             <Col span={8}>
               <FormItem label="主机电源"  {...formItemLayout} >
                   <Switch 
@@ -718,27 +699,13 @@ handleStatusChange = (val) =>{
 
 
           <Row gutter={24}>
-            <Col span={8}>
-              <span>软件信息</span>
-            </Col>
+
           </Row>
           <Row>
             <Col span={8}>
               <FormItem label="操作系统版本" {...formItemLayout}>
               {getFieldDecorator('osversion',{initialValue: `${information.osrelease }`})}
               {information.osrelease}
-              </FormItem>
-            </Col>
-
-            <Col span={8}>
-              <FormItem label="bios版本" {...formItemLayout}>
-                {information.biosversion}
-              </FormItem>
-            </Col>
-
-            <Col span={8}>
-              <FormItem label="agent版本" {...formItemLayout}>
-                {information.agent_version}
               </FormItem>
             </Col>
           </Row>
@@ -784,14 +751,6 @@ handleStatusChange = (val) =>{
        
               </FormItem>
             </Col>
-
-
-              <Col span={8}>
-              <FormItem label="密码" {...formItemLayout}>
-                *******(请单独修改)
-                </FormItem>
-              </Col>
-              
             </Row>
            
 

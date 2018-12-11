@@ -164,11 +164,7 @@ export default class Adddisk extends PureComponent {
             label="转数"
           >
             {
-              getFieldDecorator('rpm', {
-                rules: [{
-                  required: true, message: '请输入硬盘类型',
-                }],
-              })(
+              getFieldDecorator('rpm')(
                 <Input placeholder="请输入硬盘类型" />
               )
             }

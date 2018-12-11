@@ -214,7 +214,6 @@ export default class AddProject   extends PureComponent {
             }
             )
             }
-
             </Select>
         )}
         </FormItem>

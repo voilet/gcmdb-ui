@@ -58,7 +58,7 @@ export default class AddCPU extends PureComponent {
           'description': form.getFieldValue('description') ? form.getFieldValue('description') : "",
           'category': form.getFieldValue('category') ? form.getFieldValue('category') : "",
           'componentname': 'cpu'
-        }
+        };
 
         this.props.dispatch({
           type: 'ghardware/addHardwareComponents',
@@ -177,11 +177,7 @@ export default class AddCPU extends PureComponent {
             label="类型"
           >
             {
-              getFieldDecorator('category', {
-                rules: [{
-                  required: true, message: '请选择CPU类型',
-                }],
-              })(
+              getFieldDecorator('category')(
                 <Select
                   style={{ width: '100%' }}
                   placeholder="请选择CPU类型"

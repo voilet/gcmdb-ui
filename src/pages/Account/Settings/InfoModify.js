@@ -22,7 +22,6 @@ export default @connect(({user}) => ({
 class InfoModify extends PureComponent {
   constructor(props) {
     super(props)
-    console.log("props", this.props);
   }
 
   handleSubmit = e => {
@@ -53,7 +52,7 @@ class InfoModify extends PureComponent {
           <Row gutter={24}>
             <Col xs={24} md={12}>
               <Form onSubmit={this.handleSubmit} layout="vertical">
-                <FormItem label="姓名：" required={true}>
+                <FormItem label="姓名">
                   {getFieldDecorator('first_name', {
                     rules: [
                       {
@@ -61,7 +60,7 @@ class InfoModify extends PureComponent {
                         message: '请输入姓名！',
                       },
                     ],
-                  })(<Input size="large" placeholder="姓名"/>)}
+                  })(<Input size="large" placeholder="姓名" />)}
                 </FormItem>
                 <FormItem label="邮箱">
                   {getFieldDecorator('email', {
@@ -75,7 +74,7 @@ class InfoModify extends PureComponent {
                         message: '邮箱地址格式错误！',
                       },
                     ],
-                  })(<Input size="large" placeholder="邮箱"/>)}
+                  })(<Input size="large" placeholder="邮箱" />)}
                 </FormItem>
 
                 <FormItem label="手机号">
@@ -90,7 +89,7 @@ class InfoModify extends PureComponent {
                         message: '手机号格式错误！',
                       },
                     ],
-                  })(<Input size="large" placeholder="11位手机号"/>)}
+                  })(<Input size="large" placeholder="11位手机号" />)}
                 </FormItem>
                 <FormItem label="ssh公钥">
                   {getFieldDecorator('ssh_pub', {
@@ -104,9 +103,7 @@ class InfoModify extends PureComponent {
                 </FormItem>
 
                 <FormItem label="堡垒机登录方式">
-                  {getFieldDecorator('token_password', {
-
-                  })(
+                  {getFieldDecorator('token_password')(
                     <RadioGroup compact defaultValue={1}>
                       <Radio value={1}>password+token</Radio>
                       <Radio value={2}>token&&password</Radio>

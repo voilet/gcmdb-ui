@@ -157,11 +157,7 @@ export default class AddCPU extends PureComponent {
             {...formItemLayout}
             label="类型"
           >
-            {getFieldDecorator('cpu_type', {
-              rules: [{
-                required: true, message: '请输入CPU类型',
-              }],
-            })(
+            {getFieldDecorator('cpu_type')(
               <Input placeholder="请输入CPU类型" />
             )}
           </FormItem>

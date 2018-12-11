@@ -47,13 +47,6 @@ export default class HostHeader extends PureComponent {
       })
     }
 
-    if(nextPathName === '/resource/hardware/host/edit' && nextPathName !== pathname) {
-      this.setState({
-        activekey: 'edit',
-        title: "编辑主机信息"
-      })
-    }
-
     if(nextPathName === '/resource/hardware/host/add' && nextPathName !== pathname) {
       this.setState({
         activekey: 'add',
@@ -65,13 +58,6 @@ export default class HostHeader extends PureComponent {
       this.setState({
         activekey: 'clean',
         title: "主机项目关系列表"
-      })
-    }
-
-    if(nextPathName === '/resource/hardware/host/offline' && nextPathName !== pathname) {
-      this.setState({
-        activekey: 'offline',
-        title: "已下线主机列表"
       })
     }
   }
@@ -147,29 +133,13 @@ export default class HostHeader extends PureComponent {
         key: 'add',
         tab: '添加主机',
       },
-      {
-        key: 'offline',
-        tab: '已下线主机列表',
-      },
-      {
-        key: 'clean',
-        tab: '主机项目关系',
-        disabled: true,
-      },
+
       {
         key: 'detail',
         tab: '查看主机信息',
         disabled: true,
       },
-      {
-        key: 'edit',
-        tab: '编辑主机信息',
-        disabled: true,
-      },
     ];
-
-
-
     return (
       <PageHeaderWrapper
         title={title}

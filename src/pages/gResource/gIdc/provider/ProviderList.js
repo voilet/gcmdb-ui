@@ -68,7 +68,7 @@ export default class ProviderList extends PureComponent {
       type: 'gidc/queryProvider',
       payload: params,
     });
-  }
+  };
 
   
   handleSelectRows = (rows) => {
@@ -76,7 +76,7 @@ export default class ProviderList extends PureComponent {
       selectedRows: rows,
     });
     
-  }
+  };
 
   //保存编辑数据
   handleSaveData = (val) => {
@@ -84,7 +84,7 @@ export default class ProviderList extends PureComponent {
       type: 'gidc/modifyProvider',
       payload: val 
     });
-  }
+  };
   
   //删除单条数据
   handleDeleteData = (val) => {
@@ -92,7 +92,7 @@ export default class ProviderList extends PureComponent {
       type: 'gidc/deleteProvider',
       payload: val 
     });
-}
+};
 
  
   render() {
