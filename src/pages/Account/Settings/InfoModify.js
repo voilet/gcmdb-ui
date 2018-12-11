@@ -93,6 +93,11 @@ class InfoModify extends PureComponent {
       return 'poor';
     };
     checkConfirm = (rule, value, callback) => {
+      if( !value ){
+        //密码为空时不处理
+        callback();
+        return;
+      }
       const { form } = this.props;
       if (value && value !== form.getFieldValue('password1')) {
         callback('两次输入的密码不匹配!');
@@ -103,6 +108,11 @@ class InfoModify extends PureComponent {
 
     checkPassword = (rule, value, callback) => {
       const { visible, confirmDirty } = this.state;
+      if( !value ){
+        //密码为空时不处理
+        callback();
+        return;
+      }
       if (!value) {
         this.setState({
           help: '请输入密码！',
@@ -184,7 +194,7 @@ class InfoModify extends PureComponent {
                               </FormItem>
 
 
-                              <FormItem label="密码" required={true} help={help}  {...formItemLayout }>
+                              <FormItem label="密码" required={false} help={help}  {...formItemLayout }>
                                 <Popover
                                   content={
                                     <div style={{ padding: '4px 0' }}>
@@ -200,6 +210,7 @@ class InfoModify extends PureComponent {
                                   visible={helpVisible}
                                 >
                                   {getFieldDecorator('password1', {
+                                    initialValue:'',
                                     rules: [
                                       {
                                         validator: this.checkPassword,
@@ -208,11 +219,12 @@ class InfoModify extends PureComponent {
                                   })(<Input size="large" type="password" placeholder="至少6位密码，区分大小写" />)}
                                 </Popover>
                               </FormItem>
-                              <FormItem label="确认密码" {...formItemLayout } >
+                              <FormItem label="确认密码"  required={false} {...formItemLayout } >
                                 {getFieldDecorator('password2', {
+                                  initialValue:'',
                                   rules: [
                                     {
-                                      required: true,
+                                      required: false,
                                       message: '请确认密码！',
                                     },
                                     {
@@ -252,7 +264,7 @@ class InfoModify extends PureComponent {
                                             size="large"
                                             value={"86"}
                                             onChange={this.changePrefix}
-                                            style={{ width: '20%' }}
+                                            style={{ width: '25%' }}
                                         >
                                             <Option value="86">+86</Option>
                                         </Select>
@@ -268,7 +280,7 @@ class InfoModify extends PureComponent {
                                                     message: '手机号格式错误！',
                                                 },
                                             ],
-                                        })(<Input size="large" style={{ width: '80%' }} placeholder="11位手机号" />)}
+                                        })(<Input size="large" style={{ width: '75%' }} placeholder="11位手机号" />)}
                                     </InputGroup>
                                 </FormItem>
 
