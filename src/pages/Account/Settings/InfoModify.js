@@ -180,7 +180,7 @@ class InfoModify extends PureComponent {
                                   <Input size="large" placeholder="用户名" value={ userInfo.username } disabled={true} />
                                 </FormItem>
                               <FormItem label="姓名" required={false} {...formItemLayout }>
-                                {getFieldDecorator('nickname', { initialValue:userInfo.first_name })(<Input size="large" placeholder="姓名" />)}
+                                {getFieldDecorator('first_name', { initialValue:userInfo.first_name })(<Input size="large" placeholder="姓名" />)}
                               </FormItem>
 
 
@@ -232,7 +232,7 @@ class InfoModify extends PureComponent {
                                 })(<TextArea rows={4} />)}
                               </FormItem>
                               <FormItem label="邮箱" {...formItemLayout } >
-                                {getFieldDecorator('mail', {
+                                {getFieldDecorator('email', {
                                   initialValue:userInfo.email,
                                   rules: [
                                     {
@@ -256,7 +256,7 @@ class InfoModify extends PureComponent {
                                         >
                                             <Option value="86">+86</Option>
                                         </Select>
-                                        {getFieldDecorator('mobile', {
+                                        {getFieldDecorator('phone', {
                                             initialValue:userInfo.mobile,
                                             rules: [
                                                 {
