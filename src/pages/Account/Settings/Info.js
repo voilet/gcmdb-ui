@@ -6,7 +6,6 @@ import { FormattedMessage } from 'umi/locale';
 import { Menu,Row, Col, Card ,Button } from 'antd';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import styles from './Info.less';
-console.log("styles", styles)
 
 const { Item } = Menu;
 
@@ -15,6 +14,7 @@ export default
   userInfo:user.userInfo
 }))
 class Info extends PureComponent {
+
     componentDidMount() {
       const { dispatch } = this.props;
       dispatch({
