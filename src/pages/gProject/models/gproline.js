@@ -12,9 +12,12 @@ import {
   modifyProjectLine,
   deleteProjectLine,
   addProjectGroup,
+  addProjectConfigVersion,
   querProjectGroupbyId,
   querGroupbyLId,
   querProjectbyGId,
+  querProjectConfigById,
+  querProjectVersions,
   queryTree,
   modifyProject,
   deleteProject,
@@ -65,7 +68,8 @@ export default {
 
     //通过groud id查询特定项目
     probygid: [],
-
+    //通过project id查询的配置
+    proconfigbypid:[],
     //项目
     projectdata: {
       data: [],
@@ -98,6 +102,7 @@ export default {
 
     //通过line id 获取项目组列表
     *getProjectGroupbyId({ payload }, { call, put }) {
+      console.log("payload",payload)
       const response = yield call(querGroupbyLId, payload)
     
       yield put({
@@ -113,6 +118,25 @@ export default {
         type: 'progroupbyGidSave',
         payload: response.data || [],
       });
+    },
+    //通过projectId项目id查询所有的配置列表
+    *getConfigListById({ payload }, { call, put }){
+      const response = yield call( querProjectConfigById, payload.ID );
+      yield put({
+        type:'progroupbyPidSave',
+        payload:response.data || [],
+        callback:payload.callback || function(){}
+      })
+    },
+
+    *getVersionsById( { payload }, {call, put }){
+      const response = yield call( querProjectVersions, payload.ID );
+      yield put({
+        type:'proConfigVersion',
+        payload:response.data || [],
+        id:payload.ID,
+        callback:payload.callback||function(){}
+      })
     },
 
 
@@ -245,7 +269,19 @@ export default {
     *reloadProjectLine(action, { put, select }) {
       yield put({ type: 'getProjectLine', payload: {} });
     },
-
+    //添加配置的版本
+    *addConfigVersion( { payload }, {call, put }){
+      const response = yield call( addProjectConfigVersion, payload.fields );
+      if( response && response.status == "200"){
+        yield put({
+          type:'saveProConfigVersion',
+          payload:response,
+          callback:payload.callback || function(){}
+        })
+      }else{
+        message.error( response.msg );
+      }
+    },
    
     //获取树节点
     *getTree({ payload }, { call, put }) {
@@ -365,7 +401,25 @@ export default {
         probygid: action.payload
       };
     },
-
+    progroupbyPidSave(state, action) {
+      action.callback && action.callback( action.payload );
+      return {
+        ...state,
+        proconfigbypid: action.payload
+      };
+    },
+    proConfigVersion( state, action ){
+      action.callback && action.callback(action.payload);
+      return {
+        ...state
+      }
+    },
+    saveProConfigVersion( state, action ){
+      action.callback && action.callback(action.payload);
+      return {
+        ...state
+      }
+    },
     saveTree(state, action) {
       return {
         ...state,

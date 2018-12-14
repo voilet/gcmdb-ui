@@ -16,23 +16,8 @@ export default [
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
     routes: [
-      {
-        "path": "/",
-        "redirect": "/dashboard/workplace",
-        "exact": true,
-      },
-      {
-        "path": "/dashboard",
-        "name": "dashboard",
-        "icon": "dashboard",
-        "routes": [
-          {
-            "path": "/dashboard/workplace",
-            "name": "workplace",
-            component: './gProject/ProTree/ListProjectTree',
-          },
-          ],
-      },
+      // dashboard
+      // { path: '/', redirect: '/dashboard/analysis' },
       {
         path: '/resource',
         name: 'resource',
@@ -80,10 +65,10 @@ export default [
                     path: '/resource/idc/cabinet/add',
                     name: 'add',
                     component: './gResource/gIdc/cabinet/addCabinet',
-                  },
+                  }
                 ],
               },
-            ],
+            ]
           },
           {
             path: '/resource/hardware',
@@ -114,9 +99,14 @@ export default [
                     component: './gResource/gHardware/hostInfo/addHost',
                   },
                   {
+                    path: '/resource/hardware/host/offline',
+                    name: 'offline',
+                    component: './gResource/gHardware/hostInfo/offlineHost',
+                  },
+                  {
                     path: '/resource/hardware/host/clean',
                     component: './gResource/gHardware/hostInfo/cleanHost',
-                  },
+                  }
                 ],
               },
               {
@@ -155,8 +145,8 @@ export default [
                     component: './gResource/gHardware/setMeal/adaptor/Listadaptor',
                   },
                 ],
-              },
-            ],
+              },       
+            ]
           },
         ],
       },
@@ -164,22 +154,41 @@ export default [
         path: '/project',
         name: 'project',
         icon: 'profile',
-        routes:[
+        routes: [
           {
-            path: '/project/business/prolist',
-            name: 'prolist',
-            component: './gProject/Project/ListProject',
+            path: '/project/business',
+            name: 'business',
+            icon: 'profile',
+            component: './gProject/SearchList',
+            routes:[
+              {
+                path: '/project/business/prolist',
+                name: 'prolist',
+                component: './gProject/Project/ListProject',
+              },
+              {
+                path: '/project/business/grouplist',
+                name: 'grouplist',
+                component: './gProject/Progroup/ListProjectGroup',
+              },
+              {
+                path: '/project/business/linelist',
+                name: 'linelist',
+                component: './gProject/Proline/ListProjectLine',
+              },
+              {
+                path: '/project/business/proconfiglist',
+                name: 'proconfiglist',
+                component: './gProject/Project/ListProjectConfig',
+              }
+            ]
           },
           {
-            path: '/project/business/grouplist',
-            name: 'grouplist',
-            component: './gProject/Progroup/ListProjectGroup',
-          },
-          {
-            path: '/project/business/linelist',
-            name: 'linelist',
-            component: './gProject/Proline/ListProjectLine',
-          },
+            path: '/project/treelist',
+            name: 'treelist',
+            icon: 'profile',
+            component: './gProject/ProTree/ListProjectTree',
+          }
         ],
       },
       {
@@ -211,18 +220,30 @@ export default [
                   path: '/authmanage/user/forthostlist',
                   name: 'forthostlist',
                   component: './gPower/Resource/forthostList',
-              },
+              }
             ],
           },
-
+          
         ],
       },
-
+      {
+        name: 'result',
+        icon: 'check-circle-o',
+        path: '/result',
+        routes: [
+          // result
+          {
+            path: '/result/success',
+            name: 'success',
+            component: './Result/Success',
+          },
+          { path: '/result/fail', name: 'fail', component: './Result/Error' },
+        ],
+      },
       {
         name: 'exception',
         icon: 'warning',
         path: '/exception',
-        hideInMenu:true,
         routes: [
           // exception
           {
@@ -260,7 +281,7 @@ export default [
             routes: [
               {
                 path: '/account/center',
-                component: './Account/Center/Projects',
+                  component: './Account/Center/Projects',
               },
               {
                 path: '/account/center/articles',
@@ -279,14 +300,15 @@ export default [
           {
             path: '/account/info',
             name: 'info',
-            component: './Account/Settings/Info',
+            component: './Account/Settings/Info'
 
           },
           {
-            path: '/account/settings',
-            name: 'infomodify',
-            component: './Account/Settings/InfoModify',
-          },
+              path: '/account/settings',
+              name: 'infomodify',
+              component: './Account/Settings/InfoModify'
+
+          }
         ],
       },
       {

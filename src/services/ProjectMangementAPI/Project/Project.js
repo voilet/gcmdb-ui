@@ -37,6 +37,15 @@ export async function addProject(params) {
     },
   });
 }
+//添加配置的版本
+export async function addProjectConfigVersion( params ){
+  return request(`/v1/assets/carving/release/create/`,{
+    method:'POST',
+    body:{
+      ...params
+    }
+  });
+}
 
 //修改项目
 export async function modifyProject(params) {
@@ -81,7 +90,15 @@ export async function querGroupbyLId(id) {
 export async function querProjectbyGId(id) {
   return request(`/v1/assets/project/${id}`);
 }
-
+//通过project id查询配置列表(发布项列表)
+export async function querProjectConfigById( id ){
+  return request(`/v1/assets/carvid/${id}`);
+  return request(`/v1/assets/carving/project/${id}`);
+}
+//查询不同发布项的版本列表
+export async function querProjectVersions( id ){
+  return request(`/v1/assets/carving/query/version/${id}`);
+}
 // 查询项目组列表
 export async function querProjectGroup() {
   return request('/v1/assets/pro/groups/queryall');

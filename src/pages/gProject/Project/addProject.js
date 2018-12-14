@@ -139,9 +139,7 @@ export default class AddProject   extends PureComponent {
     
     return (
       <div>
-        <Button type="primary" icon="plus"  onClick={() => this.handleModalVisible(true)}>
-             添加项目
-        </Button>
+
         <Modal
           title="添加项目"
           visible={this.state.modalVisible}
