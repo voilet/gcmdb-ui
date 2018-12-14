@@ -124,8 +124,6 @@ export default class editProjectForm  extends PureComponent {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { submitting,form,dispatch,progroupdata,gproline } = this.props;
-    console.log("addproject",this.props.gproline)
-
     const formItemLayout = {
       labelCol: {
         xs: {span: 24},

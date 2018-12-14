@@ -271,7 +271,7 @@ export default {
     },
     //添加配置的版本
     *addConfigVersion( { payload }, {call, put }){
-      const response = yield call( addProjectConfigVersion, payload.fields );
+      const response = yield call( addProjectConfigVersion, payload );
       if( response && response.status == "200"){
         yield put({
           type:'saveProConfigVersion',

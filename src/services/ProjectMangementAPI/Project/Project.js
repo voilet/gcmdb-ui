@@ -39,10 +39,10 @@ export async function addProject(params) {
 }
 //添加配置的版本
 export async function addProjectConfigVersion( params ){
-  return request(`/v1/assets/carving/release/create/`,{
+  return request(`/v1/assets/carving/release/create/${params.ID}`,{
     method:'POST',
     body:{
-      ...params
+      ...params.fields
     }
   });
 }

@@ -19,7 +19,8 @@ import {
 } from 'antd';
 import ProjectTable from '@/components/ProjectTable';
 import EditProjectForm from './editProjectForm';
-import EditVersionForm from './editVersionForm';
+import EditVersionForm from './manageVersionForm';
+
 import styles from './project.less';
 
 
@@ -321,10 +322,10 @@ export default class TableList extends PureComponent {
   renderOptions( text, record, colume ){
     return (
       <div>
-        <Button onClick={(e)=>{ this.handleEditConfig( record.ID, record )}} style={{marginRight:10}}>修改</Button>
+        <Button onClick={(e)=>{ this.handleEditConfig( record.ID, record )}} style={{marginRight:10}}>修改配置</Button>
         <Button onClick={()=>{
         this.handleEditVersion( record.ID, record );
-      }}>添加版本</Button>
+      }}>版本详情</Button>
       </div>
     )
   }
@@ -342,7 +343,7 @@ export default class TableList extends PureComponent {
     let { gprogroupInfo, gproInfo} = this.getCurrentProInfo();
     for( let i=0;i< proconfigbypid.length;i++){
       proconfigbypid[i].pro = gproInfo ? gproInfo.title :'';
-      proconfigbypid[i].progroup = gprogroupInfo.title;
+      proconfigbypid[i].progroup = gprogroupInfo ? gprogroupInfo.title : '';
       proconfigbypid[i].versions = this.state.configVersions[ proconfigbypid[i].ID ] || [];
     }
     console.log('Parent,props', this.props )
@@ -482,7 +483,7 @@ export default class TableList extends PureComponent {
     return (
       <div>
       <EditProjectForm a="1" modalVisible={ this.state.isEditing } formData={ this.state.editInfo } onCancel={ this.handleCancelEdit }></EditProjectForm>
-        <EditVersionForm modalVisible={ this.state.isVersingAdding } formData={ this.state.editVersionInfo } onCancel={ this.handleCancelVersionEdit }></EditVersionForm>
+      <EditVersionForm modalVisible={ this.state.isVersingAdding } tableData ={ this.state.editVersionInfo } onCancel={ this.handleCancelVersionEdit }></EditVersionForm>
       <Card bordered={false}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
