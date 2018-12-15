@@ -441,6 +441,20 @@ export default class TableList extends PureComponent {
         render: (text, record) => this.renderColumns(text, record, 'pro')
       },
       {
+        title: 'task任务',
+        dataIndex: 'pro',
+        key:'task',
+        width:'pro',
+        render: (text, record) => this.renderColumns(text, record, 'pro')
+      },
+      {
+        title: '主机',
+        dataIndex: 'pro',
+        key:'task',
+        width:'pro',
+        render: (text, record) => this.renderColumns(text, record, 'pro')
+      },
+      {
         title: '版本列表',
         dataIndex: 'versions',
         key:'versions',
