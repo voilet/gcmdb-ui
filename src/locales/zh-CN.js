@@ -3,6 +3,10 @@
 export default {
   'navbar.lang': 'English',
   'menu.home': '首页',
+  'menu.dashboard': 'Dashboard',
+  'menu.dashboard.analysis': '分析页',
+  'menu.dashboard.monitor': '监控页',
+  'menu.dashboard.workplace': '工作台',
   'menu.resource': '资源管理',
   'menu.resource.idc': '机房管理',
   'menu.resource.idc.idclist': '机房列表',

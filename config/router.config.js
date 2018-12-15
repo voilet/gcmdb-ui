@@ -16,8 +16,23 @@ export default [
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
     routes: [
-      // dashboard
-      // { path: '/', redirect: '/dashboard/analysis' },
+      {
+        "path": "/",
+        "redirect": "/dashboard/workplace",
+        "exact": true,
+      },
+      {
+        "path": "/dashboard",
+        "name": "dashboard",
+        "icon": "dashboard",
+        "routes": [
+          {
+            "path": "/dashboard/workplace",
+            "name": "workplace",
+            component: './gProject/ProTree/ListProjectTree',
+          },
+        ],
+      },
       {
         path: '/resource',
         name: 'resource',

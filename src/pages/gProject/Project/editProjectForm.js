@@ -11,7 +11,8 @@ import {
   Modal,
   message,
   Radio,
-  Switch
+  Switch,
+  InputNumber
 } from 'antd';
 
 
@@ -156,6 +157,9 @@ export default class editProjectForm  extends PureComponent {
     }else{
       version = ["abc"];//为空竟然会报错
     }
+    function onChange(value) {
+      console.log('changed', value);
+    }
     console.log("version..............",version)
     return (
       <div>
@@ -199,7 +203,7 @@ export default class editProjectForm  extends PureComponent {
               <Input placeholder="请输入发布项标题" />
             )}
           </FormItem>
-          <FormItem
+          {/*<FormItem
             {...formItemLayout}
             label="发布项版本"
           >
@@ -218,8 +222,8 @@ export default class editProjectForm  extends PureComponent {
                 { selectorVersion() }
               </Select>
             )}
-          </FormItem>
-          <FormItem label="脚本类型" name="token_password" {...formItemLayout } >
+          </FormItem>*/}
+          {/*<FormItem label="脚本类型" name="token_password" {...formItemLayout } >
             { getFieldDecorator('token_password',{
               initialValue: formData.remarks ? formData.remarks:"后台"
             })(
@@ -228,7 +232,7 @@ export default class editProjectForm  extends PureComponent {
                 <Radio value={ '前台' }>前端脚本</Radio>
               </RadioGroup>
             )}
-          </FormItem>
+          </FormItem>*/}
           <FormItem
             {...formItemLayout}
             label="发布脚本"
@@ -242,8 +246,11 @@ export default class editProjectForm  extends PureComponent {
               <TextArea style={{ minHeight: 32 }} placeholder="" rows={4} />
             )}
           </FormItem>
-          <FormItem {...formItemLayout} label="脚本参数">
-            <Input placeholder="请输入发布脚本参数" value={ formData.release_args } />
+          <FormItem {...formItemLayout} label="发布参数">
+            <Input placeholder="发布参数多个参数用|线分割" value={ formData.release_args } />
+          </FormItem>
+          <FormItem {...formItemLayout} label="发布超时时间">
+              <InputNumber min={1} max={600} defaultValue={300} onChange={onChange} />（单位: 秒）
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -258,8 +265,11 @@ export default class editProjectForm  extends PureComponent {
               <TextArea style={{ minHeight: 32 }} placeholder="" rows={4} />
             )}
           </FormItem>
-          <FormItem {...formItemLayout} label="脚本参数">
-            <Input placeholder="请输入回退脚本参数" value={ formData.rollback_args } />
+          <FormItem {...formItemLayout} label="回退参数">
+            <Input placeholder="回退脚本参数多个参数用|线分割" value={ formData.rollback_args } />
+          </FormItem>
+          <FormItem {...formItemLayout} label="回退超时时间">
+            <InputNumber  min={1} max={600} defaultValue={300} onChange={onChange} />（单位: 秒）
           </FormItem>
           <FormItem
             {...formItemLayout}

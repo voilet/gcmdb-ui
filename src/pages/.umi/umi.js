@@ -1,5 +1,5 @@
 import './polyfills';
-import '../../../node_modules/_umi-plugin-polyfills@1.1.0@umi-plugin-polyfills/lib/ie11.js';
+import '../../../node_modules/umi-plugin-polyfills/lib/ie11.js';
 
 import '@tmp/initHistory';
 import React from 'react';
@@ -9,9 +9,9 @@ import ReactDOM from 'react-dom';
 // runtime plugins
 window.g_plugins = require('umi/_runtimePlugin');
 window.g_plugins.init({
-  validKeys: ['patchRoutes','render','rootContainer','dva',],
+  validKeys: ['patchRoutes','render','rootContainer','modifyRouteProps','dva',],
 });
-window.g_plugins.use(require('../../../node_modules/_umi-plugin-dva@1.1.1@umi-plugin-dva/lib/runtime'));
+window.g_plugins.use(require('../../../node_modules/umi-plugin-dva/lib/runtime'));
 
 require('@tmp/initDva');
 
