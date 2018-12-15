@@ -368,6 +368,19 @@ export default class TableList extends PureComponent {
         this.state.isLoadingVersions = true;
       }
     }
+
+    // songxs add
+    function handleChange(value) {
+      console.log(`selected ${value}`);
+    }
+
+    function handleBlur() {
+      console.log('blur');
+    }
+
+    function handleFocus() {
+      console.log('focus');
+    }
     const getFilters = ( type ) =>{
       let arr =[];
       try{
@@ -503,7 +516,43 @@ export default class TableList extends PureComponent {
           <div className={styles.tableListOperator}>
             <Row gutter={16} className={styles.filterList}>
               <Col>
-                <Select defaultValue="" onSelect={( val )=>{ this.handlerSelect("gproline", val)}}>
+                <Select
+                  showSearch
+                  style={{ width: 200 }}
+                  placeholder="所有产品线"
+                  optionFilterProp="children"
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  { getFilters( 'gproline' ) }
+                </Select>
+                <Select
+                  showSearch
+                  style={{ width: 200 }}
+                  placeholder="所有项目组"
+                  optionFilterProp="children"
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  { getFilters( 'gprogroup' ) }
+                </Select>
+                <Select
+                  showSearch
+                  style={{ width: 200 }}
+                  placeholder="所有项目"
+                  optionFilterProp="children"
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  { getFilters( 'gpro' ) }
+                </Select>
+                {/*<Select defaultValue="" onSelect={( val )=>{ this.handlerSelect("gproline", val)}}>
                   <Select.Option value="">所有产品线</Select.Option>
                   { getFilters( 'gproline' ) }
                 </Select>
@@ -514,7 +563,7 @@ export default class TableList extends PureComponent {
                 <Select defaultValue="" onSelect={( val )=>{ this.handlerSelect("gpro", val)}}>
                   <Select.Option value="">所有项目</Select.Option>
                   { getFilters( 'gpro' ) }
-                </Select>
+                </Select>*/}
                 <Button type="primary" icon="plus"  onClick={() => this.handleEditConfig( 0, null )}>
                   添加发布配置
                 </Button>
