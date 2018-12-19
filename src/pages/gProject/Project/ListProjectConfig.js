@@ -374,8 +374,8 @@ export default class TableList extends PureComponent {
       console.log(`selected ${value}`);
     }
 
-    function handleBlur() {
-      console.log('blur');
+    function handleBlur(value) {
+      console.log(`selected ${value}`);
     }
 
     function handleFocus() {

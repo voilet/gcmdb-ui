@@ -4,10 +4,10 @@ export default [
     path: '/user',
     component: '../layouts/UserLayout',
     routes: [
-      { path: '/user', redirect: '/user/login' },
-      { path: '/user/login', component: './User/Login' },
-      { path: '/user/register', component: './User/Register' },
-      { path: '/user/register-result', component: './User/RegisterResult' },
+      {path: '/user', redirect: '/user/login'},
+      {path: '/user/login', component: './User/Login'},
+      {path: '/user/register', component: './User/Register'},
+      {path: '/user/register-result', component: './User/RegisterResult'},
     ],
   },
   // app
@@ -31,18 +31,20 @@ export default [
             "name": "workplace",
             component: './gProject/ProTree/ListProjectTree',
           },
+
         ],
       },
       {
         path: '/resource',
         name: 'resource',
         icon: 'table',
+
         routes: [
           {
             path: '/resource/idc',
             name: 'idc',
             icon: 'table',
-            routes:[
+            routes: [
               {
                 path: '/resource/idc/idclist',
                 name: 'idclist',
@@ -62,7 +64,7 @@ export default [
                 path: '/resource/idc/cabinet',
                 name: 'cabinet',
                 component: './gResource/gIdc/cabinet/cabinetHeader',
-                routes:[
+                routes: [
                   {
                     path: '/resource/idc/cabinet/list',
                     name: 'list',
@@ -89,12 +91,12 @@ export default [
             path: '/resource/hardware',
             name: 'hardware',
             icon: 'table',
-            routes:[
+            routes: [
               {
                 path: '/resource/hardware/host',
                 name: 'host',
                 component: './gResource/gHardware/hostInfo/hostHeader',
-                routes:[
+                routes: [
                   {
                     path: '/resource/hardware/host/list',
                     name: 'list',
@@ -128,7 +130,7 @@ export default [
                 path: '/resource/hardware/deviceplan',
                 name: 'deviceplan',
                 icon: 'table',
-                routes:[
+                routes: [
                   {
                     path: '/resource/hardware/deviceplan/compose_plan',
                     name: 'compose_plan',
@@ -160,8 +162,8 @@ export default [
                     component: './gResource/gHardware/setMeal/adaptor/Listadaptor',
                   },
                 ],
-              },       
-            ]
+              },
+            ],
           },
         ],
       },
@@ -175,7 +177,7 @@ export default [
             name: 'business',
             icon: 'profile',
             component: './gProject/SearchList',
-            routes:[
+            routes: [
               {
                 path: '/project/business/prolist',
                 name: 'prolist',
@@ -195,15 +197,15 @@ export default [
                 path: '/project/business/proconfiglist',
                 name: 'proconfiglist',
                 component: './gProject/Project/ListProjectConfig',
-              }
-            ]
+              },
+            ],
           },
           {
             path: '/project/treelist',
             name: 'treelist',
             icon: 'profile',
             component: './gProject/ProTree/ListProjectTree',
-          }
+          },
         ],
       },
       {
@@ -231,34 +233,32 @@ export default [
                 name: 'resourcelist',
                 component: './gPower/Resource/resourceList',
               },
-              {
-                  path: '/authmanage/user/forthostlist',
-                  name: 'forthostlist',
-                  component: './gPower/Resource/forthostList',
-              }
             ],
           },
-          
-        ],
-      },
-      {
-        name: 'result',
-        icon: 'check-circle-o',
-        path: '/result',
-        routes: [
-          // result
           {
-            path: '/result/success',
-            name: 'success',
-            component: './Result/Success',
+            path: '/authmanage/forthost',
+            name: 'forthost',
+            component: './gPower/ForthostIndex',
+            /*Routes: ['src/pages/Authorized'],
+            authority: ['admin', 'user'],*/
+            routes: [
+              {
+                path: '/authmanage/forthost/forthostlist',
+                name: 'forthostlist',
+                component: './gPower/Resource/forthostList',
+              },
+            ],
           },
-          { path: '/result/fail', name: 'fail', component: './Result/Error' },
+
+
+
         ],
       },
       {
         name: 'exception',
         icon: 'warning',
         path: '/exception',
+        hideInMenu: true,
         routes: [
           // exception
           {
@@ -296,7 +296,7 @@ export default [
             routes: [
               {
                 path: '/account/center',
-                  component: './Account/Center/Projects',
+                component: './Account/Center/Projects',
               },
               {
                 path: '/account/center/articles',
@@ -319,9 +319,9 @@ export default [
 
           },
           {
-              path: '/account/settings',
-              name: 'infomodify',
-              component: './Account/Settings/InfoModify'
+            path: '/account/settings',
+            name: 'infomodify',
+            component: './Account/Settings/InfoModify'
 
           }
         ],

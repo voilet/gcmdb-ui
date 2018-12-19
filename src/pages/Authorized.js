@@ -6,7 +6,7 @@ import uniq from 'lodash/uniq';
 import { formatMessage } from 'umi/locale';
 import Link from 'umi/link';
 
-const Authorized = RenderAuthorized(['admin', 'user']);
+const Authorized = RenderAuthorized();
 
 export default ({ children, route, location }) => {
   const routes = matchRoutes(route.routes, location.pathname);

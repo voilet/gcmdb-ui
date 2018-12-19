@@ -24,7 +24,7 @@ class EditModal extends React.Component {
         this.state = {
             visible: false,
             treeData: [],
-            newurl: ""
+            newurl: "",
         }
     }
 
@@ -34,15 +34,15 @@ class EditModal extends React.Component {
             record: {
                 ID,
             },
-        } = this.props
-        const treeData = []
+        } = this.props;
+        const treeData = [];
         const treeNode = {
             title: '--无--',
             value: 'no_parent',
-            key: 'no_parent'
-        }
-        treeData.push(treeNode)
-        this.initTreeSelect(ID, resource, treeData)
+            key: 'no_parent',
+        };
+        treeData.push(treeNode);
+        this.initTreeSelect(ID, resource, treeData);
         this.setState({
             treeData,
         })
@@ -81,14 +81,14 @@ class EditModal extends React.Component {
                 getFieldValue,
                 resetFields,
             },
-        } = this.props
+        } = this.props;
 
-        const type = getFieldValue('type')
-        const fatherNode = getFieldValue('fatherNode')
-        const {dispatch} = this.props
-        
+        const type = getFieldValue('type');
+        const fatherNode = getFieldValue('fatherNode');
+        const {dispatch} = this.props;
 
-        let typeText = ''
+
+        let typeText = '';
         if (type === 'area') {
             typeText = '区域'
         } else if (type === 'menu') {
@@ -96,27 +96,27 @@ class EditModal extends React.Component {
         } else {
             typeText = '按钮'
         }
-        
+
         if (type !== 'area' && fatherNode === 'no_parent') {
             setFields({
                 type: {
                     value: typeText,
-                    errors: [new Error(typeError)]
-                }
+                    errors: [new Error(typeError)],
+                },
             })
         } else {
-            const validateFieldsValue = getFieldsValue()
+            const validateFieldsValue = getFieldsValue();
             validateFields(Object.keys(validateFieldsValue), (err, values) => {
                 if (!err) {
                     // 参数正确，发送请求，重置表单
                     if (!values.url) {
-                        values.url = ""
+                        values.url = "";
                     }
 
                     if (!values.icon) {
-                        values.icon = ""
+                        values.icon = "";
                     }
-                
+
                     dispatch({
                         type: 'gresource/modifyResourcelist',
                         payload: {
@@ -129,7 +129,7 @@ class EditModal extends React.Component {
                                   }
                             }
                         },
-                    })  
+                    })
                     resetFields()
                     this.closeEdit()
                 }
@@ -178,7 +178,7 @@ class EditModal extends React.Component {
             onOk: () => {
                 // 确认删除，发送请求
                 // 删除成功，则重新load列表
-            
+
                 dispatch({
                     type: 'gresource/deleteResourcelist',
                     payload: {
@@ -206,27 +206,25 @@ class EditModal extends React.Component {
             form: {
                 getFieldValue,
                 setFieldsValue,
-            }, 
-        } = this.props
+            },
+        } = this.props;
 
-        const urlfor = getFieldValue('url')
+        const urlfor = getFieldValue('url');
 
-        const {dispatch} = this.props
+        const {dispatch} = this.props;
         dispatch({
             type: 'gresource/getURLforLink',
             payload: {
                 UrlFor: urlfor,
                 cb: _val => {
                     const {
-                        data: {
-                            link_url,
-                        },
-                    } = _val
-                    console.log(link_url)
+                        data: {link_url},
+                    } = _val;
+                    console.log(link_url);
                     setFieldsValue({'afterUrl': link_url})
                 }
             },
-        })  
+        })
     }
 
 
@@ -245,6 +243,8 @@ class EditModal extends React.Component {
                 link_url,
                 seq,
                 children_id,
+                auth_name,
+                url_for,
             },
         } = this.props
 
@@ -277,17 +277,36 @@ class EditModal extends React.Component {
                                     {
                                         getFieldDecorator('name', {
                                             rules: [{
-                                                required: true, message: '名称必填'
+                                                required: true, message: '名称必填',
                                             }, {
                                                 max: 32, message: '最多可输入32个字符',
                                             }],
                                             initialValue: name ? name : '',
                                         })(
-                                            <Input placeholder="长度不超过32个字段" />,
+                                          <Input placeholder="长度不超过32个字段,必须使用英文" />,
                                         )
                                     }
                                     </FormItem>
                                 </Col>
+                              <Col span={12}>
+                                <FormItem
+                                  label="前端验证名称"
+                                  className={style['form-item-left']}
+                                >
+                                  {
+                                    getFieldDecorator('auth_name', {
+                                      rules: [{
+                                        required: true, message: '验证名称必填',
+                                      }, {
+                                        max: 32, message: '最多可输入32个字符',
+                                      }],
+                                      initialValue: auth_name ? auth_name : '',
+                                    })(
+                                      <Input placeholder="长度不超过32个字段" />,
+                                    )
+                                  }
+                                </FormItem>
+                              </Col>
                                 <Col span={12}>
                                     <FormItem
                                        label="父节点"
@@ -344,17 +363,18 @@ class EditModal extends React.Component {
                             </Row>
                             <Row>
                                 <Col span={12}>
-                                    <FormItem
-                                        label="UrlFor"
-                                        className={style['form-item-left']}
-                                    >
+                                  <FormItem
+                                    label="UrlFor"
+                                    className={style['form-item-left']}
+                                  >
                                     {
-                                        getFieldDecorator('url', {
-                                        })(
-                                            <Input />,
-                                        )
+                                      getFieldDecorator('url_for', {
+                                        initialValue: url_for ? url_for : '',
+                                      })(
+                                        <Input placeholder="请输入路由控制器方法名" />,
+                                      )
                                     }
-                                    </FormItem>
+                                  </FormItem>
                                 </Col>
                                 <Col span={12}>
                                     <FormItem

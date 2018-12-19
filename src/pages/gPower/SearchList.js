@@ -144,10 +144,6 @@ export default class SearchList extends PureComponent {
         key: 'resourcelist',
         tab: '资源管理',
       },
-      {
-          key: 'forthostlist',
-          tab: '堡垒机管理',
-      }
     ];
 
 

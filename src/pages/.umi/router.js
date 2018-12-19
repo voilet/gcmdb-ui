@@ -312,7 +312,17 @@ let routes = [
                 "exact": true
               },
               {
-                "path": "/authmanage/user/forthostlist",
+                "component": () => React.createElement(require('/Users/voilet/antd/gcmdbUi/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+              }
+            ]
+          },
+          {
+            "path": "/authmanage/forthost",
+            "name": "forthost",
+            "component": dynamic({ loader: () => import('../gPower/ForthostIndex'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
+            "routes": [
+              {
+                "path": "/authmanage/forthost/forthostlist",
                 "name": "forthostlist",
                 "component": dynamic({ loader: () => import('../gPower/Resource/forthostList'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
                 "exact": true
@@ -328,31 +338,10 @@ let routes = [
         ]
       },
       {
-        "name": "result",
-        "icon": "check-circle-o",
-        "path": "/result",
-        "routes": [
-          {
-            "path": "/result/success",
-            "name": "success",
-            "component": dynamic({ loader: () => import('../Result/Success'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
-            "exact": true
-          },
-          {
-            "path": "/result/fail",
-            "name": "fail",
-            "component": dynamic({ loader: () => import('../Result/Error'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
-            "exact": true
-          },
-          {
-            "component": () => React.createElement(require('/Users/voilet/antd/gcmdbUi/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
-          }
-        ]
-      },
-      {
         "name": "exception",
         "icon": "warning",
         "path": "/exception",
+        "hideInMenu": true,
         "routes": [
           {
             "path": "/exception/403",

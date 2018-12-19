@@ -9,10 +9,12 @@ import { format, delay } from 'roadhog-api-doc';
 
 // 是否禁用代理
 //const noProxy = process.env.NO_PROXY === 'false';
-const noProxy = process.env.NO_PROXY === 'true';
+const noProxy = process.env.NO_PROXY === 'false';
 
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 const proxy = {
+
+  '/login': 'http://127.0.0.1/',
 
   // 支持值为 Object 和 Array
   'GET /api/currentUser': {
