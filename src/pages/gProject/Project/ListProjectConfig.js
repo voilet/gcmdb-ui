@@ -20,6 +20,7 @@ import {
 import ProjectTable from '@/components/ProjectTable';
 import EditProjectForm from './editProjectForm';
 import EditVersionForm from './manageVersionForm';
+import EditTaskForm from './manageTaskForm';
 
 import styles from './project.less';
 
@@ -47,6 +48,7 @@ export default class TableList extends PureComponent {
 
     isEditing:false, //是否编辑中
     isVersingAdding:false, //是否添加版本中
+    isTaskAdding:false, //是否添加任务中
 
     gprolineId:0,
     gprogroupId:0,
@@ -246,14 +248,65 @@ export default class TableList extends PureComponent {
       editInfo:record
     });
   };
+
+  //version edit start 
   handleEditVersion = ( id, record )=>{
     let editInfo = record;
-    console.log("编辑配置信息:", record)
+    console.log("编辑配置信息:", record);
+    this.props.dispatch({
+      type:'gproline/getVersionsById',
+      payload:{
+        ID:id,
+        callback:(data)=>{
+          record.versions = data;
+          this.setState({
+            editVersionInfo: record,
+            isVersingAdding:true,
+          })
+        }
+      }
+    });    
+  }
+  //版本面板数据更新
+  handleUpdateVersion = ( tableData )=>{
+    this.forceUpdate();
+  };
+  handleCancelVersionEdit = ()=>{
     this.setState({
-      isVersingAdding:true,
-      editVersionInfo:editInfo,
+      isVersingAdding:false
+    })
+  };
+  //version edit end 
+
+  // task start
+  handleEditTask = ( id, record )=>{
+    let editInfo = record;
+    this.props.dispatch({
+      type:'gproline/getTasksById',
+      payload:{
+        ID:id,
+        callback:(data)=>{
+          record.tasks = data;
+          this.setState({
+            editTaskInfo: record,
+            isTaskAdding:true
+          })
+        }
+      }
+    });  
+  }
+  handleCancelTaskEdit = ( )=>{
+    this.setState({
+      isTaskAdding:false
     })
   }
+  handleUpdateTask = ( formData ) =>{
+    this.setState({
+      isTaskAdding:false
+    })
+  }
+  //task end
+
   //提交了配置编辑
   handleSubmitEdit = ( record )=>{
     console.log("成功添加:", record)
@@ -272,15 +325,7 @@ export default class TableList extends PureComponent {
       isEditing:false
     })
   }
-  //版本面板数据更新
-  handleUpdateVersion = ( tableData )=>{
-    this.forceUpdate();
-  };
-  handleCancelVersionEdit = ()=>{
-    this.setState({
-      isVersingAdding:false
-    })
-  };
+  
   handlerSelect = ( type, val, e ) =>{
     const { dispatch } = this.props;
     let state = { ...this.state };
@@ -366,7 +411,13 @@ export default class TableList extends PureComponent {
         <Button onClick={(e)=>{ this.handleEditConfig( record.ID, record )}} style={{marginRight:10}}>修改配置</Button>
         <Button onClick={()=>{
         this.handleEditVersion( record.ID, record );
-      }}>版本详情</Button>
+      }}>版本管理</Button>
+        <Button onClick={()=>{
+        this.handleEditTask( record.ID, record );
+      }}>任务管理</Button>
+      <Button onClick={()=>{
+        this.handleEditHost( record.ID, record );
+      }}>主机列表</Button>
       </div>
     )
   }
@@ -381,15 +432,18 @@ export default class TableList extends PureComponent {
     const { gproline ,submitting,dispatch } = this.props;
     let loading = false;
     let proconfigbypid = gproline.proconfigbypid || [];
-    let release_versions = gproline.release_versions;
+    let block_versions = gproline.block_versions;
+    let block_tasks = gproline.block_tasks;
+    let block_hosts = gproline.block_hosts;
     let { gprogroupInfo, gproInfo} = this.getCurrentProInfo();
 
 
     for( let i=0;i< proconfigbypid.length;i++){
       proconfigbypid[i].pro = gproInfo ? gproInfo.title :'';
       proconfigbypid[i].progroup = gprogroupInfo ? gprogroupInfo.title : '';
-      proconfigbypid[i].versions = release_versions[ proconfigbypid[i].ID ] || [];
-      
+      proconfigbypid[i].versions = block_versions[ proconfigbypid[i].ID ] || [];     
+      proconfigbypid[i].tasks =  block_tasks[ proconfigbypid[i].ID ] || [];
+      proconfigbypid[i].hosts =  block_hosts[ proconfigbypid[i].ID ] || []
     }
     //是否可以添加配置
     let isAddConfigEnabled = false;
@@ -400,6 +454,7 @@ export default class TableList extends PureComponent {
     }
 
     console.log('{ListProject}Parent,props', this.props, this.state )
+    /*
     if( ! this.state.isLoadingVersions ){
       let configLen = proconfigbypid.length;
       for(let i=0;i<configLen;i++){
@@ -409,12 +464,7 @@ export default class TableList extends PureComponent {
           payload:{
             ID:proconfigbypid[i].ID,
             callback:(data)=>{
-              /*
-              let state = { ...this.state };
-              state.configVersions[ proconfigbypid[i].ID ] = data;
-              console.log("version:", data, proconfigbypid[i].ID)
-              this.setState( state );
-              */
+             
             }
           }
         });
@@ -423,6 +473,7 @@ export default class TableList extends PureComponent {
         this.state.isLoadingVersions = true;
       }
     }
+    */
 
     // songxs add   
     function handleBlur(value) {
@@ -487,14 +538,14 @@ export default class TableList extends PureComponent {
         title: '配置名称',
         dataIndex: 'title',
         key:'title',
-        width:'120px',
+        width:'pro',
         render: (text, record) => this.renderColumns(text, record, 'title'),
       },
       {
         title: '所属项目组',
         dataIndex: 'progroup',
+        width:'pro',
         key:'progroup',
-        width:'120px',
         render: (text, record) => this.renderColumns(text, record, 'progroup'),
       },
       {
@@ -505,57 +556,10 @@ export default class TableList extends PureComponent {
         render: (text, record) => this.renderColumns(text, record, 'pro')
       },
       {
-        title: 'task任务',
-        dataIndex: 'pro',
-        key:'task',
-        width:'pro',
-        render: (text, record) => this.renderColumns(text, record, 'pro')
-      },
-      {
-        title: '主机',
-        dataIndex: 'pro',
-        key:'host',
-        width:'pro',
-        render: (text, record) => this.renderColumns(text, record, 'pro')
-      },
-      {
-        title: '版本列表',
-        dataIndex: 'versions',
-        key:'versions',
-        width:'120px',
-        render: (text, record) => {
-          let versions = text || [];
-          if( !versions.length ){
-            return (
-              <div>暂无版本</div>
-            )
-          }
-          return (
-            <Select onSelect={()=>{}} defaultValue={1}>
-              {
-                versions.map(function(item,index){
-                  return (<Select.Option value={ item.ID }>{ item.title }</Select.Option>)
-                })
-              }
-            </Select>
-          )
-          return (
-            <div>
-              {
-                versions.map(function(item,index){
-                  return (<div>index</div>)
-                })
-              }
-            </div>
-          )
-        }
-
-      },
-      {
         title: '操作',
         dataIndex: 'status',
         key:'status',
-        width:'200px',
+        width:'100px',
         render: (text, record) => this.renderOptions(text, record, 'status'),
       }];
     return (
@@ -567,12 +571,20 @@ export default class TableList extends PureComponent {
         onCancel={ this.handleCancelEdit }
         onUpdate={ this.handleUpdateProject }
       ></EditProjectForm>
+
       <EditVersionForm
         modalVisible={ this.state.isVersingAdding } 
         tableData ={ this.state.editVersionInfo } 
         onCancel={ this.handleCancelVersionEdit }
         onUpdate= { this.handleUpdateVersion }
       ></EditVersionForm>
+      //编辑版本
+      <EditTaskForm
+        modalVisible={ this.state.isTaskAdding } 
+        tableData ={ this.state.editTaskInfo } 
+        onCancel={ this.handleCancelTaskEdit }
+        onUpdate= { this.handleUpdateTask }
+      ></EditTaskForm>
       <Card bordered={false}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>

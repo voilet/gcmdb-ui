@@ -13,12 +13,16 @@ import {
   deleteProjectLine,
   addProjectGroup,
   addProjectConfigVersion,
+  addProjectTask,
   querProjectGroupbyId,
   querGroupbyLId,
   querProjectbyGId,
   querProjectConfigById,
   querProjectVersions,
+  querProjectTasks,
+  querProjectHosts,
   deleteProjectConfigVersion,
+  deleteProjectTask,
   queryTree,
   modifyProject,
   deleteProject,
@@ -77,7 +81,11 @@ export default {
       pagination: {},
     },
     //不同发布项的不同版本
-    release_versions:{}
+    block_versions:{},
+    //不同发布项的任务数据
+    block_tasks:{},
+    //不同发布项的主机数据
+    block_hosts:{}
   },
 
 
@@ -138,7 +146,6 @@ export default {
 
     *getVersionsById( { payload }, {call, put }){
       const response = yield call( querProjectVersions, payload.ID );
-      console.log("getVersions############", response)
       yield put({
         type:'proConfigVersion',
         payload:response.data || [],
@@ -146,11 +153,29 @@ export default {
         callback:payload.callback||function(){}
       })
     },
+    *addProjectTask( { payload }, { call, put }){
+      const response = yield call( addProjectTask, payload );
+      if( response.status != 200 ){
+        openNotificationWithIcon('error',response.msg)
+      }else{
+        yield put({ type: 'saveBlockTasks', payload:payload } )
+      }
+    },
     *deleteVersionById( { payload }, { call, put }){
       const response = yield call( deleteProjectConfigVersion, payload );
       yield put({
         type:'getVersionsById',
         payload:{ ID: payload.ProId }
+      })
+    },
+    //通过项目id查任务
+    *getTasksById( { payload }, { call, put } ){
+      const response = yield call( querProjectTasks, payload );
+      yield put({
+        type:'saveBlockTasks',
+        payload:response.data || [],
+        id:payload.ID,
+        callback:payload.callback
       })
     },
 
@@ -436,21 +461,30 @@ export default {
     },
     proConfigVersion( state, action ){
       action.callback && action.callback(action.payload);
-      var versions = { ...state.release_versions};
-      versions[ action.id ] = action.payload || [];
+      var blocks = { ...state.block_versions};
+      blocks[ action.id ] = action.payload || [];
       return {
         ...state,
-        release_versions:versions
+        block_versions:blocks
       }
     },
     saveProConfigVersion( state, action ){
       action.callback && action.callback(action.payload);
-      var versions = { ...state.release_versions};
-      versions[ action.id ] = action.payload || [];
-
+      var blocks = { ...state.block_versions};
+      blocks[ action.id ] = action.payload || [];
       return {
         ...state,
-        release_versions:versions
+        block_versions:blocks
+      }
+    },
+    //保存碎片的任务列表
+    saveBlockTasks( state, action ){
+      action.callback && action.callback( action.payload );
+      var blocks = { ...state.block_tasks };
+      blocks[ action.id ] = action.payload || [];
+      return {
+        ...state, 
+        block_tasks:blocks
       }
     },
     saveTree(state, action) {

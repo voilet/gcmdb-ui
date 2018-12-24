@@ -51,6 +51,32 @@ export async function deleteProjectConfigVersion( params ){
   return request(`/v1/assets/carving/release/delete/${params.ID}`);
 }
 
+
+
+//查询项目中的任务
+export async function querProjectTasks( params ){
+  return request(`/v1/assets/carving/task/query/release/${params.ID}`);
+}
+
+//添加项目中的任务
+export async function addProjectTask( params ){
+  return request(`v1/assets/carving/task/create/${params.ID}`,{
+    method:'POST',
+    body:{
+      ...params.fields
+    }
+  });
+}
+//删除项目中的任务
+export async function deleteProjectTasks( params ){
+  return request(`/v1/assets/task/release/delete/${params.ID}`);
+}
+
+//查询项目中的主机
+export async function querProjectHosts( params ){
+  return request(`/v1/assets/carving/task/query/release/${params.ID}`);
+}
+
 //修改项目
 export async function modifyProject(params) {
   return request(`/v1/assets/project/modify/${params.ID}`, {

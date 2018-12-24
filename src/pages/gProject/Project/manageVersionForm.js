@@ -218,7 +218,6 @@ export default class editVersionForm extends PureComponent {
       },
     };
     //this.state.mode = 2;
-    console.log("render..........", formData)
     if (this.state.mode != 1) {
       return (
         <div>
@@ -311,7 +310,7 @@ export default class editVersionForm extends PureComponent {
     return (
       <div>
         <Modal
-          title="修改版本"
+          title="版本管理"
           visible={this.props.modalVisible}
           onOk={this.handleSubmit}
           width={1000}
