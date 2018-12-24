@@ -52,8 +52,8 @@ export default class TableList extends PureComponent {
     gprogroupId:0,
     gproId:0,
 
+    isAddConfigEnabled: false, //添加配置是否可用
     isLoadingVersions:false,
-    configVersions:{},
     proconfigbypid:{  //列表数据
       data:[]
     }
@@ -229,11 +229,14 @@ export default class TableList extends PureComponent {
     let editInfo = {};
 
     let { gprogroupInfo, gproInfo} = this.getCurrentProInfo();
+    console.log("currentProjectInfo", gproInfo)
     if( !gproInfo ) gproInfo = {};
     if( !record ){
       //new
-      editInfo.title = "";
-      editInfo.projectTitle = gproInfo.title;
+      editInfo.pro = gproInfo.title || "";
+      editInfo.ID = gproInfo.ID;
+      editInfo.projectTitle = "";
+      record = editInfo;
     }else{
 
     }
@@ -251,11 +254,27 @@ export default class TableList extends PureComponent {
       editVersionInfo:editInfo,
     })
   }
+  //提交了配置编辑
+  handleSubmitEdit = ( record )=>{
+    console.log("成功添加:", record)
+    this.setState({
+      isEditing:false
+    })
+  }
   handleCancelEdit = ( id, record )=>{
     console.log("cacnel...")
     this.setState({
       isEditing:false
     })
+  };
+  handleUpdateProject = ( formData )=>{
+    this.setState({
+      isEditing:false
+    })
+  }
+  //版本面板数据更新
+  handleUpdateVersion = ( tableData )=>{
+    this.forceUpdate();
   };
   handleCancelVersionEdit = ()=>{
     this.setState({
@@ -267,10 +286,16 @@ export default class TableList extends PureComponent {
     let state = { ...this.state };
     console.log("val",val)
     if( !val ) return;
+    //清空列表
+    dispatch({
+      type:'gproline/clearConfigList',
+      payload:{}
+    });
+
     switch( type ){
       case "gproline":
         //通过产品线查项目组
-        this.setState({ gprolineId: val });
+        this.setState({ gprolineId: val, gprogroupId:0, gproId:0 });
         dispatch({
           type:'gproline/getProjectGroupbyId',
           payload:val
@@ -278,7 +303,7 @@ export default class TableList extends PureComponent {
         break;
       case "gprogroup":
         //通过产品线查项目
-        this.setState({ gprogroupId: val });
+        this.setState({ gprogroupId: val, gproId:0 });
         dispatch({
           type:'gproline/getProjectbyId',
           payload:val
@@ -296,10 +321,26 @@ export default class TableList extends PureComponent {
         });
         break;
     }
+    
   };
-  handleAddVersion = ()=>{
-
+  handlerSelectBlur = ( type, val, e ) =>{
+    switch( type ){
+      case "gpro":
+        handlerSelect( type, val, e );
+        break;
+    }
+  };
+  
+  /** 更新某一个项目的版本列表数据 */
+  updateProVersion = ( proId ) =>{
+    this.props.dispatch({
+      type:'gproline/getVersionsById',
+      payload:{
+        ID:proId
+      }
+    });
   }
+
   /*当项目发成变化时，强制列新版本列表*/
   forceRefreshConfigVersions(){
     this.state.isLoadingVersions = false;
@@ -340,13 +381,25 @@ export default class TableList extends PureComponent {
     const { gproline ,submitting,dispatch } = this.props;
     let loading = false;
     let proconfigbypid = gproline.proconfigbypid || [];
+    let release_versions = gproline.release_versions;
     let { gprogroupInfo, gproInfo} = this.getCurrentProInfo();
+
+
     for( let i=0;i< proconfigbypid.length;i++){
       proconfigbypid[i].pro = gproInfo ? gproInfo.title :'';
       proconfigbypid[i].progroup = gprogroupInfo ? gprogroupInfo.title : '';
-      proconfigbypid[i].versions = this.state.configVersions[ proconfigbypid[i].ID ] || [];
+      proconfigbypid[i].versions = release_versions[ proconfigbypid[i].ID ] || [];
+      
     }
-    console.log('Parent,props', this.props )
+    //是否可以添加配置
+    let isAddConfigEnabled = false;
+    if( this.state.gproId ){
+      isAddConfigEnabled = true;
+    }else{
+      isAddConfigEnabled = false;
+    }
+
+    console.log('{ListProject}Parent,props', this.props, this.state )
     if( ! this.state.isLoadingVersions ){
       let configLen = proconfigbypid.length;
       for(let i=0;i<configLen;i++){
@@ -356,10 +409,12 @@ export default class TableList extends PureComponent {
           payload:{
             ID:proconfigbypid[i].ID,
             callback:(data)=>{
+              /*
               let state = { ...this.state };
               state.configVersions[ proconfigbypid[i].ID ] = data;
               console.log("version:", data, proconfigbypid[i].ID)
               this.setState( state );
+              */
             }
           }
         });
@@ -369,11 +424,7 @@ export default class TableList extends PureComponent {
       }
     }
 
-    // songxs add
-    function handleChange(value) {
-      console.log(`selected ${value}`);
-    }
-
+    // songxs add   
     function handleBlur(value) {
       console.log(`selected ${value}`);
     }
@@ -449,7 +500,7 @@ export default class TableList extends PureComponent {
       {
         title: '所属项目',
         dataIndex: 'pro',
-        key:'task',
+        key:'project',
         width:'pro',
         render: (text, record) => this.renderColumns(text, record, 'pro')
       },
@@ -463,7 +514,7 @@ export default class TableList extends PureComponent {
       {
         title: '主机',
         dataIndex: 'pro',
-        key:'task',
+        key:'host',
         width:'pro',
         render: (text, record) => this.renderColumns(text, record, 'pro')
       },
@@ -509,8 +560,19 @@ export default class TableList extends PureComponent {
       }];
     return (
       <div>
-      <EditProjectForm a="1" modalVisible={ this.state.isEditing } formData={ this.state.editInfo } onCancel={ this.handleCancelEdit }></EditProjectForm>
-      <EditVersionForm modalVisible={ this.state.isVersingAdding } tableData ={ this.state.editVersionInfo } onCancel={ this.handleCancelVersionEdit }></EditVersionForm>
+      <EditProjectForm 
+        modalVisible={ this.state.isEditing } 
+        formData={ this.state.editInfo } 
+        onSubmit={ this.handleSubmitEdit } 
+        onCancel={ this.handleCancelEdit }
+        onUpdate={ this.handleUpdateProject }
+      ></EditProjectForm>
+      <EditVersionForm
+        modalVisible={ this.state.isVersingAdding } 
+        tableData ={ this.state.editVersionInfo } 
+        onCancel={ this.handleCancelVersionEdit }
+        onUpdate= { this.handleUpdateVersion }
+      ></EditVersionForm>
       <Card bordered={false}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
@@ -521,7 +583,9 @@ export default class TableList extends PureComponent {
                   style={{ width: 200 }}
                   placeholder="所有产品线"
                   optionFilterProp="children"
-                  onChange={handleChange}
+                  onChange={( val )=>{
+                    this.handlerSelect("gproline", val )
+                  }}
                   onFocus={handleFocus}
                   onBlur={handleBlur}
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -533,7 +597,9 @@ export default class TableList extends PureComponent {
                   style={{ width: 200 }}
                   placeholder="所有项目组"
                   optionFilterProp="children"
-                  onChange={handleChange}
+                  onChange={( val )=>{
+                    this.handlerSelect("gprogroup", val )
+                  }}
                   onFocus={handleFocus}
                   onBlur={handleBlur}
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -545,9 +611,19 @@ export default class TableList extends PureComponent {
                   style={{ width: 200 }}
                   placeholder="所有项目"
                   optionFilterProp="children"
-                  onChange={handleChange}
+                  onChange={( val )=>{
+                    this.handlerSelect("gpro", val )
+                  }}
                   onFocus={handleFocus}
-                  onBlur={handleBlur}
+                  onBlur={( val )=>{
+                    var pro = this.props.gproline.probygid || [];
+                    if( pro.length == 1 ){
+                      //fix
+                      //一条记录无法触发change，只能用blur临时替换
+                      this.handlerSelect("gpro", val )
+                    }
+                    //
+                  }}
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   { getFilters( 'gpro' ) }
@@ -564,7 +640,7 @@ export default class TableList extends PureComponent {
                   <Select.Option value="">所有项目</Select.Option>
                   { getFilters( 'gpro' ) }
                 </Select>*/}
-                <Button type="primary" icon="plus"  onClick={() => this.handleEditConfig( 0, null )}>
+                <Button type="primary" icon="plus" disabled={ !isAddConfigEnabled }  onClick={() => this.handleEditConfig( 0, null )}>
                   添加发布配置
                 </Button>
               </Col>

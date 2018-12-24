@@ -55,10 +55,23 @@ export default class editProjectForm  extends PureComponent {
 
   handleAdd = () => {
     const form = this.props.form;
-
-    form.validateFields((er, values) => {
+    let formData = this.props.formData || {};
+    form.validateFields((err, values) => {
       console.log("values", values)
       if (err) return;
+      values.enable = values.enable ? 1:0
+      this.props.dispatch({
+        type: 'gproline/addProject',
+        payload: {
+          ID:formData.ID,
+          fields: values,
+          callback:(data)=>{
+            message.success('添加成功');
+            this.props.onUpdate && this.props.onUpdate( formData );
+            form.resetFields();
+          }
+        },
+      });
     });
     return;
 
@@ -73,19 +86,9 @@ export default class editProjectForm  extends PureComponent {
     }
 
 
-    this.props.dispatch({
-      type: 'gproline/addProject',
-      payload: {
-        description: groupfields,
-      },
-    });
+    
 
-    message.success('添加成功');
-    this.setState({
-      modalVisible: false,
-    });
-
-    form.resetFields();
+    
   }
 
 
@@ -155,7 +158,7 @@ export default class editProjectForm  extends PureComponent {
     if( this.state.currentVersion ){
       version = [this.state.currentVersion];
     }else{
-      version = ["abc"];//为空竟然会报错
+      version = [""];//为空竟然会报错
     }
     function onChange(value) {
       console.log('changed', value);
@@ -178,7 +181,7 @@ export default class editProjectForm  extends PureComponent {
             {...formItemLayout}
             label="项目名称"
           >
-            {getFieldDecorator('title', {
+            {getFieldDecorator('pro', {
               initialValue:formData.pro,
               rules: [{
                 required: true, message: '项目名称',
@@ -194,8 +197,8 @@ export default class editProjectForm  extends PureComponent {
             {...formItemLayout}
             label="发布项名称"
           >
-            {getFieldDecorator('alias', {
-              initialValue: formData.title,
+            {getFieldDecorator('title', {
+              initialValue: formData.title ||"",
               rules: [{
                 required: true, message: '请输入发布项标题',
               }],
@@ -247,10 +250,25 @@ export default class editProjectForm  extends PureComponent {
             )}
           </FormItem>
           <FormItem {...formItemLayout} label="发布参数">
-            <Input placeholder="发布参数多个参数用|线分割" value={ formData.release_args } />
+            {getFieldDecorator('release_args', {
+              initialValue:formData.release_args || "",
+              rules: [{
+                required: false, message: '发布脚本',
+              }],
+            })(
+              <Input placeholder="发布参数多个参数用|线分割" />
+            )}
+            
           </FormItem>
           <FormItem {...formItemLayout} label="发布超时时间">
-              <InputNumber min={1} max={600} defaultValue={300} onChange={onChange} />（单位: 秒）
+            {getFieldDecorator('release_timeout', {
+              initialValue:formData.release_timeout,
+              rules: [{
+                required: false, message: '发布脚本',
+              }],
+            })(
+              <div><InputNumber min={1} max={600} defaultValue={300} onChange={onChange} />（单位: 秒）</div>
+            )}              
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -259,17 +277,32 @@ export default class editProjectForm  extends PureComponent {
             {getFieldDecorator('rollback', {
               initialValue:formData.rollback,
               rules: [{
-                required: true, message: '回退脚本',
+                required: false, message: '回退脚本',
               }],
             })(
               <TextArea style={{ minHeight: 32 }} placeholder="" rows={4} />
             )}
           </FormItem>
           <FormItem {...formItemLayout} label="回退参数">
-            <Input placeholder="回退脚本参数多个参数用|线分割" value={ formData.rollback_args } />
+            {getFieldDecorator('rollback_args', {
+              initialValue:formData.rollback_args || "",
+              rules: [{
+                required: false, message: '回退脚本参数',
+              }],
+            })(
+              <Input placeholder="回退脚本参数多个参数用|线分割" />
+            )}
+            
           </FormItem>
           <FormItem {...formItemLayout} label="回退超时时间">
-            <InputNumber  min={1} max={600} defaultValue={300} onChange={onChange} />（单位: 秒）
+            {getFieldDecorator('rollback_timeout', {
+              initialValue:formData.rollback_timeout,
+              rules: [{
+                required: false, message: '发布脚本',
+              }],
+            })(
+              <div><InputNumber min={1} max={600} defaultValue={300} onChange={onChange} />（单位: 秒）</div>
+            )}
           </FormItem>
           <FormItem
             {...formItemLayout}

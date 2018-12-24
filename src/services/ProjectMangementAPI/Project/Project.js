@@ -27,12 +27,12 @@ export async function queryProject(params) {
   return request(`/v1/assets/project/list?${stringify(params)}`);
 }
 
-// 添加项目
+// 添加发布项(指定一个项目id)
 export async function addProject(params) {
-  return request('/v1/assets/project/add', {
+  return request(`/v1/assets/carving/create/${params.ID}`, {
     method: 'POST',
     body: {
-      ...params,
+      ...params.fields,
       method: 'post',
     },
   });
@@ -45,6 +45,10 @@ export async function addProjectConfigVersion( params ){
       ...params.fields
     }
   });
+}
+//删除配置项中的版本
+export async function deleteProjectConfigVersion( params ){
+  return request(`/v1/assets/carving/release/delete/${params.ID}`);
 }
 
 //修改项目

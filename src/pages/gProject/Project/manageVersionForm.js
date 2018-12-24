@@ -71,6 +71,8 @@ export default class editVersionForm extends PureComponent {
       this.setState({
         modalVisible: false
       })
+      this.props.onCancel()
+
     } else {
       form.validateFields((err, values) => {
         console.log("values", values)
@@ -87,6 +89,7 @@ export default class editVersionForm extends PureComponent {
                 tableData: tableData
               })
               this.forceUpdate();
+              this.props.onUpdate && this.props.onUpdate( tableData )
             }
           }
         })
@@ -100,6 +103,24 @@ export default class editVersionForm extends PureComponent {
     this.setState({
       mode: 2,
       formData: record
+    })
+  }
+
+  /* 
+  * @param record{Object} 版本记录数据
+  */
+  handlerDelete = ( record) =>{
+    let { tableData } = this.state;
+    console.log("删除数据", record,"项目ID", tableData.ID );
+    this.props.dispatch({
+      type: 'gproline/deleteVersionById',
+      payload: {
+        ProId: tableData.ID, //所属于的项目id,必填
+        ID: record.ID,
+        callback: (data) => {
+          this.props.onUpdate && this.props.onUpdate( tableData )
+        }
+      }
     })
   }
 
@@ -159,13 +180,6 @@ export default class editVersionForm extends PureComponent {
           return record.auto ? <Icon type="sync" /> : <Icon type="user" />
         },
       },
-      /*{
-        title: '更新方式',
-        dataIndex: 'pro',
-        key: 'task',
-        width: 'pro',
-        render: (text, record) => this.renderColumns(text, record, 'auto')
-      },*/
 
       {
         title: '说明',
@@ -181,8 +195,8 @@ export default class editVersionForm extends PureComponent {
         title: '操作',
         dataIndex: 'utils',
         key: 'utils',
-        render: () => {
-          return  <Icon type="delete" theme="twoTone" twoToneColor="#f35553"/>
+        render: (text, record ) => {
+          return  <Icon type="delete" theme="twoTone" onClick={()=>{ this.handlerDelete( record ) }} twoToneColor="#f35553"/>
         },
       },
     ];

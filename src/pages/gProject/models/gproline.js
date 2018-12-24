@@ -18,6 +18,7 @@ import {
   querProjectbyGId,
   querProjectConfigById,
   querProjectVersions,
+  deleteProjectConfigVersion,
   queryTree,
   modifyProject,
   deleteProject,
@@ -75,7 +76,8 @@ export default {
       data: [],
       pagination: {},
     },
-
+    //不同发布项的不同版本
+    release_versions:{}
   },
 
 
@@ -128,9 +130,15 @@ export default {
         callback:payload.callback || function(){}
       })
     },
+    *clearConfigList({}, {put}){
+      yield put({
+        type:'progroupbyPidClear'
+      })
+    },
 
     *getVersionsById( { payload }, {call, put }){
       const response = yield call( querProjectVersions, payload.ID );
+      console.log("getVersions############", response)
       yield put({
         type:'proConfigVersion',
         payload:response.data || [],
@@ -138,12 +146,24 @@ export default {
         callback:payload.callback||function(){}
       })
     },
+    *deleteVersionById( { payload }, { call, put }){
+      const response = yield call( deleteProjectConfigVersion, payload );
+      yield put({
+        type:'getVersionsById',
+        payload:{ ID: payload.ProId }
+      })
+    },
 
 
     //添加项目列表
     *addProject({ payload }, { call, put }) {
-      yield call(addProject, payload.description);
-      yield put({ type: 'reloadProject' })
+      const response = yield call( addProject, payload );
+      if( response.status != 200 ){
+        openNotificationWithIcon('error',response.msg)
+      }else{
+        yield put({ type: 'getConfigListById', payload:payload } )
+      }
+      
     },
 
      //删除产品列表
@@ -275,7 +295,7 @@ export default {
       if( response && response.status == "200"){
         yield put({
           type:'saveProConfigVersion',
-          payload:response,
+          payload:response.data||[],
           callback:payload.callback || function(){}
         })
       }else{
@@ -401,6 +421,12 @@ export default {
         probygid: action.payload
       };
     },
+    progroupbyPidClear( state, action ){
+      return {
+        ...state,
+        proconfigbypid: []
+      };
+    },
     progroupbyPidSave(state, action) {
       action.callback && action.callback( action.payload );
       return {
@@ -410,14 +436,21 @@ export default {
     },
     proConfigVersion( state, action ){
       action.callback && action.callback(action.payload);
+      var versions = { ...state.release_versions};
+      versions[ action.id ] = action.payload || [];
       return {
-        ...state
+        ...state,
+        release_versions:versions
       }
     },
     saveProConfigVersion( state, action ){
       action.callback && action.callback(action.payload);
+      var versions = { ...state.release_versions};
+      versions[ action.id ] = action.payload || [];
+
       return {
-        ...state
+        ...state,
+        release_versions:versions
       }
     },
     saveTree(state, action) {
