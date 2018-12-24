@@ -312,14 +312,14 @@ let routes = [
                 "exact": true
               },
               {
-                "component": () => React.createElement(require('/Users/voilet/antd/gcmdbUi/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+                "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.1.2@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
               }
             ]
           },
           {
             "path": "/authmanage/forthost",
             "name": "forthost",
-            "component": dynamic({ loader: () => import('../gPower/ForthostIndex'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default  }),
+            "component": dynamic({ loader: () => import('../gPower/ForthostIndex'), loading: require('/home/share/src/components/PageLoading/index').default  }),
             "routes": [
               {
                 "path": "/authmanage/forthost/forthostlist",
@@ -331,28 +331,6 @@ let routes = [
                 "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.1.2@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
               }
             ]
-          },
-          {
-            "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.1.2@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
-          }
-        ]
-      },
-      {
-        "name": "result",
-        "icon": "check-circle-o",
-        "path": "/result",
-        "routes": [
-          {
-            "path": "/result/success",
-            "name": "success",
-            "component": dynamic({ loader: () => import('../Result/Success'), loading: require('/home/share/src/components/PageLoading/index').default  }),
-            "exact": true
-          },
-          {
-            "path": "/result/fail",
-            "name": "fail",
-            "component": dynamic({ loader: () => import('../Result/Error'), loading: require('/home/share/src/components/PageLoading/index').default  }),
-            "exact": true
           },
           {
             "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.1.2@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
