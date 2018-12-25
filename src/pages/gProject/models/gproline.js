@@ -70,7 +70,6 @@ export default {
 
     //通过line id查询特定项目组
     progroupbylid: [],
-
     //通过groud id查询特定项目
     probygid: [],
     //通过project id查询的配置

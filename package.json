@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@antv/data-set": "^0.9.0",
+    "antd": "^3.11.6",
     "antd-pro-merge-less": "^0.0.9",
     "bizcharts": "^3.1.10",
     "bizcharts-plugin-slider": "^2.0.3",

@@ -15,7 +15,8 @@ const useLocalStorage = true;
 import { LocaleProvider } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-const defaultAntd = require('antd/lib/locale-provider/zh_CN');
+let defaultAntd = require('antd/lib/locale-provider/zh_CN');
+defaultAntd = defaultAntd.default || defaultAntd;
 
 const localeInfo = {
   'en-US': {
@@ -55,7 +56,7 @@ export default (props) => {
   ret = (<IntlProvider locale={appLocale.locale} messages={appLocale.messages}>
     <InjectedWrapper>{ret}</InjectedWrapper>
   </IntlProvider>)
-  ret = (<LocaleProvider locale={appLocale.antd || defaultAntd}>
+  ret = (<LocaleProvider locale={appLocale.antd ? (appLocale.antd.default || appLocale.antd) : defaultAntd}>
     {ret}
   </LocaleProvider>);
   return ret;

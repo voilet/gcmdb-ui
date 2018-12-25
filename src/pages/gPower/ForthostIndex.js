@@ -78,16 +78,13 @@ export default class SearchList extends PureComponent {
 
   handleSearch = (value) => {
     //  e.preventDefault();
-    const {dispatch,} = this.props;
-
-    if (this.state.selectKey == "user") {
-      dispatch({
-        type: 'guser/searchUser',
-        payload: {
-          destination: {"content": value}
-        },
-      });
-    }
+    const {dispatch,} = this.props;    
+    dispatch({
+      type: 'gforthost/searchHost',
+      payload: {
+        ip: value
+      },
+    });
 
   }
 

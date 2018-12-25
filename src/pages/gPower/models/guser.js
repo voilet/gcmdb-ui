@@ -1,8 +1,10 @@
 import {
-  queryUserlist,
+  queryUsers,
+
   addUserlist,
   modifyUserlist,
-  searchUserlist
+  searchUserlist,
+  querySSHRoleList
 } from '@/services/AuthManagementAPI/userAPI'
 
 
@@ -10,21 +12,22 @@ export default {
   namespace: 'guser',
 
   state: {
-    list: [],
     data: {
       data: {
         user_infos:[],
         role_list:[],
       },
       pagination:{}
-    }
+    },
+    //ssh 角色类型
+    ssh_role:[]
   },
 
   effects: {
     *fetch(_, { call, put }) {
       const response = yield call(queryUsers);
       yield put({
-        type: 'save',
+        type: 'saveInfos',
         payload: response,
       });
     },
@@ -36,17 +39,15 @@ export default {
         payload: response,
       });
     },
-
-    //获取用户列表
-    *getUserlist({payload},{call,put}) {
-      const response = yield call(queryUserlist);
-
+    /** 查询主机操作权限*/
+    *fetchSSHRoleList( {payload} , { call, put }){
+      const response = yield call( querySSHRoleList );
       yield put({
-        type: 'saveUser',
+        type: 'saveSSHRoleList',
         payload: response,
+        callback: payload.callback || function(){}
       });
     },
-
     //修改用户信息列表
     *modifyUser({payload},{call,put}){
       const response = yield call(modifyUserlist,payload);
@@ -90,13 +91,7 @@ export default {
 
   },
 
-  reducers: {
-    save(state, action) {
-      return {
-        ...state,
-        list: action.payload,
-      };
-    },
+  reducers: {    
 
     saveResponse(state, action){
       action.cb && action.cb(action.payload)
@@ -113,11 +108,19 @@ export default {
         data: action.payload,
       };
     },
-    saveUser(state, action) {
+    saveInfos(state, action) {
       return {
         ...state,
         data: action.payload,
       };
+    },
+
+    saveSSHRoleList( state, action ){
+      action.callback && action.callback( action.payload );
+      return {
+        ...state,
+        ssh_role: action.payload.data || []
+      }
     },
 
     changeNotifyCount(state, action) {

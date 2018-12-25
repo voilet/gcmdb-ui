@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import moment from 'moment';
-import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select, Switch } from 'antd';
+import { Table, Alert, Badge, Divider, Icon, Input, Popconfirm, Select, Switch, Button } from 'antd';
 import styles from './index.less';
 
 
@@ -13,7 +13,7 @@ const EditableCell = ({ editable, value, onChange }) => (
     </div>
 );
 
-class proLineTable extends PureComponent {
+class proHostTable extends PureComponent {
     state = {
         selectedRowKeys: [],
         totalCallNo: 0,
@@ -28,11 +28,8 @@ class proLineTable extends PureComponent {
                 totalCallNo: 0,
             });
         }
-
-        console.log("nextProps.prolinedata.data",nextProps.prolinedata)
-        return;
         this.setState({
-            data: nextProps.prolinedata.data.map((obj)=>{
+            data: nextProps.hostdata.map((obj)=>{
                 if(obj.selectStatus == undefined){
                     obj.selectStatus=true
                 }
@@ -55,7 +52,8 @@ class proLineTable extends PureComponent {
     }
 
     handleTableChange = (pagination, filters, sorter) => {
-        this.props.onChange(pagination, filters, sorter);
+        console.log("onChange", pagination, filters, sorter)
+        this.props.onChange && this.props.onChange(pagination, filters, sorter);
     }
 
     cleanSelectedKeys = () => {
@@ -68,7 +66,7 @@ class proLineTable extends PureComponent {
                 editable={record.editable}
                 value={text}
                 onChange={value => this.handleChange(value, record.ID, column)}
-            />
+            ></EditableCell>
         );
     }
 
@@ -178,61 +176,33 @@ class proLineTable extends PureComponent {
 
     }
 
-    handleSelectLineValue(value, key, column){
-
-        const newData = [...this.state.data];
-        const target = newData.filter(item => key === item.ID)[0];
-
-        if (target) {
-            target[column] = value;
-            this.setState({
-                data: newData,
-                disabled:false
-            });
-            this.props.dispatch({
-                type: 'gproline/getProjectGroupbyId',
-                payload: value
-            });
-        }
-
-    }
-
-    canceldelete(key) {
-        const newData = [...this.state.data];
-        const target = newData.filter(item => key === item.ID)[0];
-        if (target) {
-            Object.assign(target, this.cacheData.filter(item => key === item.ID)[0]);
-            delete target.deleteable;
-            this.setState({ data: newData });
-        }
-    }
 
 
     render() {
 
 
         const { selectedRowKeys, totalCallNo, data} = this.state;
-        const { loading, prolinedata  } = this.props;
-
+        const { loading, hostdata  } = this.props;
+        console.log("render....", data, hostdata)
         const columns = [
             {
-                title: '主机名',
-                dataIndex: 'title',
-                key:'title',
+                title: '主机IP',
+                dataIndex: 'eth1',
+                key:'eth1',
                 width:'120px',
-                render: (text, record) => this.renderColumns(text, record, 'alias'),
+                render: (text, record) => this.renderColumns(text, record, 'eth1'),
             },
             {
-                title: '主机IP',
-                dataIndex: 'hostsip',
-                key:'hostsip',
+                title: 'Mac',
+                dataIndex: 'mac',
+                key:'mac',
                 width:'200px',
-                render: (text, record) => this.renderColumns(text, record, 'title'),
+                render: (text, record) => this.renderColumns(text, record, 'mac'),
             },
             {
                 title: '创建时间',
                 dataIndex: 'created_at',
-                width: '8%',
+                width: '100px',
                 render: (text, record) => {
                     const { created_at } = record;
                     var divStyle = {
@@ -240,12 +210,27 @@ class proLineTable extends PureComponent {
                     };
                     return <div style={divStyle}>{created_at.substr(0,10)}</div>;
                 },
+            },
+            {
+                title: '操作',
+                dataIndex: 'option',
+                width: '100px',
+                render: (text, record) => {                    
+                    return <Button onClick={()=>{
+                        console.log("this.prop", this.props)
+                        if( this.props.option ){
+                            if( this.props.option.onShowMore ){
+                                this.props.option.onShowMore( record )
+                            }
+                        }
+                    }}>查看详情</Button>;
+                },
             }];
 
         const paginationProps = {
             showSizeChanger: true,
             showQuickJumper: true,
-            ...prolinedata.pagination,
+            //...hostdata.pagination,
         };
 
         const rowSelection = {
@@ -287,4 +272,4 @@ class proLineTable extends PureComponent {
     }
 }
 
-export default proLineTable;
+export default proHostTable;

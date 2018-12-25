@@ -51,7 +51,7 @@ export default class TableList extends PureComponent {
     const {dispatch} = this.props;
     
     dispatch({
-      type: 'guser/getUserlist',
+      type: 'guser/fetch',
       // payload: {
       //   cb: (info) => {
       //     this.setState({
@@ -231,8 +231,6 @@ export default class TableList extends PureComponent {
     //const { submitting } = this.props;
   
     const { guser,dispatch } = this.props;
-    
-    console.log('guser',guser)
     
     const formItemLayout = {
       labelCol: {

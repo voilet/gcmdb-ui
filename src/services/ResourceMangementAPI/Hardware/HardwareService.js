@@ -182,7 +182,26 @@ export async function queryHosts(params) {
     },
   });
 }
-
+/** 
+ * QueryObject virtual Type 
+ * @typedef {Object} QueryObject 
+ * @property {String} [ip=""] 
+ * @property {Number} [currentPage=1] - 当前页 
+ * @property {Number} [pageSize=20] - 页大小
+ */
+/** 
+ * a function that a manager can make a order 
+ * @param {QueryObject} params - 查询参数 
+ */  
+export async function filterHosts( params ){
+  return request(`v1/assets/ip/search`,{
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  })
+}
 
 
 export async function queryHostsByPid(params) {

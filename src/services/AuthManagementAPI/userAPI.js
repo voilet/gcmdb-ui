@@ -1,12 +1,15 @@
 import { stringify } from 'qs';
 import request from '../../utils/request';
 
-//获取用户列表
-export async function queryUserlist() {
+//获取用户列表以用户权限列表
+export async function queryUsers() {
   return request(`/manage/auth/user/info`);
 }
 
-
+//获取SSH权限分组列表
+export async function querySSHRoleList(){
+  return request(`/v1/ssh/group/list`);
+}
 
 //修改用户列表
 export async function modifyUserlist(params) {

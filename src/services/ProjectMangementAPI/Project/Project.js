@@ -74,7 +74,7 @@ export async function deleteProjectTasks( params ){
 
 //查询项目中的主机
 export async function querProjectHosts( params ){
-  return request(`/v1/assets/carving/host/query/release/${params.ID}`);
+  return request(`/v1/assets/project/host/${params.ID}`);
 }
 
 //修改项目
@@ -119,6 +119,21 @@ export async function querGroupbyLId(id) {
 //通过group id 查询项目列表
 export async function querProjectbyGId(id) {
   return request(`/v1/assets/project/${id}`);
+}
+
+/** 
+ * QueryObject virtual Type 
+ * @typedef {Object} QueryObject 
+ * @property {Number} [currentPage=1] - 当前页 
+ * @property {Number} [pageSize=20] - 页大小
+ */
+/*查询所有的项目
+ * @param {QueryObject} params - 查询参数
+ * @example:http://gcmdb.fun.tv/v1/assets/project/list?currentPage=1&pageSize=100
+ * @return {json|text}
+ */
+export async function querProjectList( params ){
+  return request(`/v1/assets/project/list/${stringify(params)}`);
 }
 //通过project id查询配置列表(发布项列表)
 export async function querProjectConfigById( id ){

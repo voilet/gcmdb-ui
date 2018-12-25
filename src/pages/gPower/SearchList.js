@@ -94,7 +94,7 @@ export default class SearchList extends PureComponent {
   handleSearch = (value) => {
     //  e.preventDefault();
     const { dispatch, } = this.props;
-
+    console.log("selectKey=========", this.state.selectKey)
      if ( this.state.selectKey == "user" ) {
        dispatch({
          type: 'guser/searchUser', 

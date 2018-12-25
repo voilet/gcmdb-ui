@@ -25,8 +25,7 @@ import {
       treedata: {
         data: []
       },
-      test:"abc",
-        //所有主机列表
+      //所有主机列表
       hostdata:{
         data:[]
       },

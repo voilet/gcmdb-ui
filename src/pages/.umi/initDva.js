@@ -26,9 +26,9 @@ app.model({ namespace: 'gproline', ...(require('/home/share/src/pages/gProject/m
 app.model({ namespace: 'gdevice', ...(require('/home/share/src/pages/gResource/models/gdevice.js').default) });
 app.model({ namespace: 'ghardware', ...(require('/home/share/src/pages/gResource/models/ghardware.js').default) });
 app.model({ namespace: 'gidc', ...(require('/home/share/src/pages/gResource/models/gidc.js').default) });
+app.model({ namespace: 'gforthost', ...(require('/home/share/src/pages/gPower/models/gforthost.js').default) });
 app.model({ namespace: 'gresource', ...(require('/home/share/src/pages/gPower/models/gresource.js').default) });
 app.model({ namespace: 'grole', ...(require('/home/share/src/pages/gPower/models/grole.js').default) });
 app.model({ namespace: 'guser', ...(require('/home/share/src/pages/gPower/models/guser.js').default) });
-app.model({ namespace: 'user', ...(require('/home/share/src/pages/gPower/models/user.js').default) });
 app.model({ namespace: 'error', ...(require('/home/share/src/pages/Exception/models/error.js').default) });
 app.model({ namespace: 'geographic', ...(require('/home/share/src/pages/Account/Settings/models/geographic.js').default) });

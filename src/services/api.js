@@ -1,3 +1,5 @@
+//api doc
+//https://documenter.getpostman.com/view/697162/RWgxtuym
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
