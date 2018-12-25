@@ -171,14 +171,33 @@ export default {
     //通过项目id查任务
     *getTasksById( { payload }, { call, put } ){
       const response = yield call( querProjectTasks, payload );
-      yield put({
-        type:'saveBlockTasks',
-        payload:response.data || [],
-        id:payload.ID,
-        callback:payload.callback
-      })
+      if( !response || response.status != 200 ){
+        openNotificationWithIcon('error',response ? response.msg : "查询任务接口异常")
+      }else{
+        yield put({
+          type:'saveBlockTasks',
+          payload:response.data || [],
+          id:payload.ID,
+          callback:payload.callback
+        })
+      }
+      
     },
-
+    //通过项目id查任务
+    *getHostsById( { payload }, { call, put } ){
+      const response = yield call( querProjectHosts, payload );
+      if( !response || response.status != 200 ){
+        openNotificationWithIcon('error',response ? response.msg : "查询主机接口异常")
+      }else{
+        yield put({
+          type:'saveBlockHosts',
+          payload:response.data || [],
+          id:payload.ID,
+          callback:payload.callback
+        })
+      }
+      
+    },
 
     //添加项目列表
     *addProject({ payload }, { call, put }) {
@@ -485,6 +504,16 @@ export default {
       return {
         ...state, 
         block_tasks:blocks
+      }
+    },
+    //保存碎片的主机列表
+    saveBlockHosts( state, action ){
+      action.callback && action.callback( action.payload );
+      var blocks = { ...state.block_hosts };
+      blocks[ action.id ] = action.payload || [];
+      return {
+        ...state, 
+        block_hosts:blocks
       }
     },
     saveTree(state, action) {

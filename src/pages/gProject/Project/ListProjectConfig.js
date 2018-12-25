@@ -21,6 +21,7 @@ import ProjectTable from '@/components/ProjectTable';
 import EditProjectForm from './editProjectForm';
 import EditVersionForm from './manageVersionForm';
 import EditTaskForm from './manageTaskForm';
+import EditHostForm from './manageHostForm';
 
 import styles from './project.less';
 
@@ -49,6 +50,7 @@ export default class TableList extends PureComponent {
     isEditing:false, //是否编辑中
     isVersingAdding:false, //是否添加版本中
     isTaskAdding:false, //是否添加任务中
+    isHostEditing:false, //是否在编辑主机列表
 
     gprolineId:0,
     gprogroupId:0,
@@ -306,6 +308,25 @@ export default class TableList extends PureComponent {
     })
   }
   //task end
+  handleEditHost = ( id, record )=>{
+    let editInfo = record;
+    this.props.dispatch({
+      type:'gproline/getHostsById',
+      payload:{
+        ID:id,
+        callback:(data)=>{
+          record.tasks = data;
+          this.setState({
+            editHostInfo: record,
+            isHostEditing:true,
+          })
+        }
+      }
+    }); 
+  }
+  handleCancelHostEdit = ()=>{ this.setState( { isHostEditing: false }) }
+  handleUpdateHost = ()=>{ this.setState( { isHostEditing: false}) }
+  //host edit end
 
   //提交了配置编辑
   handleSubmitEdit = ( record )=>{
@@ -578,13 +599,18 @@ export default class TableList extends PureComponent {
         onCancel={ this.handleCancelVersionEdit }
         onUpdate= { this.handleUpdateVersion }
       ></EditVersionForm>
-      //编辑版本
       <EditTaskForm
         modalVisible={ this.state.isTaskAdding } 
         tableData ={ this.state.editTaskInfo } 
         onCancel={ this.handleCancelTaskEdit }
         onUpdate= { this.handleUpdateTask }
       ></EditTaskForm>
+      <EditHostForm
+        modalVisible={ this.state.isHostEditing } 
+        tableData ={ this.state.editHostInfo } 
+        onCancel={ this.handleCancelHostEdit }
+        onUpdate= { this.handleUpdateHost }
+      ></EditHostForm>
       <Card bordered={false}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>

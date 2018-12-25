@@ -74,7 +74,7 @@ export async function deleteProjectTasks( params ){
 
 //查询项目中的主机
 export async function querProjectHosts( params ){
-  return request(`/v1/assets/carving/task/query/release/${params.ID}`);
+  return request(`/v1/assets/carving/host/query/release/${params.ID}`);
 }
 
 //修改项目
