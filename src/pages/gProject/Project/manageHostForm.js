@@ -153,8 +153,8 @@ export default class manageTaskForm extends PureComponent {
             </div>
           )
         },
-        */
-      },
+        
+      },*/
     ];
     const formItemLayout = {
       labelCol: {
