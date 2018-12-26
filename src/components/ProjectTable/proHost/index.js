@@ -206,7 +206,6 @@ class proHostTable extends PureComponent {
 
         const { selectedRowKeys, totalCallNo, data} = this.state;
         const { loading, hostdata  } = this.props;
-        console.log("render....", data, hostdata)
         const columns = [
             {
                 title: '主机IP',
@@ -220,12 +219,15 @@ class proHostTable extends PureComponent {
                 dataIndex: 'fqdn',
                 key:'fqdn',
                 width:'pro',
+                className:'xs-hide',
                 render: (text, record) => this.renderColumns(text, record, 'fqdn'),
             },
             {
                 title: '创建时间',
                 dataIndex: 'created_at',
+                key:'created_at',
                 width: 'pro',
+                className:'xs-hide',
                 render: (text, record) => {
                     const { created_at } = record;
                     var divStyle = {
@@ -237,7 +239,8 @@ class proHostTable extends PureComponent {
             {
                 title: '权限',
                 dataIndex: 'auth',
-                width: 'pro',
+                key:'auth',
+                width: '100px',
                 render: (text, record) => {
                     let auths = this.props.auths || [];
                     let defaultVal = parseInt(record.permissionid) >0 ? parseInt(record.permissionid) :"修改权限"
@@ -281,7 +284,7 @@ class proHostTable extends PureComponent {
                             }else{
                                 childs = option.childs;
                             }
-                            var visible = option.visible ? option.visible( data, record ): true;                    
+                            var visible = option.visible ? option.visible( data, record ): true;
                             var ele = React.createElement( option.tag, props , childs )
                             if( visible ){
                                 tpl.push( ele );
@@ -329,7 +332,7 @@ class proHostTable extends PureComponent {
                 </div>
                 <Table
                     loading={loading}
-                    rowKey={record => record.ID}
+                    rowKey={record => record.id}
                     rowSelection={rowSelection}
                     dataSource={data}
                     columns={columns}

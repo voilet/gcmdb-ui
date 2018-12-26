@@ -336,6 +336,7 @@ export default class forthostList extends PureComponent {
             return arr.map(( value )=>( <Select.Option value={ value.ID }>{ value.title || value.username || value.remarks } </Select.Option> ))           
         }
         let isAuthorButtonEnabled = true;
+        
         return (
             <div>
             <Modal
@@ -412,7 +413,7 @@ export default class forthostList extends PureComponent {
                         hostdata = { hosts }
                         option={{
                             "more":{
-                                tag:"Button",
+                                tag:'Button',
                                 props:{
                                     type:"button", className:"ant-btn"
                                 },

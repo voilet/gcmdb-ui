@@ -1033,7 +1033,10 @@ i.antd-pro-components-global-header.1-index-trigger {
 
 i.antd-pro-components-global-header-index-trigger {
   font-size: 20px;
-  line-height: 64px;
+  /* modify by wangxk 
+  //line-height: 64px;
+  */
+  line-height: 0;
   height: 64px;
   cursor: pointer;
   transition: all 0.3s, padding 0s;
@@ -1125,6 +1128,18 @@ i.antd-pro-components-global-header-index-trigger {
   }
 }
 
+/** add by wangxk **/
+/** 对 antd 3.11.6 的部分样式进行修复 **/
+  /* add by wangxk ,修复小屏时抽屉有24px间距的问题*/
+  .ant-drawer-body{
+    padding:0;
+  }
+  /* 表格小屏时，增加class='xs-hide'时会隐藏*/
+  .screen-xs{
+    .xs-hide{
+      display: none;
+    }
+  }
 
 
 .antd-pro-components-header-search-index-headerSearch {
@@ -2040,7 +2055,7 @@ i.antd-pro-components-global-header-index-trigger {
 }
   .drawer .drawer-content {
     background: #001529;
-  }
+  }  
   .ant-menu-inline-collapsed {
     & > .ant-menu-item .sider-menu-item-img + span,
     &
@@ -2281,7 +2296,6 @@ i.antd-pro-components-global-header-index-trigger {
   z-index: 9;
   transition: width 0.2s;
 }
-
 
 
 .antd-pro-layouts-user-layout-container {

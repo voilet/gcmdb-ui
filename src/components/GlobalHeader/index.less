@@ -33,7 +33,10 @@
 
 i.trigger {
   font-size: 20px;
-  line-height: 64px;
+  /* modify by wangxk 
+  //line-height: 64px;
+  */
+  line-height: 0;
   height: 64px;
   cursor: pointer;
   transition: all 0.3s, padding 0s;
@@ -122,6 +125,21 @@ i.trigger {
           margin-right: 0;
         }
       }
+    }
+  }
+}
+
+/** add by wangxk **/
+/** 对 antd 3.11.6 的部分样式进行修复 **/
+:global {
+  /* add by wangxk ,修复小屏时抽屉有24px间距的问题*/
+  .ant-drawer-body{
+    padding:0;
+  }
+  /* 表格小屏时，增加class='xs-hide'时会隐藏*/
+  .screen-xs{
+    .xs-hide{
+      display: none;
     }
   }
 }
