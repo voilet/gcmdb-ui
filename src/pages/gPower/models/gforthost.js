@@ -3,8 +3,8 @@ import {
 } from '@/services/ProjectMangementAPI/Project/Project'
 
 import {
-  filterHosts
-} from '@/services/ResourceMangementAPI/Hardware/HardwareService'
+  filterAuthHost
+} from '@/services/AuthManagementAPI/resourceAPI'
 import { message } from 'antd'
 
   export default {
@@ -30,14 +30,15 @@ import { message } from 'antd'
         });
       },
       *searchHost({ payload } , { call, put }){
-        const response = yield call( filterHosts, payload );
-        if( response && response.status == 200 ){
+        const response = yield call( filterAuthHost, payload.params );
+        if( response && response.status  ){
           yield put({
             type: 'saveHost',
-            payload:response
+            payload:response,
+            callback: payload ? payload.callback :function(){}
           })
         }else{
-          message.error( response? message.msg : "未知错误" );
+          message.error( response? response.msg : "未知错误" );
         }
       }
     },
@@ -49,8 +50,33 @@ import { message } from 'antd'
           projectlist: action.payload,
         };
       },
+      /** 更新权限数据*/
+      updateSSHPermissionData(state, action){
+        let payload = action.payload;
+        //-1为删除权限
+        let permissionid = payload.permissionid || -1;
 
+        console.log("updateSSHPermisionData", state, action)
+        let hosts = payload.hosts.split(",");
+        let newhost = {
+          ...state.hosts
+        }
+        newhost.data = newhost.data || [];
+        newhost.data = newhost.data.concat();
+        for(var i=0;i<newhost.data.length;i++){
+          for(var j=0;j<hosts.length;j++){
+            if( newhost.data[i].id == hosts[j] ){
+              newhost.data[i].permissionid = parseInt( permissionid ) || -1;
+            }
+          }
+        }
+        console.log("new host", newhost)
+        return {
+          ...state, hosts:newhost
+        }
+      },
       saveHost( state, action ){
+        action.callback && action.callback( action.payload );
         return {
           ...state,
           hosts:action.payload

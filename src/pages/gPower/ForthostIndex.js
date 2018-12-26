@@ -78,13 +78,8 @@ export default class SearchList extends PureComponent {
 
   handleSearch = (value) => {
     //  e.preventDefault();
-    const {dispatch,} = this.props;    
-    dispatch({
-      type: 'gforthost/searchHost',
-      payload: {
-        ip: value
-      },
-    });
+    const {dispatch,} = this.props;   
+    
 
   }
 
@@ -117,23 +112,13 @@ export default class SearchList extends PureComponent {
 
 
     const mainSearch = (
-      <div style={{textAlign: 'center'}}>
-        <InputGroup compact>
-
-          <Input.Search
-            placeholder="请输入ip进行模糊搜索"
-            enterButton="搜索"
-            size="large"
-            onSearch={this.handleSearch}
-            style={{width: 522}}
-          />
-        </InputGroup>
+      <div style={{textAlign: 'center'}}>        
       </div>
     );
 
     return (
       <PageHeaderWrapper
-        title="权限管理"
+        title="堡垒机权限管理"
         content={mainSearch}
         tabList={tabList}
         tabActiveKey={activekey}

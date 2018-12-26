@@ -13,6 +13,30 @@ const EditableCell = ({ editable, value, onChange }) => (
     </div>
 );
 
+/**
+ * 自持自定义option的表格
+ * @author wangxk@fun.tv
+ * class proHostTable 
+
+ * OptionElementObject virtual Type ,定义每一个操作选项
+ * @typedef {Object} OptionElementObject 
+ * @property {String} tag - 操作按纽的标签 
+ * @property {Object} [props=null] - 标签的属性列表（不支持onClick属性)
+ * @property {Object} [childs=*] -子节点数据,参考:React.createElement
+ /
+/*
+ * @property {Array} hostdata - 设置表格数据
+ * @property {Object} option - 配置编辑项 
+ * @exmaple
+ * {
+        more:OptionElementObject{
+            tag:"Button",
+            childs:"详情"
+        }
+   }
+ * @property {Array} auths - 权限列表
+ * @property {Function} onSelectAuth - 修改权限调用，参数( rowdata, permisionid )
+*/
 class proHostTable extends PureComponent {
     state = {
         selectedRowKeys: [],
@@ -52,7 +76,6 @@ class proHostTable extends PureComponent {
     }
 
     handleTableChange = (pagination, filters, sorter) => {
-        console.log("onChange", pagination, filters, sorter)
         this.props.onChange && this.props.onChange(pagination, filters, sorter);
     }
 
@@ -187,22 +210,22 @@ class proHostTable extends PureComponent {
         const columns = [
             {
                 title: '主机IP',
-                dataIndex: 'eth1',
-                key:'eth1',
-                width:'120px',
-                render: (text, record) => this.renderColumns(text, record, 'eth1'),
+                dataIndex: 'ip',
+                key:'ip',
+                width:'pro',
+                render: (text, record) => this.renderColumns(text, record, 'ip'),
             },
             {
-                title: 'Mac',
-                dataIndex: 'mac',
-                key:'mac',
-                width:'200px',
-                render: (text, record) => this.renderColumns(text, record, 'mac'),
+                title: 'FQDN',
+                dataIndex: 'fqdn',
+                key:'fqdn',
+                width:'pro',
+                render: (text, record) => this.renderColumns(text, record, 'fqdn'),
             },
             {
                 title: '创建时间',
                 dataIndex: 'created_at',
-                width: '100px',
+                width: 'pro',
                 render: (text, record) => {
                     const { created_at } = record;
                     var divStyle = {
@@ -212,18 +235,64 @@ class proHostTable extends PureComponent {
                 },
             },
             {
+                title: '权限',
+                dataIndex: 'auth',
+                width: 'pro',
+                render: (text, record) => {
+                    let auths = this.props.auths || [];
+                    let defaultVal = parseInt(record.permissionid) >0 ? parseInt(record.permissionid) :"修改权限"
+                    return (
+                        <Select style={{width:100}} defaultValue="修改权限" value={ defaultVal } 
+                            onSelect={( val )=>{
+                                if( this.props.onSelectAuth ){
+                                    this.props.onSelectAuth( [record], val );
+                                }
+                            }}
+                        >
+                            { auths.map( (value) => (                                
+                                <Select.Option value={value.ID}>{value.title}</Select.Option>
+                            ) )}
+                        </Select>
+                    )
+                },
+            },
+            {
                 title: '操作',
                 dataIndex: 'option',
-                width: '100px',
-                render: (text, record) => {                    
-                    return <Button onClick={()=>{
-                        console.log("this.prop", this.props)
-                        if( this.props.option ){
-                            if( this.props.option.onShowMore ){
-                                this.props.option.onShowMore( record )
+                width: '180px',
+                render: (text, record) => {
+                    let opt = this.props.option;
+                    if( opt ){
+                        var tpl = [];
+                        for(var i in opt ){
+                            var option = opt[i];
+                            var p = option.props||{}
+                            var props = { ...p };
+                            props.onClick = function( option ){
+                                return function( ){
+                                    if( option.onClick ){
+                                        option.onClick( data, record );
+                                    }  
+                                }                                
+                            }( option );
+                            var childs = [];
+                            if( typeof option.childs == "function"){
+                                childs = option.childs( data, record );
+                            }else{
+                                childs = option.childs;
                             }
+                            var visible = option.visible ? option.visible( data, record ): true;                    
+                            var ele = React.createElement( option.tag, props , childs )
+                            if( visible ){
+                                tpl.push( ele );
+                            }
+                            
                         }
-                    }}>查看详情</Button>;
+                        return <div> { tpl }</div>;
+                    }else{
+                        return <div></div>
+                    }              
+                    
                 },
             }];
 

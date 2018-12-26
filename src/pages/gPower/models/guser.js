@@ -4,9 +4,11 @@ import {
   addUserlist,
   modifyUserlist,
   searchUserlist,
-  querySSHRoleList
+  querySSHRoleList,
+  deleteSSHPermission,
+  modifySSHPermission
 } from '@/services/AuthManagementAPI/userAPI'
-
+import { message } from 'antd'
 
 export default {
   namespace: 'guser',
@@ -45,8 +47,32 @@ export default {
       yield put({
         type: 'saveSSHRoleList',
         payload: response,
-        callback: payload.callback || function(){}
+        callback: payload ? (payload.callback || function(){}):function(){}
       });
+    },
+    *deleteSSHPermission( { payload }, { call, put }){
+      const response = yield call( deleteSSHPermission , payload.params );
+      if( response && response.status == 200 ){
+        yield put({
+          type:'gforthost/updateSSHPermissionData',
+          payload: payload.params
+        })
+      }else{
+        message.error("删除权限失败");
+      }
+      payload.callback && payload.callback();
+    },
+    *modifySSHPermission( { payload }, { call, put }){
+      const response = yield call( modifySSHPermission , payload.params );
+      if( response && response.status == 200 ){
+        yield put({
+          type:'gforthost/updateSSHPermissionData',
+          payload: payload.params
+        })
+      }else{
+        message.error("修改权限失败");
+      }
+      payload.callback && payload.callback();
     },
     //修改用户信息列表
     *modifyUser({payload},{call,put}){

@@ -6,7 +6,28 @@ export async function queryResourcelist() {
   return request(`/manage/auth/resource/allinfo`);
 }
 
-
+/** 
+ * QueryObject virtual Type 
+ * @typedef {Object} QueryObject 
+ * @property {String} [ip=""] 
+ * @property {Number} [user_id=] - 用户ID
+ * @property {Number} [project_id] - 项目ID
+ * @property {Number} [currentPage=1] - 当前页 
+ * @property {Number} [pageSize=20] - 页大小
+ */
+/** 
+ * a function that a manager can make a order 
+ * @param {QueryObject} params - 查询参数 
+ */  
+export async function filterAuthHost( params ){
+  return request(`/v1/ssh/fortress/search`,{
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  })
+}
 
 //添加资源列表
 export async function addResourcelist(params) {
