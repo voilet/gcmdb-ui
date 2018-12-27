@@ -148,6 +148,31 @@ export default {
         ssh_role: action.payload.data || []
       }
     },
+    updateSSHRoleList( state, action ){
+      //console.log("updateSSHRoleList", action)
+      let { payload } = action;
+      let ssh_role = state.ssh_role ||[];
+      if( payload ){
+        switch( payload.act ){
+          case "add":
+            ssh_role.push( payload.data );
+            break;
+          case "delete":
+            ssh_role = ssh_role.filter((value)=>{
+              return value.ID != payload.data.ID
+            })
+            break;
+          case "edit":
+            for( var i=0;i<ssh_role.length;i++){
+              if( ssh_role[i].ID == payload.data.ID ){
+                ssh_role[i] = { ...payload.data }
+              }
+            }
+            break;
+        }
+        return { ...state, ssh_role:ssh_role };
+      }
+    },
 
     changeNotifyCount(state, action) {
       return {

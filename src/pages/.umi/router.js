@@ -328,6 +328,12 @@ let routes = [
                 "exact": true
               },
               {
+                "path": "/authmanage/forthost/fortpermissionlist",
+                "name": "fortpermissionlist",
+                "component": dynamic({ loader: () => import('../gPower/Resource/forthostPermissionList'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "exact": true
+              },
+              {
                 "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
               }
             ]

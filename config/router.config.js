@@ -247,6 +247,11 @@ export default [
                 name: 'forthostlist',
                 component: './gPower/Resource/forthostList',
               },
+              {
+                path: '/authmanage/forthost/fortpermissionlist',
+                name: 'fortpermissionlist',
+                component: './gPower/Resource/forthostPermissionList',
+              },
             ],
           },
 

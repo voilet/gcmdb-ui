@@ -83,22 +83,39 @@ export default class manageTaskForm extends PureComponent {
         if( this.state.currentEditId ){
           //修改操作
           values.ID = this.state.currentEditId
-        }
-        dispatch({
-          type: 'gproline/addProjectTask',
-          payload: {
-            fields: values,
-            ID: tableData.ID,
-            callback: (data) => {
-              versions.push(data);
-              this.setState({
-                mode: 1,
-                tableData: tableData
-              })
-              
+          dispatch({
+            type: 'gproline/editProjectTask',
+            payload: {
+              fields: values,
+              ID: tableData.ID,
+              callback: (data) => {
+                versions.push(data);
+                this.setState({
+                  mode: 1,
+                  tableData: tableData
+                })
+                
+              }
             }
-          }
-        })
+          })
+        }else{
+          dispatch({
+            type: 'gproline/addProjectTask',
+            payload: {
+              fields: values,
+              ID: tableData.ID,
+              callback: (data) => {
+                versions.push(data);
+                this.setState({
+                  mode: 1,
+                  tableData: tableData
+                })
+                
+              }
+            }
+          })
+        }
+        
       });
       ;
     }
@@ -276,7 +293,7 @@ export default class manageTaskForm extends PureComponent {
 
             <FormItem {...formItemLayout} label="脚本超时时间">
               {getFieldDecorator('timeout', {
-                initialValue:formData.timeout,
+                initialValue:formData.timeout||10,
                 rules: [{
                   required: false, message: '发布脚本',
                 }],

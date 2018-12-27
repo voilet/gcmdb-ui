@@ -130,7 +130,6 @@ export default class editVersionForm  extends PureComponent {
     };
     let formData = this.props.formData || {};
     let { enable } = this.state;
-    formData.ID =1213
     return (
       <div>
         <Modal

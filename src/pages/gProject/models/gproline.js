@@ -14,6 +14,7 @@ import {
   addProjectGroup,
   addProjectConfigVersion,
   addProjectTask,
+  editProjectTask,
   querProjectGroupbyId,
   querGroupbyLId,
   querProjectbyGId,
@@ -158,6 +159,16 @@ export default {
         openNotificationWithIcon('error',response.msg)
       }else{
         yield put({ type: 'saveBlockTasks', payload:payload } )
+        payload.callback && payload.callback( response );
+      }
+    },
+    *editProjectTask( { payload }, { call, put }){
+      const response = yield call( addProjectTask, payload );
+      if( response.status != 200 ){
+        openNotificationWithIcon('error',response.msg)
+      }else{
+        yield put({ type: 'saveBlockTasks', payload:payload } )
+        payload.callback && payload.callback( response );
       }
     },
     *deleteVersionById( { payload }, { call, put }){

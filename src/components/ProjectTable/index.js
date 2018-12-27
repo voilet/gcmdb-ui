@@ -71,7 +71,7 @@ class StandardTable extends PureComponent {
         editable={record.editable}
         value={text}
         onChange={value => this.handleChange(value, record.ID, column)}
-      />
+      ></EditableCell>
     );
   }
 

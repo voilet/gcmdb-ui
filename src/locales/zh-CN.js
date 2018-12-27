@@ -40,6 +40,7 @@ export default {
   'menu.power.user.rolelist': '角色列表',
   'menu.power.user.resourcelist':'资源列表',
   'menu.power.forthost.forthostlist':'堡垒机授权',
+  'menu.power.forthost.fortpermissionlist':'堡垒机权限列表',
   'menu.power.forthost':'堡垒机管理',
   'menu.result': '结果页',
   'menu.result.success': '成功页',

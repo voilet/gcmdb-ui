@@ -67,6 +67,15 @@ export async function addProjectTask( params ){
     }
   });
 }
+//修改项目中的任务
+export async function editProjectTask( params ){
+  return request(`v1/assets/carving/task/modify/${params.ID}`,{
+    method:'POST',
+    body:{
+      ...params.fields
+    }
+  });
+}
 //删除项目中的任务
 export async function deleteProjectTasks( params ){
   return request(`/v1/assets/task/release/delete/${params.ID}`);

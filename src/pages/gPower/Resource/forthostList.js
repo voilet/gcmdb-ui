@@ -201,7 +201,6 @@ export default class forthostList extends PureComponent {
             this.setState({
                 permisionid:selectedRows[0].permisionid
             })
-            alert(selectedRows[0].permisionid)
         }
         //
         if( !isCheckUserHost ){
@@ -346,7 +345,7 @@ export default class forthostList extends PureComponent {
                 width={600}                
                 onCancel={() => this.handleModalInfoHide()}
               >
-                <HostDetail 
+                <HostDetail                     
                     info={ this.state.currentHostInfo }
             　　></HostDetail>
             </Modal>
@@ -445,7 +444,7 @@ export default class forthostList extends PureComponent {
                     />
 
                 </div>
-                <div>
+                <div style={{paddingTop:20}}>
                     <Button type="primary" disabled={ !isAuthorButtonEnabled }  onClick={() => this.handleAuthorizeShow()}
                     style={{marginRight:10}}
                     >

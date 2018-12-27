@@ -5,6 +5,13 @@ import {
 import {
   filterAuthHost
 } from '@/services/AuthManagementAPI/resourceAPI'
+
+import {
+  deleteFortHostPermissionGroup,
+  modifyFortHostPermissionGroup,
+  addFortHostPermissionGroup
+} from '@/services/AuthManagementAPI/groupAPI'
+
 import { message } from 'antd'
 
   export default {
@@ -22,7 +29,7 @@ import { message } from 'antd'
   
     effects: {
       //获取资源列表
-      *getProjects({payload},{call,put}) {        
+      *getProjects({payload},{call,put}) {  
         const response = yield call(querProjectList);
         yield put({
           type: 'saveProject',
@@ -31,11 +38,48 @@ import { message } from 'antd'
       },
       *searchHost({ payload } , { call, put }){
         const response = yield call( filterAuthHost, payload.params );
-        if( response && response.status  ){
+        if( response && response.status == 200  ){
           yield put({
             type: 'saveHost',
             payload:response,
             callback: payload ? payload.callback :function(){}
+          })
+        }else{
+          message.error( response? response.msg : "未知错误" );
+        }
+      },
+      
+      *editForthostPermssionGroup({ payload }, { call, put }){
+        let add = payload.ID ? false: true;
+        let response = null;
+        if( add ){
+          response = yield call( addFortHostPermissionGroup , payload );
+        }else{
+          response = yield call( modifyFortHostPermissionGroup, payload );
+        }
+
+        if( response && response.status == 200 ){
+          yield put({
+            type: "guser/updateSSHRoleList",
+            payload: {
+              data:response.data,
+              act: add ? "add" :"edit"
+            }
+          })
+          payload.callback && payload.callback( response );
+        }else{
+          message.error( response? response.msg : "未知错误" );
+        }
+      },
+      *deleteForthostPermssionGroup({ payload }, { call, put }){
+        const response = yield call( deleteFortHostPermissionGroup, payload );
+        if( response && response.status == 200 ){
+          yield put({
+            type:"guser/updateSSHRoleList",
+            payload: {
+              data: payload,
+              act: 'delete'
+            }
           })
         }else{
           message.error( response? response.msg : "未知错误" );
