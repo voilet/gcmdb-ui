@@ -375,7 +375,7 @@ export default class forthostList extends PureComponent {
                             showSearch 
                             optionFilterProp="children"
                             filterOption={(input, option) => option.props.children.join('').toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                            style={{marginRight:10,width:100,float:"left"}}  
+                            style={{marginRight:10,marginBottom:10,width:100,float:"left"}}  
                             defaultValue="选择用户" 
                             onSelect={( val )=>{ this.handlerSelect("user", val)}}>
                             { getSelectorFilter( users, "role" ) }
@@ -384,7 +384,7 @@ export default class forthostList extends PureComponent {
                             showSearch 
                             optionFilterProp="children"
                             filterOption={(input, option) => option.props.children.join('').toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                            style={{marginRight:10,width:150,float:"left"}} 
+                            style={{marginRight:10,marginBottom:10,width:150,float:"left"}} 
                             defaultValue="选择项目" 
                             onSelect={( val )=>{ this.handlerSelect("project", val)}}>
                             { getSelectorFilter( projects, "projects" ) }
@@ -399,7 +399,7 @@ export default class forthostList extends PureComponent {
                         </InputGroup>
                     </div>
                     
-                    <Divider> 主机列表 </Divider>
+                    <Divider style={{paddingTop:10}}> 主机列表 </Divider>
 
                     <ProjectHost
                         selectedRows={selectedRows}
@@ -446,7 +446,9 @@ export default class forthostList extends PureComponent {
 
                 </div>
                 <div>
-                    <Button type="primary" disabled={ !isAuthorButtonEnabled }  onClick={() => this.handleAuthorizeShow()}>
+                    <Button type="primary" disabled={ !isAuthorButtonEnabled }  onClick={() => this.handleAuthorizeShow()}
+                    style={{marginRight:10}}
+                    >
                       批量授权
                     </Button>
 
