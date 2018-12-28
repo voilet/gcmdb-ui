@@ -30,25 +30,33 @@ export default class ForthostPermissionEditor  extends PureComponent {
 
   state = {
     modalVisible: this.props.visible,
-    enable: 1,
+    enable: undefined,
     auto:0,
     reset:0
   };
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      enable: nextProps.formData ? nextProps.formData.enable: 1,
+      formData: nextProps.formData,
       modalVisible:nextProps.modalVisible
     })
+    if( nextProps.formData ){
+      this.state.enable = nextProps.formData.enable
+    }
   }
 
-
+  handleStatusChange = (e)=>{
+    this.setState({
+      enable:!this.state.enable
+    })
+  }
 
   handleAdd = () => {
     const form = this.props.form;
     let id = this.props.formData ? this.props.formData.ID : ""
     form.validateFields((err, values) => {
       console.log("values", values, err);
+      values.enable = values.enable ? 1: 0;
       if (err) return;
       this.props.dispatch({
         type: 'gforthost/editForthostPermssionGroup',
@@ -87,9 +95,10 @@ export default class ForthostPermissionEditor  extends PureComponent {
         sm: { span: 10, offset: 7 },
       },
     };
-    let formData = this.props.formData || {};
-    let { enable } = this.state;
+    let formData = this.state.formData || {};
+    let enable = ( typeof this.state.enable == "undefined") ? formData.enable: this.state.enable;
     let isEditMode = formData && formData.ID;
+    console.log("enabled", enable, this.state.enable)
     return (
       <div>
         <Modal
@@ -142,6 +151,20 @@ export default class ForthostPermissionEditor  extends PureComponent {
           </FormItem>
           ):(<div></div>)
           }
+          <FormItem
+            {...formItemLayout}
+            label="是否可用"
+          >
+            {getFieldDecorator('enable',{
+              initialValue: formData.enable?1:0
+            })(
+              <Switch
+                checkedChildren="可用"
+                unCheckedChildren="不可用"
+                checked={enable}
+                onChange={(e) => this.handleStatusChange(e)} />
+            )}
+          </FormItem>
           </Modal>
       </div>
     );

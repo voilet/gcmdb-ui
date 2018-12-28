@@ -32,6 +32,11 @@ let routes = [
         "exact": true
       },
       {
+        "path": "/user/newpass",
+        "component": dynamic({ loader: () => import('../User/Newpass'), loading: require('/home/share/src/components/PageLoading/index').default }),
+        "exact": true
+      },
+      {
         "path": "/user/register-result",
         "component": dynamic({ loader: () => import('../User/RegisterResult'), loading: require('/home/share/src/components/PageLoading/index').default }),
         "exact": true

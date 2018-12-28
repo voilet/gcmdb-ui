@@ -69,6 +69,19 @@ class proPermissionTable extends PureComponent {
                 render: (text, record) => this.renderColumns(text, record, 'fqdn'),
             },
             {
+                title: '是否可用',
+                dataIndex: 'enable',
+                key:'enable',
+                width:'pro',
+                render: (text, record) => {
+                    if( record.enable ){
+                        return "可用"
+                    }else{
+                        return "不可用"
+                    }
+                },
+            },
+            {
                 title: '更新时间',
                 dataIndex: 'updated_at',
                 key:'updated_at',

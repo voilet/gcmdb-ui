@@ -41,8 +41,8 @@ export default class forthostPermissionList extends PureComponent {
         })
     }
     handleEditPermissonShow = ( record )=>{
-        this.state.currentPermssion = record;
         this.setState({
+            currentPermssion:record,
             modalVisible:true
         })
     }
@@ -85,6 +85,7 @@ export default class forthostPermissionList extends PureComponent {
         let { dispatch , guser } = this.props;
         let dataSource = guser.ssh_role || [];
         console.log("forthostPermissionList Render:",this.props)
+        console.log("currentPermssion", this.state.currentPermssion)
         return (
             <div>
                 
@@ -103,9 +104,10 @@ export default class forthostPermissionList extends PureComponent {
                         <Divider style={{paddingTop:10}}> 权限组列表 </Divider>
                         <ProPermissionTable
                             dispatch = {dispatch}                    
-                            dataSource = { dataSource }
+                            dataSource = { dataSource }                            
                             onDelete = { this.handleDeletePermisson }
                             onModify = { ( record )=>{
+                                console.log("show", record)
                                 this.handleEditPermissonShow( record );
                             } }
                         ></ProPermissionTable>

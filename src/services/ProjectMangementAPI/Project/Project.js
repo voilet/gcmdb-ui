@@ -60,7 +60,7 @@ export async function querProjectTasks( params ){
 
 //添加项目中的任务
 export async function addProjectTask( params ){
-  return request(`v1/assets/carving/task/create/${params.ID}`,{
+  return request(`v1/assets/carving/task/create/${params.ProId}`,{
     method:'POST',
     body:{
       ...params.fields
@@ -68,7 +68,7 @@ export async function addProjectTask( params ){
   });
 }
 //修改项目中的任务
-export async function editProjectTask( params ){
+export async function modifyProjectTask( params ){
   return request(`v1/assets/carving/task/modify/${params.ID}`,{
     method:'POST',
     body:{
@@ -77,8 +77,8 @@ export async function editProjectTask( params ){
   });
 }
 //删除项目中的任务
-export async function deleteProjectTasks( params ){
-  return request(`/v1/assets/task/release/delete/${params.ID}`);
+export async function deleteProjectTask( params ){
+  return request(`/v1/assets/carving/task/delete/${params.ID}`);
 }
 
 //查询项目中的主机

@@ -43,6 +43,7 @@ export default class manageTaskForm extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
+      formData: nextProps.formData,
       modalVisible: nextProps.modalVisible,
       tableData: nextProps.tableData ? nextProps.tableData : {},
     })
@@ -84,15 +85,14 @@ export default class manageTaskForm extends PureComponent {
           //修改操作
           values.ID = this.state.currentEditId
           dispatch({
-            type: 'gproline/editProjectTask',
+            type: 'gproline/modifyProjectTask',
             payload: {
               fields: values,
-              ID: tableData.ID,
+              ProId: tableData.ID,
+              ID: values.ID,
               callback: (data) => {
-                versions.push(data);
                 this.setState({
-                  mode: 1,
-                  tableData: tableData
+                  mode: 1
                 })
                 
               }
@@ -103,12 +103,10 @@ export default class manageTaskForm extends PureComponent {
             type: 'gproline/addProjectTask',
             payload: {
               fields: values,
-              ID: tableData.ID,
+              ProId: tableData.ID,
               callback: (data) => {
-                versions.push(data);
                 this.setState({
-                  mode: 1,
-                  tableData: tableData
+                  mode: 1
                 })
                 
               }
@@ -129,7 +127,7 @@ export default class manageTaskForm extends PureComponent {
     let { tableData } = this.state;
     console.log("删除数据", record,"项目ID", tableData.ID );
     this.props.dispatch({
-      type: 'gproline/deleteVersionById',
+      type: 'gproline/deleteProjectTask',
       payload: {
         ProId: tableData.ID, //所属于的项目id,必填
         ID: record.ID,
@@ -161,6 +159,7 @@ export default class manageTaskForm extends PureComponent {
     const {submitting, form, dispatch, progroupdata, gproline} = this.props;
     let {loading, tableData, formData} = this.state;
     let versions = tableData.tasks;
+    console.log("formData...",formData)
     if (!formData || !formData.ID) {
       formData = {
         title: "",
@@ -293,12 +292,12 @@ export default class manageTaskForm extends PureComponent {
 
             <FormItem {...formItemLayout} label="脚本超时时间">
               {getFieldDecorator('timeout', {
-                initialValue:formData.timeout||10,
+                initialValue:formData.bash_timeout||10,
                 rules: [{
                   required: false, message: '发布脚本',
                 }],
               })(
-                <div><InputNumber min={1} max={600} defaultValue={10} />（单位: 秒）</div>
+                <div><InputNumber min={1} max={600} defaultValue={formData.bash_timeout||10} />（单位: 秒）</div>
               )}              
             </FormItem>
             <FormItem
@@ -319,11 +318,12 @@ export default class manageTaskForm extends PureComponent {
               label="是否启用"
             >
               {getFieldDecorator('enable',{
-                initialValue:formData.enable
+                initialValue:formData.enable?1:0
               })(
                 <Switch
                   checkedChildren="开启"
                   unCheckedChildren="关闭"
+                  checked={formData.enable}
                   onChange={(e) => this.handleStatusChange(e)} />
               )}
             </FormItem>
@@ -354,7 +354,16 @@ export default class manageTaskForm extends PureComponent {
               }
 
             </FormItem>
-
+            <FormItem {...formItemLayout} label="脚本排序值">
+              {getFieldDecorator('order', {
+                initialValue:formData.order||100,
+                rules: [{
+                  required: true, message: '脚本排序值',
+                }],
+              })(
+                <InputNumber min={1} max={6000} />
+              )}              
+            </FormItem>
           </Modal>
         </div>
       )
