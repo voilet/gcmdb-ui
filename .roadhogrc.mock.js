@@ -14,7 +14,7 @@ const noProxy = process.env.NO_PROXY === 'false';
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 const proxy = {
 
-  '/login': 'http://127.0.0.1/',
+  '/login': 'http://127.0.0.1:8080/',
 
   // 支持值为 Object 和 Array
   'GET /api/currentUser': {
@@ -149,5 +149,5 @@ const proxy = {
 //  '/wss': 'http://127.0.0.1:8080/',
 //  '/manage/*': 'http://127.0.0.1:8080/',
 //} : delay(proxy, 1000));
-
-export default (noProxy ? {} : delay(proxy, 1000));
+export default { '/login': 'http://127.0.0.1:8080/', };
+//export default (noProxy ? {} : delay(proxy, 1000));

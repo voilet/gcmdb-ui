@@ -93,4 +93,21 @@ export default {
   cssnano: {
     mergeRules: false,
   },
+  "proxy": {
+    "/login": {
+      "target": "http://127.0.0.1:8080/",
+      "changeOrigin": true,
+      // "pathRewrite": { "^/login" : "" }
+    },
+    "/v1": {
+      "target": "http://127.0.0.1:8080/",
+      "changeOrigin": true,
+      // "pathRewrite": { "^/login" : "" }
+    },
+    "/manage": {
+      "target": "http://127.0.0.1:8080/",
+      "changeOrigin": true,
+      // "pathRewrite": { "^/login" : "" }
+    },
+  }
 };
