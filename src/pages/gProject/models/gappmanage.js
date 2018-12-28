@@ -102,7 +102,7 @@ import {
 
       //获取树节点
       *getTree({ payload }, { call, put }) {
-        console.log("**** getTree")
+        console.log("**** getTree", payload)
         const response = yield call(queryTree, payload);
         if (response.status == 200) {
           yield put({

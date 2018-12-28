@@ -37,13 +37,22 @@ export default class manageTaskForm extends PureComponent {
     mode: 1, //1显示,2:编辑
     loading: false,
     tableData: [],
-    formData: {}, //当前编辑数据
+    formData: null, //当前编辑数据
     currentEditId: 0, //无id，添加，否则修改
+    enable:0,
   };
 
   componentWillReceiveProps(nextProps) {
+    if( !this.state.formData && nextProps.formData  ){
+      this.setState({
+        formData:{ ...nextProps.formData },
+        enable:nextProps.formData.enable
+
+      })
+    }else{
+      console.log("formData???",  this.state.formData)
+    }
     this.setState({
-      formData: nextProps.formData,
       modalVisible: nextProps.modalVisible,
       tableData: nextProps.tableData ? nextProps.tableData : {},
     })
@@ -57,7 +66,8 @@ export default class manageTaskForm extends PureComponent {
   handleCancel = () => {
     if (this.state.mode == 2) {
       this.setState({
-        mode: 1
+        mode: 1,
+        formData:null
       })
     } else {
       this.props.onCancel()
@@ -142,7 +152,8 @@ export default class manageTaskForm extends PureComponent {
     this.setState({
       currentEditId: record ? record.ID : undefined,
       mode: 2,
-      formData: record
+      enable: record.enable,
+      formData: {...record}
     })
   }
 
@@ -151,7 +162,9 @@ export default class manageTaskForm extends PureComponent {
   }
 
   handleStatusChange=(e)=>{
-
+    this.setState({
+      enable:!this.state.enable
+    })
   }
 
   render() {
@@ -159,7 +172,6 @@ export default class manageTaskForm extends PureComponent {
     const {submitting, form, dispatch, progroupdata, gproline} = this.props;
     let {loading, tableData, formData} = this.state;
     let versions = tableData.tasks;
-    console.log("formData...",formData)
     if (!formData || !formData.ID) {
       formData = {
         title: "",
@@ -323,7 +335,7 @@ export default class manageTaskForm extends PureComponent {
                 <Switch
                   checkedChildren="开启"
                   unCheckedChildren="关闭"
-                  checked={formData.enable}
+                  checked={ this.state.enable }
                   onChange={(e) => this.handleStatusChange(e)} />
               )}
             </FormItem>

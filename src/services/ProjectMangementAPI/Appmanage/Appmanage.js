@@ -3,8 +3,14 @@ import request from '../../../utils/request';
 
 
 //查询树
-export async function queryTree() {
-  return request(`/v1/assets/tree`);
+export async function queryTree( params ) {
+  if( params.active ){
+    //强制更新
+    return request(`/v1/assets/tree?active=${ params.active }`);
+  }else{
+    return request(`/v1/assets/tree`);
+  }
+  
 }
 
 
