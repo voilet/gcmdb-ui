@@ -253,8 +253,8 @@ export default class HostDetail extends Component {
             num_cpus: form.getFieldValue('num_cpus') ? form.getFieldValue('num_cpus') : '',
             disk: form.getFieldValue('disk') ? form.getFieldValue('disk') : '',
             assets_number: form.getFieldValue('assets_number') ? form.getFieldValue('assets_number') : '',
-            assets_number: form.getFieldValue('service_code') ? form.getFieldValue('service_code') : '',
-            assets_number: form.getFieldValue('memory') ? form.getFieldValue('memory') : '',
+            service_code: form.getFieldValue('service_code') ? form.getFieldValue('service_code') : '',
+            memory: form.getFieldValue('memory') ? form.getFieldValue('memory') : '',
 
             osversion: form.getFieldValue('osversion') ? form.getFieldValue('osversion') : '',
             planversion: form.getFieldValue('planversion') ? form.getFieldValue('planversion') : '',
@@ -439,19 +439,6 @@ handleStatusChange = (val) =>{
           className="ant-advanced-search-form"
           onSubmit={this.handleSave}
         >
-        <Row>
-
-            <Col span={8}>
-              <FormItem label="主机电源"  {...formItemLayout} >
-                  <Switch 
-                    checkedChildren="开机" 
-                    unCheckedChildren="关机" 
-                    checked={this.state.haspower} 
-                    onChange={(value) => this.handleStatusChange(value)} 
-                  />
-              </FormItem>
-            </Col>
-          </Row>
           <Divider style={{ marginBottom: 32 }} />
           <Row gutter={24}>
             <Col span={8}>

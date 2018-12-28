@@ -168,13 +168,13 @@ class BasicLayout extends React.PureComponent {
       }
     });
     if (!currRouterData) {
-      return 'Ant Design Pro';
+      return 'Gcmdb Pro';
     }
     const message = formatMessage({
       id: currRouterData.locale || currRouterData.name,
       defaultMessage: currRouterData.name,
     });
-    return `${message} - Ant Design Pro`;
+    return `${message} - Gcmdb Pro`;
   };
 
   getLayoutStyle = () => {

@@ -160,89 +160,79 @@ class HostTable extends PureComponent {
 
     const columns = [
       {
-        title: '服务器 ip(网络地址)',
+        title: 'ip',
         dataIndex: 'ipsummary',
         key:'ipsummary',
-        width:'150px',
+        // width:'150px',
         render: (text, record) => {
             var divStyle = {
                 color: '#108ee9',
-                fontWeight: 600
+                fontWeight: 600,
               };
-            return(
-              text.split(',').map((i,index)=> <div style={divStyle}> {i}</div>) 
-            )
-          }
+            return<div style={divStyle}> <a onClick={() => this.show(record.ID)}>{text}</a></div>
+          },
+      },
+      {
+        title: 'fqdn',
+        dataIndex: 'fqdn',
+        key:'fqdn',
+        // width:'200px',
       },
       {
         title: '所在产品线',
         dataIndex: 'projectlists',
         key:'projectlists',
-        width:'150px',
+        // width:'150px',
         sorter: true,
 
         render: (text, record) => {
           var divStyle = {
               color: '#108ee9',
-              fontWeight: 600
+              fontWeight: 600,
             };
-          return <div style={divStyle}>
-                 {record.projectlists ? this.handleProlist(record.projectlists) : ""}
-              </div>;
-        }
+          return <div style={divStyle}>{record.projectlists ? this.handleProlist(record.projectlists) : ""}</div>;
+        },
       },
       {
-        title: '所在机柜机架',
+        title: '机柜机架',
         dataIndex: 'idc_title',
         key:'idc_title',
-        width:'120px',
+        // width:'200px',
       },
+
       {
-        title: '机器名称(fqdn)',
-        dataIndex: 'fqdn',
-        key:'fqdn',
-        width:'200px'
-      },
-      {
-        title: '机器简要信息',
+        title: '硬件信息',
         dataIndex: 'summary',
         key:'summary',
-        width:'200px',
+        // width:'200px',
         render: (text,record) => {
-            var divStyle = {
+          var divStyle = {
             color: '#108ee9',
-            fontWeight: 600
-            };
-            return(
-              <div style={divStyle}>
-                <Row gutter={24}>
-                <Col span={12} >
-                   cpu核数:
+            // fontWeight: 600,
+          };
+          return(
+            <div style={divStyle}>
+              <Row gutter={24}>
+                <Col span={24} >
+                  cpu信息: {text.cpu_info}
                 </Col>
-                <Col span={12} >
-                   {text.cpu_info}
+
+              </Row>
+              <Row gutter={24}>
+                <Col span={24} >
+                  内存信息: {text.mem_info}
                 </Col>
-                </Row>
-                <Row gutter={24}>
-                <Col span={12} >
-                    内存信息:
+
+              </Row>
+              <Row gutter={24}>
+                <Col span={24} >
+                  磁盘信息: {text.disk_info}
                 </Col>
-                <Col span={12} >
-                    {text.mem_info.split("|")[0]}
-                </Col>
-                </Row>
-                <Row gutter={24}>
-                <Col span={12} >
-                    磁盘信息:
-                </Col>
-                <Col span={12} >
-                    {text.disk_info}
-                </Col>
-                </Row>
-              </div>
-            )
-        }
-      }
+              </Row>
+            </div>
+          )
+        },
+      },
       // {
       //   title: '机器密码',
       //   dataIndex: 'password',
@@ -262,128 +252,18 @@ class HostTable extends PureComponent {
       //       </div>
       //     )
       //   },
-       ,{
-        title: '套餐',
-        dataIndex: 'composeplan_title',
-        width: "120px",
-        key: 'composeplan_title',
-    },{
-        title: '容灾块',
-        dataIndex: 'guardblock',
-        width: "120px",
-        key: 'guardblock'
-    }, {
-        title: '负责人',
-        dataIndex: 'user',
-        width: "120px",
-        key: 'user'
-    },{
-        title: '状态信息',
-        dataIndex: 'status',
-        width: "150px",
-        key: 'status',
-        filters: [
-            {
-              text: Status[0],
-              value: 0,
-            },
-            {
-              text: Status[1],
-              value: 1,
-            },
-            {
-              text: Status[2],
-              value: 2,
-            },
-            {
-              text: Status[3],
-              value: 3,
-            },
-            {
-                text: Status[4],
-                value: 4,
-            },
-            {
-                text: Status[5],
-                value: 5,
-            },
-            {
-                text: Status[6],
-                value: 6,
-            },
-            {
-              text: Status[7],
-              value: 7,
-          },
-          {
-            text: Status[8],
-            value: 8,
-        },
-          ],
-          onFilter: (value, record) => {
-            if (record.status.host_status_id.toString() == value) {
-                return true 
-            } else if (record.status.agent_status_id.toString() == value) {
-                return true 
-            } else {
-              return false 
-            }
-          },
-    
-          render(text) {
- 
-            let agentstatus 
 
-      
-            if (text.agent_status_id === 1)  {
-              agentstatus = "success"
-            } else {
-              agentstatus = "error"
-            }
-   
- 
-            return (
-              <div>
-                  <Row gutter={16}  style={{  marginBottom: '8px',marginLeft: '16px'}}>
-                  <Col span={6} >
-                    <Badge status={agentstatus} />
-                  </Col>
-                    <Col span={6} >
-                      <Tag color="#108ee9">
-                        {Status[text.host_business_status_id]}
-                      </Tag>
-                    </Col>
-                  </Row>
-                  <Row gutter={16} style={{  marginBottom: '8px',marginLeft: '46px'}}>
-                    <Col span={6} >
-                      <Tag color="#9F79EE" >
-                        {Status[text.host_status_id]}
-                      </Tag>
-                    </Col>
-                  </Row>
-                  <Row gutter={16} style={{  marginBottom: '8px',marginLeft: '46px'}}>
-                    <Col span={6} >
-                      <Tag color="#EE9A00" >
-                        {Status[text.host_maintain_status_id]}
-                      </Tag>
-                    </Col>
-                  </Row>
-              </div>
-            )
-           
-          },
-    },
       {
         title: '操作',
         dataIndex: 'ID',
         key: 'ID',
-        width:'200px',
+        // width:'200px',
         render: (text, record) => {
           return (
           <div className="editable-row-operations">
             <a onClick={() => this.edit(record.ID)}>编辑</a>  
                  <Divider type="vertical" />
-                 <a onClick={() => this.show(record.ID)}>详情</a>
+                 <a onClick={() => this.show(record.ID)} >详情</a>
                  <Divider type="vertical" />
                 {
                 <Popconfirm title="确定删除?" onConfirm={() => this.deleteHost(record.ID)}>
