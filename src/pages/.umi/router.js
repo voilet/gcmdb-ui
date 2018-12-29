@@ -3,6 +3,7 @@ import { Router as DefaultRouter, Route, Switch } from 'react-router-dom';
 import dynamic from 'umi/dynamic';
 import renderRoutes from 'umi/_renderRoutes';
 import RendererWrapper0 from '/home/share/src/pages/.umi/LocaleWrapper.jsx'
+import _dvaDynamic from 'dva/dynamic'
 
 let Router = require('dva/router').routerRedux.ConnectedRouter;
 
@@ -19,36 +20,76 @@ let routes = [
   },
   {
     "path": "/user",
-    "component": dynamic({ loader: () => import('../../layouts/UserLayout'), loading: require('/home/share/src/components/PageLoading/index').default }),
+    "component": _dvaDynamic({
+  
+  component: () => import('../../layouts/UserLayout'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
     "routes": [
       {
         "path": "/user/login",
-        "component": dynamic({ loader: () => import('../User/Login'), loading: require('/home/share/src/components/PageLoading/index').default }),
+        "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/User/models/login.js').then(m => { return { namespace: 'login',...m.default}}),
+  import('/home/share/src/pages/User/models/register.js').then(m => { return { namespace: 'register',...m.default}})
+],
+  component: () => import('../User/Login'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
         "exact": true
       },
       {
         "path": "/user/register",
-        "component": dynamic({ loader: () => import('../User/Register'), loading: require('/home/share/src/components/PageLoading/index').default }),
+        "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/User/models/login.js').then(m => { return { namespace: 'login',...m.default}}),
+  import('/home/share/src/pages/User/models/register.js').then(m => { return { namespace: 'register',...m.default}})
+],
+  component: () => import('../User/Register'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
         "exact": true
       },
       {
         "path": "/user/newpass",
-        "component": dynamic({ loader: () => import('../User/Newpass'), loading: require('/home/share/src/components/PageLoading/index').default }),
+        "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/User/models/login.js').then(m => { return { namespace: 'login',...m.default}}),
+  import('/home/share/src/pages/User/models/register.js').then(m => { return { namespace: 'register',...m.default}})
+],
+  component: () => import('../User/Newpass'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
         "exact": true
       },
       {
         "path": "/user/register-result",
-        "component": dynamic({ loader: () => import('../User/RegisterResult'), loading: require('/home/share/src/components/PageLoading/index').default }),
+        "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/User/models/login.js').then(m => { return { namespace: 'login',...m.default}}),
+  import('/home/share/src/pages/User/models/register.js').then(m => { return { namespace: 'register',...m.default}})
+],
+  component: () => import('../User/RegisterResult'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
         "exact": true
       },
       {
-        "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+        "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
       }
     ]
   },
   {
     "path": "/",
-    "component": dynamic({ loader: () => import('../../layouts/BasicLayout'), loading: require('/home/share/src/components/PageLoading/index').default }),
+    "component": _dvaDynamic({
+  
+  component: () => import('../../layouts/BasicLayout'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
     "Routes": [require('../Authorized').default],
     "routes": [
       {
@@ -59,11 +100,19 @@ let routes = [
           {
             "path": "/dashboard/workplace",
             "name": "workplace",
-            "component": dynamic({ loader: () => import('../gProject/ProTree/ListProjectTree'), loading: require('/home/share/src/components/PageLoading/index').default }),
+            "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gProject/models/gappmanage.js').then(m => { return { namespace: 'gappmanage',...m.default}}),
+  import('/home/share/src/pages/gProject/models/gproline.js').then(m => { return { namespace: 'gproline',...m.default}})
+],
+  component: () => import('../gProject/ProTree/ListProjectTree'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
             "exact": true
           },
           {
-            "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+            "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
           }
         ]
       },
@@ -80,55 +129,127 @@ let routes = [
               {
                 "path": "/resource/idc/idclist",
                 "name": "idclist",
-                "component": dynamic({ loader: () => import('../gResource/gIdc/idc/Listidc'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gIdc/idc/Listidc'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
                 "path": "/resource/idc/provider",
                 "name": "provider",
-                "component": dynamic({ loader: () => import('../gResource/gIdc/provider/ProviderList'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gIdc/provider/ProviderList'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
                 "path": "/resource/idc/ipresource",
                 "name": "ipresource",
-                "component": dynamic({ loader: () => import('../gResource/gIdc/ipresource/ipResourceList'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gIdc/ipresource/ipResourceList'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
                 "path": "/resource/idc/cabinet",
                 "name": "cabinet",
-                "component": dynamic({ loader: () => import('../gResource/gIdc/cabinet/cabinetHeader'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gIdc/cabinet/cabinetHeader'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "routes": [
                   {
                     "path": "/resource/idc/cabinet/list",
                     "name": "list",
-                    "component": dynamic({ loader: () => import('../gResource/gIdc/cabinet/CabinetList'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gIdc/cabinet/CabinetList'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/idc/cabinet/detail",
-                    "component": dynamic({ loader: () => import('../gResource/gIdc/cabinet/BayDetail'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gIdc/cabinet/BayDetail'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/idc/cabinet/edit",
-                    "component": dynamic({ loader: () => import('../gResource/gIdc/cabinet/editCabinet'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gIdc/cabinet/editCabinet'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/idc/cabinet/add",
                     "name": "add",
-                    "component": dynamic({ loader: () => import('../gResource/gIdc/cabinet/addCabinet'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gIdc/cabinet/addCabinet'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
-                    "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+                    "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
                   }
                 ]
               },
               {
-                "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+                "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
               }
             ]
           },
@@ -140,43 +261,106 @@ let routes = [
               {
                 "path": "/resource/hardware/host",
                 "name": "host",
-                "component": dynamic({ loader: () => import('../gResource/gHardware/hostInfo/hostHeader'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/hostInfo/hostHeader'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "routes": [
                   {
                     "path": "/resource/hardware/host/list",
                     "name": "list",
-                    "component": dynamic({ loader: () => import('../gResource/gHardware/hostInfo/hostList'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/hostInfo/hostList'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/hardware/host/detail",
-                    "component": dynamic({ loader: () => import('../gResource/gHardware/hostInfo/hostDetail'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/hostInfo/hostDetail'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/hardware/host/edit",
-                    "component": dynamic({ loader: () => import('../gResource/gHardware/hostInfo/editHost'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/hostInfo/editHost'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/hardware/host/add",
                     "name": "add",
-                    "component": dynamic({ loader: () => import('../gResource/gHardware/hostInfo/addHost'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/hostInfo/addHost'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/hardware/host/offline",
                     "name": "offline",
-                    "component": dynamic({ loader: () => import('../gResource/gHardware/hostInfo/offlineHost'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/hostInfo/offlineHost'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/hardware/host/clean",
-                    "component": dynamic({ loader: () => import('../gResource/gHardware/hostInfo/cleanHost'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/hostInfo/cleanHost'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
-                    "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+                    "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
                   }
                 ]
               },
@@ -188,51 +372,105 @@ let routes = [
                   {
                     "path": "/resource/hardware/deviceplan/compose_plan",
                     "name": "compose_plan",
-                    "component": dynamic({ loader: () => import('../gResource/gHardware/setMeal/plan/ListPlan'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/setMeal/plan/ListPlan'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/hardware/deviceplan/plan_cpu",
                     "name": "plan_cpu",
-                    "component": dynamic({ loader: () => import('../gResource/gHardware/setMeal/cpu/Listcpu'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/setMeal/cpu/Listcpu'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/hardware/deviceplan/plan_memory",
                     "name": "plan_memory",
-                    "component": dynamic({ loader: () => import('../gResource/gHardware/setMeal/memory/Listmemory'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/setMeal/memory/Listmemory'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/hardware/deviceplan/plan_disk",
                     "name": "plan_disk",
-                    "component": dynamic({ loader: () => import('../gResource/gHardware/setMeal/disk/Listdisk'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/setMeal/disk/Listdisk'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/hardware/deviceplan/plan_power",
                     "name": "plan_power",
-                    "component": dynamic({ loader: () => import('../gResource/gHardware/setMeal/power/Listpower'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/setMeal/power/Listpower'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
                     "path": "/resource/hardware/deviceplan/plan_adaptor",
                     "name": "plan_adaptor",
-                    "component": dynamic({ loader: () => import('../gResource/gHardware/setMeal/adaptor/Listadaptor'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                    "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gResource/models/gdevice.js').then(m => { return { namespace: 'gdevice',...m.default}}),
+  import('/home/share/src/pages/gResource/models/ghardware.js').then(m => { return { namespace: 'ghardware',...m.default}}),
+  import('/home/share/src/pages/gResource/models/gidc.js').then(m => { return { namespace: 'gidc',...m.default}})
+],
+  component: () => import('../gResource/gHardware/setMeal/adaptor/Listadaptor'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                     "exact": true
                   },
                   {
-                    "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+                    "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
                   }
                 ]
               },
               {
-                "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+                "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
               }
             ]
           },
           {
-            "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+            "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
           }
         ]
       },
@@ -245,34 +483,74 @@ let routes = [
             "path": "/project/business",
             "name": "business",
             "icon": "profile",
-            "component": dynamic({ loader: () => import('../gProject/SearchList'), loading: require('/home/share/src/components/PageLoading/index').default }),
+            "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gProject/models/gappmanage.js').then(m => { return { namespace: 'gappmanage',...m.default}}),
+  import('/home/share/src/pages/gProject/models/gproline.js').then(m => { return { namespace: 'gproline',...m.default}})
+],
+  component: () => import('../gProject/SearchList'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
             "routes": [
               {
                 "path": "/project/business/prolist",
                 "name": "prolist",
-                "component": dynamic({ loader: () => import('../gProject/Project/ListProject'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gProject/models/gappmanage.js').then(m => { return { namespace: 'gappmanage',...m.default}}),
+  import('/home/share/src/pages/gProject/models/gproline.js').then(m => { return { namespace: 'gproline',...m.default}})
+],
+  component: () => import('../gProject/Project/ListProject'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
                 "path": "/project/business/grouplist",
                 "name": "grouplist",
-                "component": dynamic({ loader: () => import('../gProject/Progroup/ListProjectGroup'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gProject/models/gappmanage.js').then(m => { return { namespace: 'gappmanage',...m.default}}),
+  import('/home/share/src/pages/gProject/models/gproline.js').then(m => { return { namespace: 'gproline',...m.default}})
+],
+  component: () => import('../gProject/Progroup/ListProjectGroup'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
                 "path": "/project/business/linelist",
                 "name": "linelist",
-                "component": dynamic({ loader: () => import('../gProject/Proline/ListProjectLine'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gProject/models/gappmanage.js').then(m => { return { namespace: 'gappmanage',...m.default}}),
+  import('/home/share/src/pages/gProject/models/gproline.js').then(m => { return { namespace: 'gproline',...m.default}})
+],
+  component: () => import('../gProject/Proline/ListProjectLine'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
                 "path": "/project/business/proconfiglist",
                 "name": "proconfiglist",
-                "component": dynamic({ loader: () => import('../gProject/Project/ListProjectConfig'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gProject/models/gappmanage.js').then(m => { return { namespace: 'gappmanage',...m.default}}),
+  import('/home/share/src/pages/gProject/models/gproline.js').then(m => { return { namespace: 'gproline',...m.default}})
+],
+  component: () => import('../gProject/Project/ListProjectConfig'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
-                "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+                "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
               }
             ]
           },
@@ -280,11 +558,19 @@ let routes = [
             "path": "/project/treelist",
             "name": "treelist",
             "icon": "profile",
-            "component": dynamic({ loader: () => import('../gProject/ProTree/ListProjectTree'), loading: require('/home/share/src/components/PageLoading/index').default }),
+            "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gProject/models/gappmanage.js').then(m => { return { namespace: 'gappmanage',...m.default}}),
+  import('/home/share/src/pages/gProject/models/gproline.js').then(m => { return { namespace: 'gproline',...m.default}})
+],
+  component: () => import('../gProject/ProTree/ListProjectTree'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
             "exact": true
           },
           {
-            "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+            "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
           }
         ]
       },
@@ -296,55 +582,125 @@ let routes = [
           {
             "path": "/authmanage/user",
             "name": "user",
-            "component": dynamic({ loader: () => import('../gPower/SearchList'), loading: require('/home/share/src/components/PageLoading/index').default }),
+            "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gPower/models/gforthost.js').then(m => { return { namespace: 'gforthost',...m.default}}),
+  import('/home/share/src/pages/gPower/models/gresource.js').then(m => { return { namespace: 'gresource',...m.default}}),
+  import('/home/share/src/pages/gPower/models/grole.js').then(m => { return { namespace: 'grole',...m.default}}),
+  import('/home/share/src/pages/gPower/models/guser.js').then(m => { return { namespace: 'guser',...m.default}})
+],
+  component: () => import('../gPower/SearchList'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
             "routes": [
               {
                 "path": "/authmanage/user/list",
                 "name": "list",
-                "component": dynamic({ loader: () => import('../gPower/User/userList'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gPower/models/gforthost.js').then(m => { return { namespace: 'gforthost',...m.default}}),
+  import('/home/share/src/pages/gPower/models/gresource.js').then(m => { return { namespace: 'gresource',...m.default}}),
+  import('/home/share/src/pages/gPower/models/grole.js').then(m => { return { namespace: 'grole',...m.default}}),
+  import('/home/share/src/pages/gPower/models/guser.js').then(m => { return { namespace: 'guser',...m.default}})
+],
+  component: () => import('../gPower/User/userList'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
                 "path": "/authmanage/user/rolelist",
                 "name": "rolelist",
-                "component": dynamic({ loader: () => import('../gPower/Role/roleTable'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gPower/models/gforthost.js').then(m => { return { namespace: 'gforthost',...m.default}}),
+  import('/home/share/src/pages/gPower/models/gresource.js').then(m => { return { namespace: 'gresource',...m.default}}),
+  import('/home/share/src/pages/gPower/models/grole.js').then(m => { return { namespace: 'grole',...m.default}}),
+  import('/home/share/src/pages/gPower/models/guser.js').then(m => { return { namespace: 'guser',...m.default}})
+],
+  component: () => import('../gPower/Role/roleTable'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
                 "path": "/authmanage/user/resourcelist",
                 "name": "resourcelist",
-                "component": dynamic({ loader: () => import('../gPower/Resource/resourceList'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gPower/models/gforthost.js').then(m => { return { namespace: 'gforthost',...m.default}}),
+  import('/home/share/src/pages/gPower/models/gresource.js').then(m => { return { namespace: 'gresource',...m.default}}),
+  import('/home/share/src/pages/gPower/models/grole.js').then(m => { return { namespace: 'grole',...m.default}}),
+  import('/home/share/src/pages/gPower/models/guser.js').then(m => { return { namespace: 'guser',...m.default}})
+],
+  component: () => import('../gPower/Resource/resourceList'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
-                "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+                "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
               }
             ]
           },
           {
             "path": "/authmanage/forthost",
             "name": "forthost",
-            "component": dynamic({ loader: () => import('../gPower/ForthostIndex'), loading: require('/home/share/src/components/PageLoading/index').default }),
+            "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gPower/models/gforthost.js').then(m => { return { namespace: 'gforthost',...m.default}}),
+  import('/home/share/src/pages/gPower/models/gresource.js').then(m => { return { namespace: 'gresource',...m.default}}),
+  import('/home/share/src/pages/gPower/models/grole.js').then(m => { return { namespace: 'grole',...m.default}}),
+  import('/home/share/src/pages/gPower/models/guser.js').then(m => { return { namespace: 'guser',...m.default}})
+],
+  component: () => import('../gPower/ForthostIndex'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
             "routes": [
               {
                 "path": "/authmanage/forthost/forthostlist",
                 "name": "forthostlist",
-                "component": dynamic({ loader: () => import('../gPower/Resource/forthostList'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gPower/models/gforthost.js').then(m => { return { namespace: 'gforthost',...m.default}}),
+  import('/home/share/src/pages/gPower/models/gresource.js').then(m => { return { namespace: 'gresource',...m.default}}),
+  import('/home/share/src/pages/gPower/models/grole.js').then(m => { return { namespace: 'grole',...m.default}}),
+  import('/home/share/src/pages/gPower/models/guser.js').then(m => { return { namespace: 'guser',...m.default}})
+],
+  component: () => import('../gPower/Resource/forthostList'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
                 "path": "/authmanage/forthost/fortpermissionlist",
                 "name": "fortpermissionlist",
-                "component": dynamic({ loader: () => import('../gPower/Resource/forthostPermissionList'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/gPower/models/gforthost.js').then(m => { return { namespace: 'gforthost',...m.default}}),
+  import('/home/share/src/pages/gPower/models/gresource.js').then(m => { return { namespace: 'gresource',...m.default}}),
+  import('/home/share/src/pages/gPower/models/grole.js').then(m => { return { namespace: 'grole',...m.default}}),
+  import('/home/share/src/pages/gPower/models/guser.js').then(m => { return { namespace: 'guser',...m.default}})
+],
+  component: () => import('../gPower/Resource/forthostPermissionList'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
-                "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+                "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
               }
             ]
           },
           {
-            "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+            "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
           }
         ]
       },
@@ -357,30 +713,58 @@ let routes = [
           {
             "path": "/exception/403",
             "name": "not-permission",
-            "component": dynamic({ loader: () => import('../Exception/403'), loading: require('/home/share/src/components/PageLoading/index').default }),
+            "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/Exception/models/error.js').then(m => { return { namespace: 'error',...m.default}})
+],
+  component: () => import('../Exception/403'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
             "exact": true
           },
           {
             "path": "/exception/404",
             "name": "not-find",
-            "component": dynamic({ loader: () => import('../Exception/404'), loading: require('/home/share/src/components/PageLoading/index').default }),
+            "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/Exception/models/error.js').then(m => { return { namespace: 'error',...m.default}})
+],
+  component: () => import('../Exception/404'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
             "exact": true
           },
           {
             "path": "/exception/500",
             "name": "server-error",
-            "component": dynamic({ loader: () => import('../Exception/500'), loading: require('/home/share/src/components/PageLoading/index').default }),
+            "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/Exception/models/error.js').then(m => { return { namespace: 'error',...m.default}})
+],
+  component: () => import('../Exception/500'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
             "exact": true
           },
           {
             "path": "/exception/trigger",
             "name": "trigger",
             "hideInMenu": true,
-            "component": dynamic({ loader: () => import('../Exception/TriggerException'), loading: require('/home/share/src/components/PageLoading/index').default }),
+            "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/Exception/models/error.js').then(m => { return { namespace: 'error',...m.default}})
+],
+  component: () => import('../Exception/TriggerException'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
             "exact": true
           },
           {
-            "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+            "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
           }
         ]
       },
@@ -392,66 +776,104 @@ let routes = [
           {
             "path": "/account/center",
             "name": "center",
-            "component": dynamic({ loader: () => import('../Account/Center/Center'), loading: require('/home/share/src/components/PageLoading/index').default }),
+            "component": _dvaDynamic({
+  
+  component: () => import('../Account/Center/Center'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
             "routes": [
               {
                 "path": "/account/center",
-                "component": dynamic({ loader: () => import('../Account/Center/Projects'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  
+  component: () => import('../Account/Center/Projects'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
                 "path": "/account/center/articles",
-                "component": dynamic({ loader: () => import('../Account/Center/Articles'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  
+  component: () => import('../Account/Center/Articles'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
                 "path": "/account/center/applications",
-                "component": dynamic({ loader: () => import('../Account/Center/Applications'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  
+  component: () => import('../Account/Center/Applications'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
                 "path": "/account/center/projects",
-                "component": dynamic({ loader: () => import('../Account/Center/Projects'), loading: require('/home/share/src/components/PageLoading/index').default }),
+                "component": _dvaDynamic({
+  
+  component: () => import('../Account/Center/Projects'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
                 "exact": true
               },
               {
-                "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+                "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
               }
             ]
           },
           {
             "path": "/account/info",
             "name": "info",
-            "component": dynamic({ loader: () => import('../Account/Settings/Info'), loading: require('/home/share/src/components/PageLoading/index').default }),
+            "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/Account/Settings/models/geographic.js').then(m => { return { namespace: 'geographic',...m.default}})
+],
+  component: () => import('../Account/Settings/Info'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
             "exact": true
           },
           {
             "path": "/account/settings",
             "name": "infomodify",
-            "component": dynamic({ loader: () => import('../Account/Settings/InfoModify'), loading: require('/home/share/src/components/PageLoading/index').default }),
+            "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import('/home/share/src/pages/Account/Settings/models/geographic.js').then(m => { return { namespace: 'geographic',...m.default}})
+],
+  component: () => import('../Account/Settings/InfoModify'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
             "exact": true
           },
           {
-            "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+            "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
           }
         ]
       },
       {
-        "component": dynamic({ loader: () => import('../404'), loading: require('/home/share/src/components/PageLoading/index').default }),
+        "component": _dvaDynamic({
+  
+  component: () => import('../404'),
+  LoadingComponent: require('/home/share/src/components/PageLoading/index').default,
+}),
         "exact": true
       },
       {
-        "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+        "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
       }
     ]
   },
   {
-    "component": () => React.createElement(require('/home/share/node_modules/_umi-build-dev@1.2.8@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+    "component": () => React.createElement(require('/home/share/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
   }
 ];
 window.g_plugins.applyForEach('patchRoutes', { initialValue: routes });
 
-export default function() {
+export default function RouterWrapper() {
   return (
 <RendererWrapper0>
           <Router history={window.g_history}>

@@ -81,9 +81,27 @@ export async function deleteProjectTask( params ){
   return request(`/v1/assets/carving/task/delete/${params.ID}`);
 }
 
-//查询项目中的主机
+//查询发布项目中的主机
 export async function querProjectHosts( params ){
   return request(`/v1/assets/project/host/${params.ID}`);
+}
+//查询项目中的所有主机列表
+export async function querProjectAllHosts( params ){
+  return request(`/v1/assets/carving/host/query/${params.ProId}`);
+}
+//修改所有的主机配置
+export async function editProjectHosts( params ){
+  let hosts = params.data.carving_host || [];
+  let ips = hosts.map( val=>{
+    return val.eth1;
+  })
+  return request(`/v1/assets/project/host/${params.ProId}`, {
+    method: 'POST',
+    body: {
+      ip:ips.join(','),
+      method: 'post',
+    },
+  });
 }
 
 //修改项目

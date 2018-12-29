@@ -22,6 +22,8 @@ import {
   querProjectVersions,
   querProjectTasks,
   querProjectHosts,
+  querProjectAllHosts,
+  editProjectHosts,
   deleteProjectConfigVersion,
 
   addProjectTask,
@@ -88,8 +90,11 @@ export default {
     block_versions:{},
     //不同发布项的任务数据
     block_tasks:{},
-    //不同发布项的主机数据
-    block_hosts:{}
+    //不同发布项的主机数据（属于发布项的主机）
+    block_hosts:{},
+    //项目的所有主机
+    block_all_hosts:{}
+
   },
 
 
@@ -222,6 +227,29 @@ export default {
         })
       }
       
+    },
+    *getAllHostsByProId( { payload }, { call, put }){
+      const response = yield call( querProjectAllHosts, payload );
+      if( !response || response.status != 200 ){
+        openNotificationWithIcon('error',response ? response.msg : "查询主机接口异常")
+      }else{
+        yield put({
+          type:'saveBlockAllHosts',
+          payload:response.data || {},
+          id:payload.ProId,
+          callback:payload.callback
+        })
+      }
+    },
+    /* 更新主机(发布项主机和项目组主机)*/
+    *updateAllHostsByProId( { payload }, { call, put }){
+      const response = yield call( editProjectHosts, payload );
+      yield put({
+        type:'saveBlockAllHosts',
+        payload:payload.data||{},
+        id:payload.ProId,
+        callback:payload.callback
+      })
     },
 
     //添加项目列表
@@ -578,6 +606,17 @@ export default {
         block_hosts:blocks
       }
     },
+
+    saveBlockAllHosts( state, action ){
+      action.callback && action.callback( action.payload );
+      var blocks = { ...state.block_all_hosts };
+      //action.id 为项目id，不同项目存储不同的主机数据
+      blocks[ action.id ] = action.payload || [];
+      return {
+        ...state, 
+        block_all_hosts:blocks
+      }
+    },    
     saveTree(state, action) {
       return {
         ...state,

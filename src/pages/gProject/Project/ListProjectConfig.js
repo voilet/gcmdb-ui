@@ -311,21 +311,29 @@ export default class TableList extends PureComponent {
   handleEditHost = ( id, record )=>{
     let editInfo = record;
     this.props.dispatch({
-      type:'gproline/getHostsById',
+      type:'gproline/getAllHostsByProId',
       payload:{
-        ID:id,
+        ProId:id,
         callback:(data)=>{
-          record.tasks = data;
+          record.hosts = data;
           this.setState({
             editHostInfo: record,
-            isHostEditing:true,
+            isHostEditing:true
           })
         }
       }
     }); 
   }
   handleCancelHostEdit = ()=>{ this.setState( { isHostEditing: false }) }
-  handleUpdateHost = ()=>{ this.setState( { isHostEditing: false}) }
+  handleUpdateHost = ( data )=>{ 
+
+    this.setState( { 
+      isHostEditing: false,
+      editHostInfo:{
+        ...this.state.editHostInfo, hosts:data
+      }
+    })
+  }
   //host edit end
 
   //提交了配置编辑
@@ -455,7 +463,7 @@ export default class TableList extends PureComponent {
     let proconfigbypid = gproline.proconfigbypid || [];
     let block_versions = gproline.block_versions;
     let block_tasks = gproline.block_tasks;
-    let block_hosts = gproline.block_hosts;
+    let block_hosts = gproline.block_all_hosts;
     let { gprogroupInfo, gproInfo} = this.getCurrentProInfo();
 
 

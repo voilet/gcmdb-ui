@@ -147,7 +147,6 @@ export default class editProjectForm  extends PureComponent {
     };
     let formData = this.props.formData || {};
     let selectorVersion = ()=>{
-      console.log("Form versions", formData.versions )
       return (formData.versions||[]).map((item)=>{
         return (
           <Option value={ item.title }>{ item.title }</Option>
@@ -163,7 +162,6 @@ export default class editProjectForm  extends PureComponent {
     function onChange(value) {
       console.log('changed', value);
     }
-    console.log("version..............",version)
     return (
       <div>
         <Modal

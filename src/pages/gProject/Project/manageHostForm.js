@@ -14,7 +14,8 @@ import {
   Table,
   Switch,
   InputNumber,
-  Popconfirm
+  Popconfirm,
+  Transfer,Row,Col
 } from 'antd';
 
 
@@ -39,6 +40,9 @@ export default class manageTaskForm extends PureComponent {
     tableData: [],
     formData: {}, //当前编辑数据
     currentEditId: 0, //无id，添加，否则修改
+
+    hosts:{},//主机列表
+    targetKeys:[],//右侧数据
   };
 
   componentWillReceiveProps(nextProps) {
@@ -46,11 +50,32 @@ export default class manageTaskForm extends PureComponent {
       modalVisible: nextProps.modalVisible,
       tableData: nextProps.tableData ? nextProps.tableData : {},
     })
+    if( nextProps.tableData ){
+      this.updateHostData( nextProps.tableData );      
+    }
     if (!nextProps.modalVisible) {
       this.setState({
         mode: 1
       })
     }
+  }
+
+  updateHostData = ( tableData )=>{
+    //console.log("更新主机数据", tableData)
+    if( tableData ){
+      let allhosts = tableData.hosts;
+      let hosts = [];
+      let targetKeys = [];
+      allhosts.carving_host && allhosts.carving_host.forEach( val =>{
+        hosts.push( { ...val, key: val.ID  } )
+      })
+      allhosts.project_host && allhosts.project_host.forEach( val =>{
+        hosts.push( { ...val, key: val.ID } )
+        targetKeys.push( parseInt(val.ID) )
+      })
+      this.setState( { hosts, targetKeys } )
+    }
+    
   }
 
   handleCancel = () => {
@@ -64,7 +89,33 @@ export default class manageTaskForm extends PureComponent {
   }
 
   handleSubmit = () => {
-    // do nothing
+    let data = {};
+    let hosts = this.state.hosts ||[];
+    let targetKeys = this.state.targetKeys || [];
+    let { tableData } = this.state;
+    data.carving_host = [];
+    data.project_host = [];
+
+
+    for(var i=0;i<hosts.length;i++){
+      if( targetKeys.indexOf( hosts[i].ID )!= -1){
+        data.project_host.push( hosts[i] )
+      }else{
+        data.carving_host.push( hosts[i] )
+      }
+    }
+
+    this.props.dispatch({
+      type:'gproline/updateAllHostsByProId',
+      payload:{
+        ProId: tableData.ID, //所属于的项目id,必填
+        data:data,
+        callback:( data )=>{
+          this.props.onUpdate && this.props.onUpdate( data );
+        }
+      }
+    })
+
   }
 
  
@@ -96,66 +147,31 @@ export default class manageTaskForm extends PureComponent {
   handleStatusChange=(e)=>{
 
   }
+  
 
+  handleChange = (targetKeys, direction, moveKeys) => {
+    //console.log("change....",targetKeys, direction, moveKeys);
+    this.setState({ targetKeys });
+  }
+
+  renderItem = (item) => {
+    const customLabel = (
+      <span className="custom-item">
+        {item.eth1} - {item.fqdn}
+      </span>
+    );
+
+    return {
+      label: customLabel, // for displayed item
+      value: item.title, // for title and filter matching
+    };
+  }
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {submitting, form, dispatch, progroupdata, gproline} = this.props;
+    const {submitting, form, dispatch, gproline} = this.props;
+
     let {loading, tableData, formData} = this.state;
-    let versions = tableData.hosts;
-    if (!formData || !formData.ID) {
-      formData = {
-        title: "",
-        enable: 1,
-        auto: 0,
-        reset: 0,
-        remarks: ""
-      }
-    }
-    const columnsConfig = [
-      {
-        title: '主机名',
-        dataIndex: 'title',
-        key: 'title',
-        render: (text, record) => this.renderColumns(text, record, 'title'),
-      },
-      {
-        title: '主机IP',
-        dataIndex: 'task_type',
-        width:"pro",
-        key: 'task_type',
-        render: (button, record) => {
-          return this.renderColumns( text,record, "host" )
-        },
-      },
-      {
-        title: '状态',
-        dataIndex: 'enable',
-        key: 'enable',
-        render: (button, record) => {
-          return record.enable ? <Icon type="check" /> : <Icon type="stop" />
-        },
-      },
-      /*
-      {
-        title: '操作',
-        dataIndex: 'utils',
-        key: 'utils',
-        render: (text, record ) => {
-          return  (
-            <div>
-              <Popconfirm title="您真的要删除这条记录吗?" 
-                onConfirm={ ()=>{ this.handlerDelete( record ) } } 
-                onCancel={(e)=>{}} okText="是" cancelText="否">
-                <Icon type="delete" theme="twoTone" twoToneColor="#f35553"/>
-              </Popconfirm>
-              
-              <Icon style={{marginLeft:10}} type="edit" theme="twoTone" onClick={()=>{ this.handlerModify( record ) }} twoToneColor="#f35553"/>
-            </div>
-          )
-        },
-        
-      },*/
-    ];
+    
     const formItemLayout = {
       labelCol: {
         xs: {span: 24},
@@ -188,6 +204,12 @@ export default class manageTaskForm extends PureComponent {
         </div>
       )
     }
+    var w = document.documentElement.clientWidth;
+    if( w <= 1000 ){
+      w = (w - 120 )/2
+    }else{
+      w = 450
+    }
     return (
       <div>
         <Modal
@@ -196,14 +218,21 @@ export default class manageTaskForm extends PureComponent {
           onOk={this.handleSubmit}
           width={1000}
           onCancel={() => this.handleCancel()}
+          ref="a"
         >
-
-          <Table
-            loading={loading}
-            rowKey={record => record.ID}
-            dataSource={versions}
-            columns={columnsConfig}
-            pagination={true}
+          <Row gutter={24}>
+            <Col xs={12}>发布项主机</Col>
+            <Col xs={12}>项目主机</Col>
+          </Row>
+          <Transfer
+            listStyle={{
+              width: w,
+              height: 300,
+            }}
+            dataSource={ this.state.hosts }
+            targetKeys={ this.state.targetKeys }
+            onChange={this.handleChange}
+            render={this.renderItem}
           />
         </Modal>
       </div>

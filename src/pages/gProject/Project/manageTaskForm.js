@@ -50,7 +50,6 @@ export default class manageTaskForm extends PureComponent {
 
       })
     }else{
-      console.log("formData???",  this.state.formData)
     }
     this.setState({
       modalVisible: nextProps.modalVisible,
@@ -88,7 +87,6 @@ export default class manageTaskForm extends PureComponent {
 
     } else {
       form.validateFields((err, values) => {
-        console.log("values", values)
         if (err) return;
         values.enable = values.enable ? 1:0;
         if( this.state.currentEditId ){
