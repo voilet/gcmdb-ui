@@ -150,7 +150,7 @@ export default class manageTaskForm extends PureComponent {
     this.setState({
       currentEditId: record ? record.ID : undefined,
       mode: 2,
-      enable: record.enable,
+      enable: record? record.enable:false,
       formData: {...record}
     })
   }

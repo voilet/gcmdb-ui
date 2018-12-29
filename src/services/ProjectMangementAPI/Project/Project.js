@@ -95,7 +95,7 @@ export async function editProjectHosts( params ){
   let ips = hosts.map( val=>{
     return val.eth1;
   })
-  return request(`/v1/assets/project/host/${params.ProId}`, {
+  return request(`/v1/assets/carving/host/${params.ProId}`, {
     method: 'POST',
     body: {
       ip:ips.join(','),
