@@ -98,6 +98,8 @@ class LoginPage extends Component {
           <Submit loading={submitting}>登录</Submit>
 
         </Login>
+        <div>
+        </div>
       </div>
     );
   }

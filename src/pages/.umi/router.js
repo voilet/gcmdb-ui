@@ -32,6 +32,11 @@ let routes = [
         "exact": true
       },
       {
+        "path": "/user/newpass",
+        "component": dynamic({ loader: () => import('../User/Newpass'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default }),
+        "exact": true
+      },
+      {
         "path": "/user/register-result",
         "component": dynamic({ loader: () => import('../User/RegisterResult'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default }),
         "exact": true
@@ -325,6 +330,12 @@ let routes = [
                 "path": "/authmanage/forthost/forthostlist",
                 "name": "forthostlist",
                 "component": dynamic({ loader: () => import('../gPower/Resource/forthostList'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default }),
+                "exact": true
+              },
+              {
+                "path": "/authmanage/forthost/fortpermissionlist",
+                "name": "fortpermissionlist",
+                "component": dynamic({ loader: () => import('../gPower/Resource/forthostPermissionList'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default }),
                 "exact": true
               },
               {

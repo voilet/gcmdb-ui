@@ -188,7 +188,19 @@ export default class TableTree extends PureComponent {
       autoExpandParent: false,
     });
   }
-  
+  handleReloadTree = ()=>{
+    this.props.dispatch({
+      type: 'gappmanage/getTree',
+      payload: {
+        active:"update",
+        callback: (data) => {
+          this.setState({
+            treedata: data
+          })
+        }
+      }
+    })
+  }
   onChange = (e) => {
     const treedata = this.state.treedata
     const value = e.target.value;
@@ -305,7 +317,14 @@ export default class TableTree extends PureComponent {
         <Col xs={24} md={6} style={{paddingRight:0,height:"100%"}}>
           <Card style={{height:"100%"}}>
             <div>
-             <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange} />
+            <Row gutter={24}>
+              <Col xs={16}>
+                <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange} />
+              </Col>
+              <Col xs={4} style={{paddingLeft:0}}><Button title="强行刷新数据" onClick={ this.handleReloadTree} >刷新</Button></Col>
+            </Row>
+             
+             
               <Tree
                 onExpand={this.onExpand}
                 expandedKeys={expandedKeys}

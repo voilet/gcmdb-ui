@@ -189,26 +189,12 @@ class TreeTab extends PureComponent {
         //debugger
         const columns = [
             {
-                title: '项目ID',
-                dataIndex: 'project_id',
-                key:'project_id',
-                width:'120px',
-                render: (text, record) => this.renderColumns(text, record, 'project_id'),
-            },
-            {
                 title: '项目名',
                 dataIndex: 'project_title',
                 key:'project_title',
                 width:'120px',
                 render: (text, record) => this.renderColumns(text, record, 'project_title'),
-            },
-            {
-                title: '全路径',
-                dataIndex: 'line_title',
-                key:'line_title',
-                width:'120px',
-            },
-            {
+            },{
                 title: 'IP地址',
                 dataIndex: 'hostsip',
                 key:'hostsip',
@@ -233,34 +219,7 @@ class TreeTab extends PureComponent {
                     )
                 },
             },
-            {
-                title: '运行模式',
-                dataIndex: 'host_model',
-                key:'host_model',
-                width:'100px',
-                render: (text, record) => this.renderColumns(text, record, 'host_model'),
-            },
-            {
-                title: '域名',
-                dataIndex: 'host_domain',
-                key: 'host_domain',
-                width:'150px',
-                render: (text, record) => this.renderColumns(text, record, 'host_domain'),
-            },
-            {
-                title: '操作',
-                dataIndex: 'ID',
-                key: 'ID',
-                width:'200px',
-                render: (text, record) => {
-                    const { editable,deleteable } = record;
-                    return (
-                        <div className="editable-row-operations">
-
-                        </div>
-                    );
-                },
-            }];
+            ];
         // const paginationProps = {
         //   showSizeChanger: true,
         //   showQuickJumper: true,

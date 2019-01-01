@@ -1140,6 +1140,24 @@ i.antd-pro-components-global-header-index-trigger {
       display: none;
     }
   }
+  /* 重置大边距*/
+  .screen-xs{
+    .ant-card-body{
+      padding:10px;
+    }
+    /* reset table */
+    .ant-table-thead > tr > th, .ant-table-tbody > tr > td{
+      padding:10px 5px
+    }
+    .ant-table-thead > tr > th.ant-table-selection-column, .ant-table-tbody > tr > td.ant-table-selection-column{
+      min-width: 10px;
+      width: 10px;
+    }
+    /* reset table */
+    .antd-pro-components-page-header-index-pageHeader{
+      padding: 10px;
+    }
+  }
 
 
 .antd-pro-components-header-search-index-headerSearch {
@@ -1622,6 +1640,18 @@ i.antd-pro-components-global-header-index-trigger {
     }
 
   .antd-pro-components-project-table-pro-line-index-tableAlert {
+    margin-bottom: 16px;
+  }
+}
+
+@import "~antd/lib/style/themes/default.less";
+
+.antd-pro-components-project-table-pro-permission-index-standardTable {
+    .ant-table-pagination {
+      margin-top: 24px;
+    }
+
+  .antd-pro-components-project-table-pro-permission-index-tableAlert {
     margin-bottom: 16px;
   }
 }

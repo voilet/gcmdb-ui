@@ -112,6 +112,14 @@ export async function fakeAccountLogin(params) {
     body: params,
   });
 }
+export async function resetPassword(params) {
+  return request(`/v1/user/newpass/${params.id}`, {
+  // return request('/api/login/account', {
+    method: 'POST',
+    body: params,
+  });
+}
+
 
 
 export async function fakeRegister(params) {

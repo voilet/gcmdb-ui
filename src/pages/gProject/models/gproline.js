@@ -13,7 +13,8 @@ import {
   deleteProjectLine,
   addProjectGroup,
   addProjectConfigVersion,
-  addProjectTask,
+  
+  editProjectTask,
   querProjectGroupbyId,
   querGroupbyLId,
   querProjectbyGId,
@@ -21,8 +22,14 @@ import {
   querProjectVersions,
   querProjectTasks,
   querProjectHosts,
+  querProjectAllHosts,
+  editProjectHosts,
   deleteProjectConfigVersion,
+
+  addProjectTask,
   deleteProjectTask,
+  modifyProjectTask,
+
   queryTree,
   modifyProject,
   deleteProject,
@@ -83,8 +90,11 @@ export default {
     block_versions:{},
     //不同发布项的任务数据
     block_tasks:{},
-    //不同发布项的主机数据
-    block_hosts:{}
+    //不同发布项的主机数据（属于发布项的主机）
+    block_hosts:{},
+    //项目的所有主机
+    block_all_hosts:{}
+
   },
 
 
@@ -157,7 +167,28 @@ export default {
       if( response.status != 200 ){
         openNotificationWithIcon('error',response.msg)
       }else{
-        yield put({ type: 'saveBlockTasks', payload:payload } )
+        yield put({ type: 'addBlockTasks', payload:response.data, ProId: payload.ProId } )
+        payload.callback && payload.callback( response );
+      }
+    },
+    *modifyProjectTask( { payload }, { call, put }){
+      console.log("modifyProjectTask", payload)
+      const response = yield call( modifyProjectTask, payload );
+
+      if( response.status != 200 ){
+        openNotificationWithIcon('error',response.msg)
+      }else{
+        yield put({ type: 'modifyBlockTasks', payload:response.data, ID:payload.ID, ProId: payload.ProId } )
+        payload.callback && payload.callback( response );
+      }
+    },
+    *deleteProjectTask( { payload }, { call, put }){
+      const response = yield call( deleteProjectTask, payload );
+      if( response.status != 200 ){
+        openNotificationWithIcon('error',response.msg)
+      }else{
+        yield put({ type: 'deleteBlockTasks', payload:payload, ID:payload.ID,  ProId: payload.ProId } )
+        payload.callback && payload.callback( response );
       }
     },
     *deleteVersionById( { payload }, { call, put }){
@@ -196,6 +227,29 @@ export default {
         })
       }
       
+    },
+    *getAllHostsByProId( { payload }, { call, put }){
+      const response = yield call( querProjectAllHosts, payload );
+      if( !response || response.status != 200 ){
+        openNotificationWithIcon('error',response ? response.msg : "查询主机接口异常")
+      }else{
+        yield put({
+          type:'saveBlockAllHosts',
+          payload:response.data || {},
+          id:payload.ProId,
+          callback:payload.callback
+        })
+      }
+    },
+    /* 更新主机(发布项主机和项目组主机)*/
+    *updateAllHostsByProId( { payload }, { call, put }){
+      const response = yield call( editProjectHosts, payload );
+      yield put({
+        type:'saveBlockAllHosts',
+        payload:payload.data||{},
+        id:payload.ProId,
+        callback:payload.callback
+      })
     },
 
     //添加项目列表
@@ -499,10 +553,47 @@ export default {
     saveBlockTasks( state, action ){
       action.callback && action.callback( action.payload );
       var blocks = { ...state.block_tasks };
+      console.log("saveBlockTasks", action);
       blocks[ action.id ] = action.payload || [];
       return {
         ...state, 
         block_tasks:blocks
+      }
+    },
+    modifyBlockTasks( state, action ){
+      let { payload, ProId, ID } = action;
+      let blocks = state.block_tasks || {};
+      if( ! ProId ){ return state }
+      let arr = blocks[ ProId ] || [];
+      for(var i=0;i<arr.length;i++){
+        if( arr[i].ID == ID ){
+          arr[i] = payload;
+        }
+      }
+      return {
+        ...state, block_tasks:blocks
+      }
+    },
+    addBlockTasks( state, action ){
+      let { payload, ProId } = action;
+      let blocks = state.block_tasks || {};
+      if( ! ProId ){ return state }
+      let arr = blocks[ ProId ] || [];
+      arr.push( payload )
+      return {
+        ...state, block_tasks:blocks
+      }
+    },
+    deleteBlockTasks( state, action ){
+      let { payload, ProId, ID } = action;
+      let blocks = state.block_tasks || {};
+      if( ! ProId ){ return state }
+      let arr = blocks[ ProId ] || [];
+      arr = arr.filter( (value=>{
+        return value.ID != ID
+      }))
+      return {
+        ...state, block_tasks:blocks
       }
     },
     //保存碎片的主机列表
@@ -515,6 +606,17 @@ export default {
         block_hosts:blocks
       }
     },
+
+    saveBlockAllHosts( state, action ){
+      action.callback && action.callback( action.payload );
+      var blocks = { ...state.block_all_hosts };
+      //action.id 为项目id，不同项目存储不同的主机数据
+      blocks[ action.id ] = action.payload || [];
+      return {
+        ...state, 
+        block_all_hosts:blocks
+      }
+    },    
     saveTree(state, action) {
       return {
         ...state,

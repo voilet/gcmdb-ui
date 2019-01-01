@@ -1,9 +1,10 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
-import { fakeAccountLogin, getFakeCaptcha } from '@/services/api';
+import { fakeAccountLogin, getFakeCaptcha, resetPassword } from '@/services/api';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
+import { message } from 'antd';
 
 export default {
   namespace: 'login',
@@ -15,6 +16,7 @@ export default {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
+      console.log("response.....", response)
       yield put({
         type: 'changeLoginStatus',
         payload: response,
@@ -40,6 +42,16 @@ export default {
         }
         yield put(routerRedux.replace(redirect || '/'));
       }
+    },
+    *resetPassword({ payload }, { call, put } ){
+      const response = yield call( resetPassword , payload );
+      if( response && response.status == 200 ){        
+        let redirect = '/';
+        yield put(routerRedux.replace(redirect || '/'));
+      }else{
+        message.error("接口异常");
+      }
+     
     },
 
     *getCaptcha({ payload }, { call }) {
