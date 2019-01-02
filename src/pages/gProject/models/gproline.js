@@ -8,6 +8,7 @@ import {
   modifyProjectGroup,
   deleteProjectGroup,
   addProject,
+  addProjectItem, //添加项目的发布项
   addProjectLine,
   modifyProjectLine,
   deleteProjectLine,
@@ -251,10 +252,14 @@ export default {
         callback:payload.callback
       })
     },
-
-    //添加项目列表
+    //添加项目
     *addProject({ payload }, { call, put }) {
-      const response = yield call( addProject, payload );
+      yield call(addProject, payload.description);
+      yield put({ type: 'reloadProject' })
+    },
+    //添加项目列表(给项目添加发布项)
+    *addProjectItem({ payload }, { call, put }) {
+      const response = yield call( addProjectItem, payload );
       if( response.status != 200 ){
         openNotificationWithIcon('error',response.msg)
       }else{
