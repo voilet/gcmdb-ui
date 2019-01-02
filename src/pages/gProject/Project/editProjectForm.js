@@ -61,7 +61,7 @@ export default class editProjectForm  extends PureComponent {
       if (err) return;
       values.enable = values.enable ? 1:0
       this.props.dispatch({
-        type: 'gproline/addProject',
+        type: 'gproline/addProjectItem',
         payload: {
           ID:formData.ID,
           fields: values,

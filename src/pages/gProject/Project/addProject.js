@@ -58,10 +58,9 @@ export default class AddProject   extends PureComponent {
 
   handleAdd = () => {
     const form = this.props.form;
-    const formPropsData = this.props.formData;
-    form.validateFields((err, values) => {
+    
+    form.validateFields((err) => {
         if (err) return;
-        console.log("values", values)
     });
     
   
@@ -74,26 +73,17 @@ export default class AddProject   extends PureComponent {
       'enable': this.state.enable,
       'group': this.state.selectedGroupValue
     }
-
-    console.log("formData:", formPropsData, groupfields);
-    return;
-
     this.props.dispatch({
       type: 'gproline/addProject',
       payload: {
-        fields: groupfields,
-        ID:formPropsData.ID,
-        callback:()=>{
-          message.success('添加成功');
-          this.setState({
-            modalVisible: false,
-          });
-          form.resetFields();
-        }
+        description: groupfields,
       },
     });
-
-    
+    message.success('添加成功');
+    this.setState({
+      modalVisible: false,
+    });
+    form.resetFields();
   }
 
 

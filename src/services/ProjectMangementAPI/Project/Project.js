@@ -26,9 +26,19 @@ export async function queryProjectList(params) {
 export async function queryProject(params) {
   return request(`/v1/assets/project/list?${stringify(params)}`);
 }
+//添加项目
+export async function addProject(params) {
+  return request('/v1/assets/project/add', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
 
 // 添加发布项(指定一个项目id)
-export async function addProject(params) {
+export async function addProjectItem(params) {
   return request(`/v1/assets/carving/create/${params.ID}`, {
     method: 'POST',
     body: {
