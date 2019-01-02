@@ -285,7 +285,7 @@ export default class TableList extends PureComponent {
               handleDeleteData={this.handleDeleteData}
               prolinedata = {gproline.prolinedata}
               progroupbylid = {gproline.progroupbylid}
-              prodata={this.props.gproline.projectdata }
+              prodata={this.props.gproline.projectdata || {data:[]}}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />
