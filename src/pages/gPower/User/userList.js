@@ -283,7 +283,7 @@ export default class TableList extends PureComponent {
               handleSaveData={this.handleSaveData}
               handleDeleteData={this.handleDeleteData}
               userdata = {guserdata.user_infos}
-              roledata = {guserdata.role_list || []}
+              roledata = {guserdata.role_list || {guserdata:[]}}
               pagination = {guser.data.pagination || {}}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

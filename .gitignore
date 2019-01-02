@@ -22,4 +22,4 @@ package-lock.json
 jsconfig.json
 .vscode/settings.json
 dist/*
-node_modules.tar.gz
+*.tar.gz
