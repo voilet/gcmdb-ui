@@ -21,7 +21,7 @@ class StandardTable extends PureComponent {
     selectedRowKeys: [],
     totalCallNo: 0,
     data:[],
-    selectedLine:false
+    selectedLine:false,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -35,10 +35,9 @@ class StandardTable extends PureComponent {
     if(nextProps.prodata.data){
       this.setState({
         data:nextProps.prodata.data.map((obj)=>{
-          if(obj.selectStatus == undefined){
+          if(obj.selectStatus === undefined){
             obj.selectStatus=true
           }
-          
           return obj;
         })
       })

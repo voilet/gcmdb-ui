@@ -29,15 +29,14 @@ class proGroupTable extends PureComponent {
         totalCallNo: 0,
       });
     }
-   
  
     this.setState({
       data: nextProps.progroupdata.data.map((obj)=>{
-        if(obj.selectStatus == undefined){
+        if(obj.selectStatus === undefined){
           obj.selectStatus=true
-        }
+        };
         return obj;
-      })
+      }),
     })
     
   }

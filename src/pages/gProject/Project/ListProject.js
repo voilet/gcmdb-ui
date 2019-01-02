@@ -258,8 +258,7 @@ export default class TableList extends PureComponent {
             <div className={styles.tableListOperator}>
               <Row gutter={16}>
                <Col span={2}>
-                  <AddProject 
-                  /> 
+                  <AddProject/>
                 </Col>
                 <Col span={2}>
                 {

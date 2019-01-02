@@ -277,13 +277,6 @@ let routes = [
             ]
           },
           {
-            "path": "/project/treelist",
-            "name": "treelist",
-            "icon": "profile",
-            "component": dynamic({ loader: () => import('../gProject/ProTree/ListProjectTree'), loading: require('/Users/voilet/antd/gcmdbUi/src/components/PageLoading/index').default }),
-            "exact": true
-          },
-          {
             "component": () => React.createElement(require('/Users/voilet/antd/gcmdbUi/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
           }
         ]

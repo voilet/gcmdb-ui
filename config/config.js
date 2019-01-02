@@ -95,24 +95,24 @@ export default {
   },
   "proxy": {
     "/login": {
-      "target": "http://127.0.0.1:8080/",
+      "target": "http://10.1.3.11:8080/",
       "changeOrigin": true,
       // "pathRewrite": { "^/login" : "" }
     },
     "/v1": {
-      "target": "http://127.0.0.1:8080/",
+      "target": "http://10.1.3.11:8080/",
       "changeOrigin": true,
       // "pathRewrite": { "^/login" : "" }
     },
     "/manage": {
-      "target": "http://127.0.0.1:8080/",
+      "target": "http://10.1.3.11:8080/",
       "changeOrigin": true,
       // "pathRewrite": { "^/login" : "" }
     },
     "/wss": {
-      "target": "http://127.0.0.1:8080/",
+      "target": "http://10.1.3.11:8080/",
       "changeOrigin": true,
       // "pathRewrite": { "^/login" : "" }
     },
-  }
+  },
 };

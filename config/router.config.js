@@ -201,12 +201,6 @@ export default [
               },
             ],
           },
-          {
-            path: '/project/treelist',
-            name: 'treelist',
-            icon: 'profile',
-            component: './gProject/ProTree/ListProjectTree',
-          },
         ],
       },
       {

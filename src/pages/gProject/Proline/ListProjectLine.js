@@ -168,8 +168,7 @@ export default class ProLineList extends PureComponent {
             <div className={styles.tableListOperator}>
               <Row gutter={16}>
                <Col span={2}>  
-               <AddProline 
-                /> 
+               <AddProline />
                 </Col>
                 <Col span={2}>
                 </Col>

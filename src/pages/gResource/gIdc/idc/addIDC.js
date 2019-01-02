@@ -4,16 +4,16 @@ import styles from './IDC.less'
 import {connect} from 'dva';
 
 import {
-    Card,
-    Form,
-    Input,
-    Icon,
-    Button,
-    Modal,
-    message,
-    Select,
-    Switch
-  } from 'antd';
+  Card,
+  Form,
+  Input,
+  Icon,
+  Button,
+  Modal,
+  message,
+  Select,
+  Switch, Col, Row, Tree
+} from 'antd';
 
 
 const FormItem = Form.Item;
@@ -158,32 +158,31 @@ export default class AddIDC extends PureComponent {
               <Input placeholder="请输入机房别名，主机名使用" />
             )}
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="运营商"
-          >
+          <FormItem {...formItemLayout} label="运营商" >
             {getFieldDecorator('selectprovider',{
-              rules: [{
-                required: true,
-              }],
-            }
+                rules: [{
+                  required: true,
+                }],
+              }
             )(
               <Select
                 mode="multiple"
                 placeholder="选择运营商"
                 style={{ width: 120 }}
-                onChange = {this.handleSelectGroupValue} 
+                onChange = {this.handleSelectGroupValue}
                 optionFilterProp="children"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 { providerdata.data.length > 0 && providerdata.data.map(post =>
                   <Option key={post.ID} value={post.ID} >{post.provider_name}</Option>
                 )
-              }
+                }
 
               </Select>
             )}
+            {/*<Button title="强行刷新数据" onClick={ this.handleReloadTree} >添加</Button>*/}
           </FormItem>
+
           <FormItem
             {...formItemLayout}
             label="带宽"
