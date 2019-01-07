@@ -136,3 +136,8 @@ export async function queryNotices() {
 export async function getFakeCaptcha(mobile) {
   return request(`/api/captcha?mobile=${mobile}`);
 }
+
+// 获取主机列表
+export async function queryHardList(params) {
+  return request(`/v1/assets/hardware/host/querys?${stringify(params)}`);
+}

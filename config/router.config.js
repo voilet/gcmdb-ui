@@ -83,10 +83,10 @@ export default [
                     path: '/resource/idc/cabinet/add',
                     name: 'add',
                     component: './gResource/gIdc/cabinet/addCabinet',
-                  }
+                  },
                 ],
               },
-            ]
+            ],
           },
           {
             path: '/resource/hardware',

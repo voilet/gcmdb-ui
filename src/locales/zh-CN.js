@@ -6,6 +6,7 @@ export default {
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': '分析页',
   'menu.dashboard.monitor': '监控页',
+  'menu.dashboard.searchtable': '硬件列表',
   'menu.dashboard.workplace': '工作台',
   'menu.resource': '资源管理',
   'menu.resource.idc': '机房管理',

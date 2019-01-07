@@ -57,10 +57,10 @@ export default class forthostList extends PureComponent {
         });
         dispatch({
             type:'gforthost/getProjects'
-        })
+        });
         dispatch({
             type:"guser/fetchSSHRoleList"
-        })
+        });
         this.queryHosts();
     }
 
@@ -73,7 +73,7 @@ export default class forthostList extends PureComponent {
             type: 'gproline/getProjectLine',
             payload: '',
         });
-    }
+    };
 
 
     queryHosts = ( ) =>{
@@ -81,7 +81,7 @@ export default class forthostList extends PureComponent {
             ip:this.state.filterIp,
             user_id:this.state.selectedUserInfo ? this.state.selectedUserInfo.ID : "",
             project_id:this.state.selectedProjectInfo ? this.state.selectedProjectInfo.ID : ""
-       }
+       };
        console.log("查询主机", params);
        this.props.dispatch({
             type:"gforthost/searchHost",
@@ -89,7 +89,7 @@ export default class forthostList extends PureComponent {
                 params:params
             }
        })
-    }
+    };
 
     getFirstPermssionId = ()=>{
         const { guser } = this.props;
@@ -98,7 +98,7 @@ export default class forthostList extends PureComponent {
             return Permissions[0].ID;
         }
         return 0;
-    }
+    };
     //检查是否选择了主机或者host
     /* 
      *  @param {Object} hostData - 每一行的host数据 
@@ -326,7 +326,6 @@ export default class forthostList extends PureComponent {
         try{
             projects = gforthost.projectlist.data;
         }catch(e){}
-        console.log("ForthostList Render:",this.props)
         let getSelectorFilter = ( arr, type )=>{
             arr = arr || [];
             if( type == "projects"){
